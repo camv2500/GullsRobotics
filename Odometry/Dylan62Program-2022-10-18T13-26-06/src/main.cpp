@@ -54,6 +54,10 @@ void pre_auton(void)
 
 void autonomous(void) 
 {
+  //sensorValueTotal : average of left and right motor encoders
+  //sensorValueLeft : value of left drive train motor encoders
+  //sensorValueRight : value of right drive train motor encoders
+  //setpoint : the amount of rotations that we aim to move
   double sensorValueTotal, sensorValueLeft, sensorValueRight, setpoint = 1410.38;
   double derivative, prevError = 0;
   double power = 0, error = setpoint;
