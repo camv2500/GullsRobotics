@@ -13,5 +13,7 @@ main.cpp:
     main:
 
 function.cpp:
+    moveAll: take power arguemnt as a pct form and moves sets all six motors to that amount
+    exitAuton: The procedure for exiting the PID loop invloving setting motion to zero and printing key details to the screen
 
 
