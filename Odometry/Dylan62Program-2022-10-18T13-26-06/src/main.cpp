@@ -58,6 +58,12 @@ void autonomous(void)
   //sensorValueLeft : value of left drive train motor encoders
   //sensorValueRight : value of right drive train motor encoders
   //setpoint : the amount of rotations that we aim to move
+  //derivative : holds the current amount of the derivative
+  //prevError : holds the pervious error for calculation in the next cycle
+  //power : holds the amount of power to give to the motor
+  //error : hold the amount of distance left to go
+  //kp : The kP value is used to tune our Porportional part of the PD controller
+  //kD : the kD value is used to tune our Derivative part of the PD controller
   double sensorValueTotal, sensorValueLeft, sensorValueRight, setpoint = 1410.38;
   double derivative, prevError = 0;
   double power = 0, error = setpoint;
