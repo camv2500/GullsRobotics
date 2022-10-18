@@ -6,6 +6,6 @@ Topics include:
 
 UI for the V5 Brain
 
-Dead-wheel odometry
+Dead-wheel odometry(documentation for this is in the Odometry folder README)
 
 Object detection 
