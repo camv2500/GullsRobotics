@@ -12,8 +12,8 @@ motor leftMotor1 = motor(PORT1, ratio18_1, true);
 motor leftMotor2 = motor(PORT2, ratio18_1, true);
 motor leftMotor3 = motor(PORT3, ratio18_1, true);
 motor rightMotor1 = motor(PORT8, ratio18_1, false);
-motor rightMotor1 = motor(PORT9, ratio18_1, false);
-motor rightMotor1 = motor(PORT10, ratio18_1, false);
+motor rightMotor2 = motor(PORT9, ratio18_1, false);
+motor rightMotor3 = motor(PORT10, ratio18_1, false);
 controller Controller1 = controller(primary);
 
 // VEXcode generated functions
