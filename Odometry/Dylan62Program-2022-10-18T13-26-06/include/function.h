@@ -2,11 +2,11 @@
 
 void moveAll(double power){
     leftMotor1.spin(forward,power,pct);
-    //leftMotor2.spin(forward,power,pct);
-    //leftMotor3.spin(forward,power,pct);
+    leftMotor2.spin(forward,power,pct);
+    leftMotor3.spin(forward,power,pct);
     rightMotor1.spin(forward,power,pct);
-    //rightMotor2.spin(forward,power,pct);
-    //rightMotor3.spin(forward,power,pct);
+    rightMotor2.spin(forward,power,pct);
+    rightMotor3.spin(forward,power,pct);
 
 }
 
