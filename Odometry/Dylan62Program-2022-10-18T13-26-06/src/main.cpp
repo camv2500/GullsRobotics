@@ -1,3 +1,10 @@
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// leftMotor1           motor         1               
+// rightMotor1          motor         10              
+// Controller1          controller                    
+// ---- END VEXCODE CONFIGURED DEVICES ----
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
@@ -68,7 +75,7 @@ void autonomous(void)
   double sensorValueTotal, sensorValueLeft, sensorValueRight, setpoint = 1410.38;
   double derivative, prevError = 0;
   double power = 0, error = setpoint;
-  double kP = 0.255, kD = 0.2;
+  double kP = 0.2485, kD = 0.119;
 
   leftMotor1.setPosition(0,degrees);
   rightMotor1.setPosition(0,degrees);
