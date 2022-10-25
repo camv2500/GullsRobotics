@@ -10,10 +10,10 @@ void moveAll(double power){
 
 }
 
-void exitAuton(){
-    //Brain.Screen.print(error);
+void exitAutonInformation(double error, double derivative){
+    Brain.Screen.print(error);
     Brain.Screen.print(" ");
-    //Brain.Screen.print(derivative);
+    Brain.Screen.print(derivative);
     Brain.Screen.newLine();
     Brain.Screen.print("Leaving Auton");
     leftMotor1.spin(forward,0,pct);

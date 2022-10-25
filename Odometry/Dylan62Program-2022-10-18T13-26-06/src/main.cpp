@@ -100,13 +100,7 @@ void autonomous(void)
     wait(20,msec);
   }
 
-  Brain.Screen.print(error);
-  Brain.Screen.print(" ");
-  Brain.Screen.print(derivative);
-  Brain.Screen.newLine();
-  Brain.Screen.print("Leaving Auton");
-  leftMotor1.spin(forward,0,pct);
-  rightMotor1.spin(forward,0,pct);
+  exitAutonInformation(double error, double derivative);
 }
 
 
