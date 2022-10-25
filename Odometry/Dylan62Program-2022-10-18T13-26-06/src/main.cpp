@@ -72,7 +72,7 @@ void autonomous(void)
   //error : hold the amount of distance left to go
   //kp : The kP value is used to tune our Porportional part of the PD controller
   //kD : the kD value is used to tune our Derivative part of the PD controller
-  double sensorValueTotal, sensorValueLeft, sensorValueRight, setpoint = 1410.38;
+  double  setpoint = 1410.38;
   double derivative, prevError = 0;
   double power = 0, error = setpoint;
   double kP = 0.2485, kD = 0.119;
@@ -86,10 +86,9 @@ void autonomous(void)
     //wheel circumference 10.21
     //per full rotation travels 6.126 inches
 
-    sensorValueLeft = leftMotor1.position(degrees);
-    sensorValueRight = rightMotor1.position(degrees);
-    sensorValueTotal = sensorValueLeft + sensorValueRight / 2;
-    error = setpoint - sensorValueTotal;
+    
+    error = setpoint - getSensorValue();
+    
 
     derivative = error - prevError;
     prevError = error;
@@ -100,7 +99,7 @@ void autonomous(void)
     wait(20,msec);
   }
 
-  exitAutonInformation(double error, double derivative);
+  exitAutonInformation(error,  derivative);
 }
 
 

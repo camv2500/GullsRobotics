@@ -1,4 +1,5 @@
 #include "robot-config.h"
+#include "vex.h"
 
 void moveAll(double power){
     leftMotor1.spin(forward,power,pct);
@@ -18,4 +19,12 @@ void exitAutonInformation(double error, double derivative){
     Brain.Screen.print("Leaving Auton");
     leftMotor1.spin(forward,0,pct);
     rightMotor1.spin(forward,0,pct);
+}
+
+double getSensorValue(){
+    double sensorValueLeft,sensorValueRight,sensorValueTotal;
+    sensorValueLeft = leftMotor1.position(degrees);
+    sensorValueRight = rightMotor1.position(degrees);
+    sensorValueTotal = sensorValueLeft + sensorValueRight / 2;
+    return sensorValueTotal;
 }
