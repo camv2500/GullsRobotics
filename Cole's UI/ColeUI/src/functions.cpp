@@ -1,4 +1,6 @@
 #include "vex.h"
+#include <string>
+#include <vector>
 void initializeScreen();
 /***************************************************************************
 * This function prints the competition screen and allows for choice of color, and 
@@ -48,10 +50,10 @@ void buttonMechanics(){
   //enum BUTTON{COMPETITION=0, DRIVERDEBUG = 1, AUTONDEBUG = 2, INFORMATION = 3};
   //int selector[4] = {COMPETITION, DRIVERDEBUG, AUTONDEBUG,INFORMATION};
   while(true){
-    if((select.pressing()+UP.pressing()+DOWN.pressing()) ==3){
+    /*if((select.pressing()+UP.pressing()+DOWN.pressing()) ==3){
       initializeScreen();
-    }
-    }
+    }*/
+    
     //Competition menu
     if(Brain.Screen.pressing()==1){
       int x = Brain.Screen.xPosition();
@@ -105,6 +107,7 @@ void buttonMechanics(){
       int y = Brain.Screen.yPosition();
     }*/
   }
+}
 /*
   This function allows for the location units to be placed inside the parenthesis.
 */
@@ -122,24 +125,42 @@ void printXYZ(int x, int y, int z){
 /*
   This function print the menu.
 */
+
+void leftButtons(char b1[], char b2[], char b3[], char b4[]){
+    Brain.Screen.setCursor(3, 2);
+    Brain.Screen.print(b1);
+    Brain.Screen.setCursor(5, 2);
+    Brain.Screen.print(b2);
+    Brain.Screen.setCursor(7, 2);
+    Brain.Screen.print(b3);
+    Brain.Screen.setCursor(9, 2);
+    Brain.Screen.print(b4);
+}
+
+
 void menuScreen(){
     Brain.Screen.setPenWidth(2);
     Brain.Screen.clearScreen("#000000");
     Brain.Screen.setPenColor("#808080");
-    Brain.Screen.drawRectangle(5,15, 150, 30, "#808080");
-    Brain.Screen.drawRectangle(5, 65, 150, 30, "#808080");
-    Brain.Screen.drawRectangle(5, 115, 150, 30, "#808080");
-    Brain.Screen.drawRectangle(5, 165, 150, 30, "#808080");
-    Brain.Screen.drawRectangle(180, 5, 285, 185, "#808080");
+    Brain.Screen.drawRectangle(10, 38, 150, 27, "#808080");
+    Brain.Screen.drawRectangle(10, 78, 150, 27, "#808080");
+    Brain.Screen.drawRectangle(10, 118, 150, 27, "#808080");
+    Brain.Screen.drawRectangle(10, 158, 150, 27, "#808080");
+    Brain.Screen.drawRectangle(180, 38, 285, 147, "#808080");
     Brain.Screen.setFillColor("#808080");
     Brain.Screen.setPenColor(black);
-    Brain.Screen.setCursor(2, 3);
-    Brain.Screen.print("Competition");
+
+    char buttonLeft1[] = "Competition";
+    char buttonLeft2[] = "Auton";
+    char buttonLeft3[] = "Driver";
+    char buttonLeft4[] = "Debug";
+    leftButtons(buttonLeft1, buttonLeft2, buttonLeft3, buttonLeft4);
+
     Brain.Screen.setPenColor(red);
-    Brain.Screen.drawRectangle(0, 205, 480, 45, red);
+    Brain.Screen.drawRectangle(0, 218, 480, 30, red);
     Brain.Screen.setFillColor(red);
     Brain.Screen.setPenColor(white);
-    Brain.Screen.setFont(propL);
+    Brain.Screen.setFont(propM);
     Brain.Screen.setCursor(12, 13);
     Brain.Screen.print("GULLS");
     Brain.Screen.setFont(propM);
