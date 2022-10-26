@@ -62,44 +62,8 @@ void pre_auton(void)
 
 void autonomous(void) 
 {
-  //sensorValueTotal : average of left and right motor encoders
-  //sensorValueLeft : value of left drive train motor encoders
-  //sensorValueRight : value of right drive train motor encoders
-  //setpoint : the amount of rotations that we aim to move
-  //derivative : holds the current amount of the derivative
-  //prevError : holds the pervious error for calculation in the next cycle
-  //power : holds the amount of power to give to the motor
-  //error : hold the amount of distance left to go
-  //kp : The kP value is used to tune our Porportional part of the PD controller
-  //kD : the kD value is used to tune our Derivative part of the PD controller
-  double  setpoint = 1410.38;
-  double derivative, prevError = 0;
-  double power = 0, error = setpoint;
-  double kP = 0.2485, kD = 0.119;
-
-  leftMotor1.setPosition(0,degrees);
-  rightMotor1.setPosition(0,degrees);
-
-  while (fabs(error) >= 1)
-  {
-    //wheel diamtere 3.25
-    //wheel circumference 10.21
-    //per full rotation travels 6.126 inches
-
-    
-    error = setpoint - getSensorValue();
-    
-
-    derivative = error - prevError;
-    prevError = error;
-
-    power = error * kP + derivative * kD;
-    leftMotor1.spin(forward,power,pct);
-    rightMotor1.spin(forward,power,pct);
-    wait(20,msec);
-  }
-
-  exitAutonInformation(error,  derivative);
+  double setpoint = 1410;
+  PDLoop(setpoint);
 }
 
 
