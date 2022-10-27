@@ -1,7 +1,34 @@
 #include "vex.h"
-#include <string>
-#include <vector>
+
+//Constant variables for button positions.
+//buttonX: location for pressable buttons
+//buttonCompetitionY, buttonAutonY, buttonDriverY, buttonDebugY: placement of cursor on Y axis
+//buttonWidth, buttonHeight: height and width of box being drawn
+const int buttonX = 10;
+const int buttonCompetitionY = 38;
+const int buttonAutonY = 78;
+const int buttonDriverY = 118;
+const int buttonDebugY = 158;
+const int buttonWidth = 150;
+const int buttonHeight = 27;
+
+void autonScreen(competition c);
+void competitionScreen();
+void buttonMechanics();
+void __printXYZ(int x, int y, int z);
+void __leftButtons();
+void __bottomStatusBar();
 void initializeScreen();
+
+//Actual menu being printed, this prints after the initial
+//Continue screen.
+void menuScreen(){  
+    Brain.Screen.setPenWidth(2);
+    Brain.Screen.clearScreen("#000000");
+    __leftButtons();
+    __bottomStatusBar();
+}
+
 /***************************************************************************
 * This function prints the competition screen and allows for choice of color, and 
 * auton type.
@@ -58,24 +85,29 @@ void buttonMechanics(){
     if(Brain.Screen.pressing()==1){
       int x = Brain.Screen.xPosition();
       int y = Brain.Screen.yPosition();
-      if(((x>=5 && x<=155)&&(y>=15 && y<=47))||select.pressing()==1){
+
+      //Condition if competition button is pressed to call competition mode.
+      if(((x>=buttonX && x<=buttonWidth) && (y>=buttonCompetitionY && y<= (buttonCompetitionY+buttonHeight)))||select.pressing()==1){
         competitionScreen();
       }
-      else if(((x>=5&&x<=155)&&(y>=65&&y<=95))||select.pressing()==1){
+      //Condition if auton button is pressed to call competition mode.
+      else if(((x>=buttonX && x<=buttonWidth) && (y>=buttonAutonY && y<= (buttonAutonY+buttonHeight)))||select.pressing()==1){
         Brain.Screen.setFillColor("#808080");
         Brain.Screen.setPenColor(red);
         Brain.Screen.setCursor(2, 35);
         Brain.Screen.setFont(monoXS);
         Brain.Screen.print("Welcome to driver debug");
       }
-      else if(((x>=5&&x<=155)&&(y>=65&&y<=95))||select.pressing()==1){
+      //Condition if driver button is pressed to call competition mode.
+      else if(((x>=buttonX && x<=buttonWidth)&&(y>=buttonDriverY && y<= (buttonDriverY+buttonHeight)))||select.pressing()==1){
         Brain.Screen.setFillColor("#808080");
         Brain.Screen.setPenColor(red);
         Brain.Screen.setCursor(2, 35);
         Brain.Screen.setFont(monoXS);
         Brain.Screen.print("Welcome to driver debug");
       }
-      else if(((x>=5&&x<=155)&&(y>=115&&y<=145))||select.pressing()==1){
+      //Condition if debug button is pressed to call debug mode.
+      else if(((x>=buttonX && x<=buttonWidth) && (y>=buttonDebugY && y<= (buttonDebugY+buttonHeight)))||select.pressing()==1){
         Brain.Screen.setFillColor("#808080");
         Brain.Screen.setPenColor(red);
         Brain.Screen.setCursor(2, 35);
@@ -83,16 +115,8 @@ void buttonMechanics(){
         Brain.Screen.print("Welcome to the Auton debug");
         Brain.Screen.print("Please select a color");
       }
-      else if((x>=5&&x<=155)&&(y>=165&&y<=195)){
-        Brain.Screen.setFillColor("#808080");
-        Brain.Screen.setPenColor(red);
-        Brain.Screen.setCursor(2, 30);
-        Brain.Screen.setFont(monoS);
-        Brain.Screen.print("This is just robot info:");
-        Brain.Screen.setCursor(2, 37);
-        Brain.Screen.print("hello");
-      }
     }
+
     // driver debug
     /*else if(DOWN.pressing()==1||Brain.Screen.pressing()==1){
       int x = Brain.Screen.xPosition();
@@ -108,10 +132,9 @@ void buttonMechanics(){
     }*/
   }
 }
-/*
-  This function allows for the location units to be placed inside the parenthesis.
-*/
-void printXYZ(int x, int y, int z){
+
+//This function allows the odom points to be passed through
+void __printXYZ(int x, int y, int z){
     Brain.Screen.setPenWidth(12);
     Brain.Screen.setCursor(12, 30);
     Brain.Screen.print("(");
@@ -122,58 +145,76 @@ void printXYZ(int x, int y, int z){
     Brain.Screen.print(z);
     Brain.Screen.print(")"); 
 }
-/*
-  This function print the menu.
-*/
 
-void leftButtons(char b1[], char b2[], char b3[], char b4[]){
-    Brain.Screen.setCursor(3, 2);
-    Brain.Screen.print(b1);
-    Brain.Screen.setCursor(5, 2);
-    Brain.Screen.print(b2);
-    Brain.Screen.setCursor(7, 2);
-    Brain.Screen.print(b3);
-    Brain.Screen.setCursor(9, 2);
-    Brain.Screen.print(b4);
-}
-
-
-void menuScreen(){
-    Brain.Screen.setPenWidth(2);
-    Brain.Screen.clearScreen("#000000");
+//Function to create the 4 buttons as well as the box for the menu
+void __leftButtons(){
+    //Sets color for the background of the buttons
     Brain.Screen.setPenColor("#808080");
-    Brain.Screen.drawRectangle(10, 38, 150, 27, "#808080");
-    Brain.Screen.drawRectangle(10, 78, 150, 27, "#808080");
-    Brain.Screen.drawRectangle(10, 118, 150, 27, "#808080");
-    Brain.Screen.drawRectangle(10, 158, 150, 27, "#808080");
+
+    //Draws Box 1 for "Competition":
+    Brain.Screen.drawRectangle(buttonX, buttonCompetitionY, buttonWidth, buttonHeight, "#808080");
+    //Draws Box 2 for "Auton":
+    Brain.Screen.drawRectangle(buttonX, buttonAutonY, buttonWidth, buttonHeight, "#808080");
+    //Draws Box 3 for "Driver":
+    Brain.Screen.drawRectangle(buttonX, buttonDriverY, buttonWidth, buttonHeight, "#808080");
+    //Draws Box 4 for "Debug":
+    Brain.Screen.drawRectangle(buttonX, buttonDebugY, buttonWidth, buttonHeight, "#808080");
+    //Draws the box to the right of our buttons:
     Brain.Screen.drawRectangle(180, 38, 285, 147, "#808080");
     Brain.Screen.setFillColor("#808080");
+
+    //Pen color for the letters
     Brain.Screen.setPenColor(black);
+    //Button 1: 
+    Brain.Screen.setCursor(3, 2);
+    Brain.Screen.print("Competition");
+    //Button 2:
+    Brain.Screen.setCursor(5, 2);
+    Brain.Screen.print("Auton");
+    //Button 3:
+    Brain.Screen.setCursor(7, 2);
+    Brain.Screen.print("Driver");
+    //Button 4:
+    Brain.Screen.setCursor(9, 2);
+    Brain.Screen.print("Debug");
+}
 
-    char buttonLeft1[] = "Competition";
-    char buttonLeft2[] = "Auton";
-    char buttonLeft3[] = "Driver";
-    char buttonLeft4[] = "Debug";
-    leftButtons(buttonLeft1, buttonLeft2, buttonLeft3, buttonLeft4);
+//Function to create the bottom status bar:
+  //Bottom status bar includes battery percentage, coordinates, team name
+  //Controller status, and radio status.
 
+  //Still missing controller status and radio status
+void __bottomStatusBar(){
+    //Sets pen color for the box
     Brain.Screen.setPenColor(red);
+    //Draws and fills the rectangle at the bottom
     Brain.Screen.drawRectangle(0, 218, 480, 30, red);
     Brain.Screen.setFillColor(red);
+    //Font color for the text
     Brain.Screen.setPenColor(white);
     Brain.Screen.setFont(propM);
+    //Position to print team name / robot name
     Brain.Screen.setCursor(12, 13);
     Brain.Screen.print("GULLS");
+
+    //Why is it setting the font twice, is this necessary?
     Brain.Screen.setFont(propM);
-    printXYZ(1, 2, 3);
+
+    //Prints coordinates from Odometry
+    __printXYZ(1, 2, 3);
+
+    //Position to place battery percentage
     Brain.Screen.setCursor(12, 42);
     Brain.Screen.print(Brain.Battery.capacity());
     Brain.Screen.print("%%");
 }
+
 /*
   This function prints the landing page for the UI.
   when called it will simply print the first screen
-  /This is beneficial for reseting the UI if a user so desires
+  This is beneficial for reseting the UI if a user so desires
 */
+
 void initializeScreen(){
   Brain.Screen.clearScreen("000000");
   Brain.Screen.drawImageFromFile("Sammy.png", 9, 6);
@@ -193,7 +234,7 @@ void initializeScreen(){
   Brain.Screen.setCursor(12, 13);
   Brain.Screen.print("GULLS");
   Brain.Screen.setFont(propM);
-  printXYZ(1, 2, 3);
+  __printXYZ(1, 2, 3);
   Brain.Screen.setCursor(12, 42);
   Brain.Screen.print(Brain.Battery.capacity());
   // % is an escape character so you must put 2 in order to print 
