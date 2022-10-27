@@ -18,11 +18,12 @@ void buttonMechanics();
 void __printXYZ(int x, int y, int z);
 void __leftButtons();
 void __bottomStatusBar();
-void initializeScreen();
+void landingPage();
+void __updateBottomStatusBar();
 
 //Actual menu being printed, this prints after the initial
 //Continue screen.
-void menuScreen(){  
+void menuScreen(){
     Brain.Screen.setPenWidth(2);
     Brain.Screen.clearScreen("#000000");
     __leftButtons();
@@ -53,6 +54,7 @@ void autonScreen(competition c){
       }
     }
 }
+
 void competitionScreen(){
   Brain.Screen.setFillColor("#808080");
   Brain.Screen.setPenColor(red);
@@ -70,10 +72,11 @@ void competitionScreen(){
   Brain.Screen.setFont(propM);
   Brain.Screen.print("RED");
 }
+
 /*
   This function creates the mechanics for selection on the second page of the UI.
 */
-void buttonMechanics(){
+void __buttonMechanics(){
   //enum BUTTON{COMPETITION=0, DRIVERDEBUG = 1, AUTONDEBUG = 2, INFORMATION = 3};
   //int selector[4] = {COMPETITION, DRIVERDEBUG, AUTONDEBUG,INFORMATION};
   while(true){
@@ -184,7 +187,7 @@ void __leftButtons(){
   //Controller status, and radio status.
 
   //Still missing controller status and radio status
-void __bottomStatusBar(){
+void __drawBottomStatusBar(){
     //Sets pen color for the box
     Brain.Screen.setPenColor(red);
     //Draws and fills the rectangle at the bottom
@@ -199,7 +202,11 @@ void __bottomStatusBar(){
 
     //Why is it setting the font twice, is this necessary?
     Brain.Screen.setFont(propM);
+    __updateBottomStatusBar();
 
+}
+
+void __updateBottomStatusBar(){
     //Prints coordinates from Odometry
     __printXYZ(1, 2, 3);
 
@@ -207,15 +214,15 @@ void __bottomStatusBar(){
     Brain.Screen.setCursor(12, 42);
     Brain.Screen.print(Brain.Battery.capacity());
     Brain.Screen.print("%%");
-}
 
+}
 /*
   This function prints the landing page for the UI.
   when called it will simply print the first screen
   This is beneficial for reseting the UI if a user so desires
 */
 
-void initializeScreen(){
+void landingPage(){
   Brain.Screen.clearScreen("000000");
   Brain.Screen.drawImageFromFile("Sammy.png", 9, 6);
   Brain.Screen.setPenWidth(4);
@@ -226,19 +233,8 @@ void initializeScreen(){
   Brain.Screen.setPenColor(white);
   Brain.Screen.setPenWidth(1);
   Brain.Screen.print("Continue");
-  Brain.Screen.setPenColor(red);
-  Brain.Screen.drawRectangle(0, 205, 480, 45, red);
-  Brain.Screen.setFillColor(red);
-  Brain.Screen.setPenColor(white);
-  Brain.Screen.setFont(propL);
-  Brain.Screen.setCursor(12, 13);
-  Brain.Screen.print("GULLS");
-  Brain.Screen.setFont(propM);
-  __printXYZ(1, 2, 3);
-  Brain.Screen.setCursor(12, 42);
-  Brain.Screen.print(Brain.Battery.capacity());
-  // % is an escape character so you must put 2 in order to print 
-  Brain.Screen.print("%%");
+  __bottomStatusBar();
+
   while(true){
     if(select.pressing() == 1||Brain.Screen.pressing() == 1){
       int x = Brain.Screen.xPosition();

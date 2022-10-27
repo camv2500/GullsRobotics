@@ -68,7 +68,7 @@ int main() {
   // Run the pre-autonomous function.
   pre_auton();
   autonScreen(Competition);
-  initializeScreen();
+  landingPage();
   // Prevent main from exiting with an infinite loop.
   return 0;
 }

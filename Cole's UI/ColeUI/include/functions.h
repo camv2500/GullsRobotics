@@ -4,6 +4,6 @@ void competitionScreen();
 void buttonMechanics();
 void printXYZ(int x, int y, int z);
 void menuScreen();
-void initializeScreen();
+void landingPage();
 void autonScreen(vex::competition);
 #endif
