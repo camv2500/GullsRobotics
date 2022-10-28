@@ -20,6 +20,9 @@ void __leftButtons();
 void __bottomStatusBar();
 void landingPage();
 void __updateBottomStatusBar();
+void debugDriver();
+void debugAuton();
+void infoPage();
 
 //Actual menu being printed, this prints after the initial
 //Continue screen.
@@ -34,56 +37,60 @@ void menuScreen(){
 * This function prints the competition screen and allows for choice of color, and 
 * auton type.
 */
-void autonScreen(competition c){
+void autonScreen(competition c, color team){
     if(c.isAutonomous()){
-      Brain.Screen.clearScreen(red);
+      Brain.Screen.clearScreen(team);
       Brain.Screen.setPenColor(white);
       Brain.Screen.setFont(propXXL);
       Brain.Screen.setCursor(3, 6);
       Brain.Screen.print("GULLS");
-      for(int i = 60; i<200; i++){
-        for(int j = 60; j<200; j++){
-          if((j>=60&&j<=80)&&(i<=160)){
-            Brain.Screen.setPenColor(red);
-          }
-          else{
-            Brain.Screen.setPenColor(white);
-          }
-          Brain.Screen.drawPixel(j, i);
-        }
-      }
+    }
+    else if(c.isDriverControl()){
+      Brain.Screen.clearScreen(team);
     }
 }
-
+/*
+* This function prints the competition screen to select a color and an autonomous type
+* -Function then places the robot in the correct state for each condition
+*/
 void competitionScreen(){
-  Brain.Screen.setFillColor("#808080");
+  Brain.Screen.clearScreen("#808080");
   Brain.Screen.setPenColor(red);
-  Brain.Screen.setCursor(2, 28);
+  Brain.Screen.setCursor(5, 5);
   Brain.Screen.setFont(monoS);
   Brain.Screen.print("Welcome to the competition page!");
-  Brain.Screen.setCursor(4, 28);
+  Brain.Screen.setCursor(8, 5);
   Brain.Screen.print("Please choose a team and an auton.");
   Brain.Screen.setPenColor("#FFD700");
   Brain.Screen.setPenWidth(2);
-  Brain.Screen.drawRectangle(230, 75, 220, 35, black);
+  Brain.Screen.drawRectangle(25, 8, 5, 10);
+  Brain.Screen.drawCircle(25, 8, 2);
+  Brain.Screen.drawCircle(25, 10, 2);
+  Brain.Screen.drawCircle(30, 8, 2);
+  Brain.Screen.drawCircle(30, 10, 2);
   Brain.Screen.setPenColor(red);
   Brain.Screen.setPenWidth(4);
   Brain.Screen.setCursor(5, 20);
   Brain.Screen.setFont(propM);
   Brain.Screen.print("RED");
 }
+void debugAuton(){
+  //select an autonomous and choose color
+}
+void debugDriver(){
+  // select a color and allow driver to 
+}
+void infoPage(){
 
+}
 /*
   This function creates the mechanics for selection on the second page of the UI.
 */
 void __buttonMechanics(){
-  //enum BUTTON{COMPETITION=0, DRIVERDEBUG = 1, AUTONDEBUG = 2, INFORMATION = 3};
-  //int selector[4] = {COMPETITION, DRIVERDEBUG, AUTONDEBUG,INFORMATION};
+  enum BUTTON{COMPETITION=0, DRIVERDEBUG = 1, AUTONDEBUG = 2, INFORMATION = 3};
+  int selector[4] = {COMPETITION, DRIVERDEBUG, AUTONDEBUG,INFORMATION};
+  int locator =0;
   while(true){
-    /*if((select.pressing()+UP.pressing()+DOWN.pressing()) ==3){
-      initializeScreen();
-    }*/
-    
     //Competition menu
     if(Brain.Screen.pressing()==1){
       int x = Brain.Screen.xPosition();
@@ -119,20 +126,39 @@ void __buttonMechanics(){
         Brain.Screen.print("Please select a color");
       }
     }
-
-    // driver debug
-    /*else if(DOWN.pressing()==1||Brain.Screen.pressing()==1){
-      int x = Brain.Screen.xPosition();
-      int y = Brain.Screen.yPosition();
+    // condition if select is pressed
+    // checking each condition of the selector
+    else if(select.pressing()==1){
+      if(selector[locator]==0){
+        competitionScreen();
+      }
+      else if(selector[locator]==1){
+        debugAuton();
+      }
+      else if(selector[locator]==2){
+        debugDriver();
+      }
+      else if(selector[locator]==3){
+        infoPage();
+      }
     }
-    else if(DOWN.pressing()==1||Brain.Screen.pressing()==1){
-      int x = Brain.Screen.xPosition();
-      int y = Brain.Screen.yPosition();
+    // condition to move button down 1 or set to 0 if it reaches 3
+    else if(DOWN.pressing()==1){
+      if(locator==3){
+        locator=0;
+      }
+      else
+        locator++;
     }
-    else if(DOWN.pressing()==1||Brain.Screen.pressing()==1){
-      int x = Brain.Screen.xPosition();
-      int y = Brain.Screen.yPosition();
-    }*/
+    // condition to move button up 1 or set to 3 if it reaches 0
+    else if(UP.pressing()==1){
+      if(locator==0){
+        locator=3;
+      }
+      else
+        locator--;
+    }
+    wait(5, msec);
   }
 }
 
@@ -244,5 +270,6 @@ void landingPage(){
         buttonMechanics();
       }
     }
+    wait(5, msec);
   }
 }
