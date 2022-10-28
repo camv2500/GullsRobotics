@@ -12,12 +12,12 @@ const int buttonDebugY = 158;
 const int buttonWidth = 150;
 const int buttonHeight = 27;
 
-void autonScreen(competition c);
+void autonScreen(competition, color);
 void competitionScreen();
-void buttonMechanics();
-void __printXYZ(int x, int y, int z);
+void __buttonMechanics();
+void __printXYZ(int, int, int);
 void __leftButtons();
-void __bottomStatusBar();
+void __drawBottomStatusBar();
 void landingPage();
 void __updateBottomStatusBar();
 void debugDriver();
@@ -30,7 +30,8 @@ void menuScreen(){
     Brain.Screen.setPenWidth(2);
     Brain.Screen.clearScreen("#000000");
     __leftButtons();
-    __bottomStatusBar();
+    __drawBottomStatusBar();
+    __buttonMechanics();
 }
 
 /***************************************************************************
@@ -76,9 +77,11 @@ void competitionScreen(){
 }
 void debugAuton(){
   //select an autonomous and choose color
+
 }
 void debugDriver(){
   // select a color and allow driver to 
+
 }
 void infoPage(){
 
@@ -90,7 +93,16 @@ void __buttonMechanics(){
   enum BUTTON{COMPETITION=0, DRIVERDEBUG = 1, AUTONDEBUG = 2, INFORMATION = 3};
   int selector[4] = {COMPETITION, DRIVERDEBUG, AUTONDEBUG,INFORMATION};
   int locator =0;
-  while(true){
+  bool selected = false;
+  while(!selected){
+    //if a button is selected, the rest of the button mechanics are called
+    if(select.pressing()==1 || UP.pressing()==1 || DOWN.pressing()==1 || Brain.Screen.pressing()==1){
+      selected = true;
+    }
+  }
+
+  while(selected){
+    menuScreen();
     //Competition menu
     if(Brain.Screen.pressing()==1){
       int x = Brain.Screen.xPosition();
@@ -179,7 +191,6 @@ void __printXYZ(int x, int y, int z){
 void __leftButtons(){
     //Sets color for the background of the buttons
     Brain.Screen.setPenColor("#808080");
-
     //Draws Box 1 for "Competition":
     Brain.Screen.drawRectangle(buttonX, buttonCompetitionY, buttonWidth, buttonHeight, "#808080");
     //Draws Box 2 for "Auton":
@@ -259,17 +270,15 @@ void landingPage(){
   Brain.Screen.setPenColor(white);
   Brain.Screen.setPenWidth(1);
   Brain.Screen.print("Continue");
-  __bottomStatusBar();
-
-  while(true){
+  __drawBottomStatusBar();
+  __buttonMechanics();
+  /*while(true){
     if(select.pressing() == 1||Brain.Screen.pressing() == 1){
       int x = Brain.Screen.xPosition();
       int y = Brain.Screen.yPosition();
       if(((x >= 160 && x <=360)&&(y >=170 && y <=220))||select.pressing()==1){
         menuScreen();
-        buttonMechanics();
       }
-    }
+    }*/
     wait(5, msec);
   }
-}

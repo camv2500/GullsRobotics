@@ -67,7 +67,6 @@ int main() {
   Competition.drivercontrol(usercontrol);
   // Run the pre-autonomous function.
   pre_auton();
-  autonScreen(Competition);
   landingPage();
   // Prevent main from exiting with an infinite loop.
   return 0;
