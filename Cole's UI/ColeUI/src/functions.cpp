@@ -12,6 +12,7 @@ const int buttonDebugY = 158;
 const int buttonWidth = 150;
 const int buttonHeight = 27;
 
+//prototype functions
 void autonScreen(competition, color);
 void competitionScreen();
 void __buttonMechanics();
@@ -75,14 +76,17 @@ void competitionScreen(){
   Brain.Screen.setFont(propM);
   Brain.Screen.print("RED");
 }
+//function to print the debug autonomous screen
 void debugAuton(){
   //select an autonomous and choose color
 
 }
+//function to print the driver screen
 void debugDriver(){
   // select a color and allow driver to 
 
 }
+//function to print the information page
 void infoPage(){
 
 }
@@ -114,59 +118,54 @@ void __buttonMechanics(){
       }
       //Condition if auton button is pressed to call competition mode.
       else if(((x>=buttonX && x<=buttonWidth) && (y>=buttonAutonY && y<= (buttonAutonY+buttonHeight)))||select.pressing()==1){
-        Brain.Screen.setFillColor("#808080");
-        Brain.Screen.setPenColor(red);
-        Brain.Screen.setCursor(2, 35);
-        Brain.Screen.setFont(monoXS);
-        Brain.Screen.print("Welcome to driver debug");
+        competitionScreen();
       }
       //Condition if driver button is pressed to call competition mode.
       else if(((x>=buttonX && x<=buttonWidth)&&(y>=buttonDriverY && y<= (buttonDriverY+buttonHeight)))||select.pressing()==1){
-        Brain.Screen.setFillColor("#808080");
-        Brain.Screen.setPenColor(red);
-        Brain.Screen.setCursor(2, 35);
-        Brain.Screen.setFont(monoXS);
-        Brain.Screen.print("Welcome to driver debug");
+        
       }
       //Condition if debug button is pressed to call debug mode.
       else if(((x>=buttonX && x<=buttonWidth) && (y>=buttonDebugY && y<= (buttonDebugY+buttonHeight)))||select.pressing()==1){
-        Brain.Screen.setFillColor("#808080");
-        Brain.Screen.setPenColor(red);
-        Brain.Screen.setCursor(2, 35);
-        Brain.Screen.setFont(monoS);
-        Brain.Screen.print("Welcome to the Auton debug");
-        Brain.Screen.print("Please select a color");
+        
       }
     }
     // condition if select is pressed
     // checking each condition of the selector
     else if(select.pressing()==1){
+      //condition if the selector is at the first button
       if(selector[locator]==0){
         competitionScreen();
       }
+      //condition if the selector is at the second button
       else if(selector[locator]==1){
         debugAuton();
       }
+      //condition if the selector is at the third button
       else if(selector[locator]==2){
         debugDriver();
       }
+      //condition if the selector is at the fourth button
       else if(selector[locator]==3){
         infoPage();
       }
     }
     // condition to move button down 1 or set to 0 if it reaches 3
     else if(DOWN.pressing()==1){
+      //reset condition
       if(locator==3){
         locator=0;
       }
+      //condition for moving the locator down
       else
         locator++;
     }
     // condition to move button up 1 or set to 3 if it reaches 0
     else if(UP.pressing()==1){
+      //reset condition
       if(locator==0){
         locator=3;
       }
+      //condition to move button up
       else
         locator--;
     }
@@ -260,8 +259,9 @@ void __updateBottomStatusBar(){
 */
 
 void landingPage(){
-  Brain.Screen.clearScreen("000000");
-  Brain.Screen.drawImageFromFile("Sammy.png", 9, 6);
+  // clearScreen and set color to black
+  Brain.Screen.clearScreen("#000000");
+  // draw image from file
   Brain.Screen.setPenWidth(4);
   Brain.Screen.setPenColor("#808080");
   Brain.Screen.drawRectangle(155, 145, 150, 40, "000000");
@@ -270,15 +270,8 @@ void landingPage(){
   Brain.Screen.setPenColor(white);
   Brain.Screen.setPenWidth(1);
   Brain.Screen.print("Continue");
+  Brain.Screen.drawImageFromFile("download.png", 160, 40);
   __drawBottomStatusBar();
   __buttonMechanics();
-  /*while(true){
-    if(select.pressing() == 1||Brain.Screen.pressing() == 1){
-      int x = Brain.Screen.xPosition();
-      int y = Brain.Screen.yPosition();
-      if(((x >= 160 && x <=360)&&(y >=170 && y <=220))||select.pressing()==1){
-        menuScreen();
-      }
-    }*/
-    wait(5, msec);
+
   }
