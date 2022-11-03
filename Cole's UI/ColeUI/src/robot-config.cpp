@@ -8,12 +8,12 @@ using code = vision::code;
 brain  Brain;
 
 // VEXcode device constructors
-bumper select = bumper(Brain.ThreeWirePort.C);
-bumper UP = bumper(Brain.ThreeWirePort.A);
-bumper DOWN = bumper(Brain.ThreeWirePort.B);
 controller Controller1 = controller(primary);
-motor leftMotor = motor(PORT1, ratio18_1, true);
-motor rightMotor = motor(PORT10, ratio18_1, false);
+motor leftMotor = motor(PORT3, ratio18_1, false);
+motor rightMotor = motor(PORT8, ratio18_1, false);
+bumper UP = bumper(Brain.ThreeWirePort.A);
+bumper select = bumper(Brain.ThreeWirePort.B);
+bumper DOWN = bumper(Brain.ThreeWirePort.C);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable

@@ -1,5 +1,5 @@
 #include "vex.h"
-
+#include "robot-config.h"
 //Constant variables for button positions.
 //buttonX: location for pressable buttons
 //buttonCompetitionY, buttonAutonY, buttonDriverY, buttonDebugY: placement of cursor on Y axis
@@ -30,16 +30,19 @@ void infoPage();
 void menuScreen(){
     Brain.Screen.setPenWidth(2);
     Brain.Screen.clearScreen("#000000");
+    //initialize the left buttons
     __leftButtons();
+    // draw the status bar
     __drawBottomStatusBar();
+    // implement the logic for button pressing
     __buttonMechanics();
 }
 
 /***************************************************************************
-* This function prints the competition screen and allows for choice of color, and 
-* auton type.
+* This function takes in a competition variable and color and initializes a license plate 
 */
 void autonScreen(competition c, color team){
+    //case for when in auton 
     if(c.isAutonomous()){
       Brain.Screen.clearScreen(team);
       Brain.Screen.setPenColor(white);
@@ -47,6 +50,7 @@ void autonScreen(competition c, color team){
       Brain.Screen.setCursor(3, 6);
       Brain.Screen.print("GULLS");
     }
+    //case for when in auton
     else if(c.isDriverControl()){
       Brain.Screen.clearScreen(team);
     }
@@ -261,17 +265,27 @@ void __updateBottomStatusBar(){
 void landingPage(){
   // clearScreen and set color to black
   Brain.Screen.clearScreen("#000000");
-  // draw image from file
+  // set pen width to 4 pixels
   Brain.Screen.setPenWidth(4);
+  // set pen color to grey
   Brain.Screen.setPenColor("#808080");
+  // Draw main screen continue button
   Brain.Screen.drawRectangle(155, 145, 150, 40, "000000");
+  // set the cursor
   Brain.Screen.setCursor(6, 12);
+  // set to larger font
   Brain.Screen.setFont(monoL);
+  // set pen color to white for drawing continue
   Brain.Screen.setPenColor(white);
+  // set the pen width to 1 pixel
   Brain.Screen.setPenWidth(1);
+  // print continue
   Brain.Screen.print("Continue");
-  Brain.Screen.drawImageFromFile("download.png", 160, 40);
+  // print sammy the seagull to the landing page
+  Brain.Screen.drawImageFromFile("sammyTheSeagull.png", 140, 10);
+  // call function to print the bottom status bar
   __drawBottomStatusBar();
+  // call the logic that makes the screen pressing and buttons work
   __buttonMechanics();
 
-  }
+}
