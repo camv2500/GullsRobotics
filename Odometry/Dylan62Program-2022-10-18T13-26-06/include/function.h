@@ -1,6 +1,7 @@
 #include "robot-config.h"
 #include "vex.h"
 
+//a function that can be used to move all of the motors at once
 void moveAll(double power){
     leftMotor1.spin(forward,power,pct);
     //leftMotor2.spin(forward,power,pct);
@@ -11,16 +12,16 @@ void moveAll(double power){
 
 }
 
+//useful for debugging, this function will print any relevant values as needed
 void exitAutonInformation(double error, double derivative){
     Brain.Screen.print(error);
     Brain.Screen.print(" ");
     Brain.Screen.print(derivative);
     Brain.Screen.newLine();
     Brain.Screen.print("Leaving Auton");
-    leftMotor1.spin(forward,0,pct);
-    rightMotor1.spin(forward,0,pct);
 }
 
+//returns the average of all the motos sensor values
 double getSensorValue(){
   double sensorValueLeft,sensorValueRight,sensorValueTotal;
   sensorValueLeft = leftMotor1.position(degrees);
@@ -39,14 +40,9 @@ double getSensorValueRight() {
   return rightMotor1.position(degrees);
 }
 
-//two setpoints for each side of the motors, left and right, which as of now is only two motors
-//this has led to the kp and kd being slightly out of tune for some reason and the setpoints seemed to increase by 50%
-//the reason for two is that in theory with two setpoints we can set the values seperately and thus allow turns by setting
-//one motor to positive and one to negative to turn. corey says turning the robots into a unit circle would help
-//my current line of thinking is that we should have one setpoint, and when we arrive at the setpoint we could have the second
-//double be the raidus of the turn required, making sure the heading of the robot is in the correct after going the distance
-//eventually we'll have it turn while it is moving the distance but this should be less complicated
-void PDLoop(double setpoint, double turningSetPoint = 0){
+//the pd loop for the robot, when given a specific distance the robot will travel that amount of distance. The setpoint is in
+//degrees of the wheel. if the robot overshoots, it will return backwards slightly. already mostly tuned but will need to be refined to the final robot
+void PDLoop(double setpoint, bool isTurning = false){
   //sensorValueTotal : average of left and right motor encoders
   //setpoint : the amount of rotations that we aim to move in degrees
   //derivative : holds the current amount of the derivative
@@ -60,10 +56,11 @@ void PDLoop(double setpoint, double turningSetPoint = 0){
   double power = 0, error = setpoint;
   double kP = 0.2485, kD = 0.119;
 
+  //reset the position of the motors to make sure the distance is correct
   leftMotor1.setPosition(0,degrees);
   rightMotor1.setPosition(0,degrees);
 
-  while (fabs(error) >= 1)
+  while (fabs(error) >= 1 && !isTurning)
   {
     //wheel diamtere 3.25
     //wheel circumference 10.21
@@ -75,10 +72,40 @@ void PDLoop(double setpoint, double turningSetPoint = 0){
     prevError = error;
 
     power = error * kP + derivative * kD;
+    
     leftMotor1.spin(forward,power,pct);
     rightMotor1.spin(forward,power,pct);
     wait(20,msec);
   }
-  exitAutonInformation(error, derivative);
 
+  while (fabs(error) >= 1 && isTurning) 
+  {
+    error = setpoint - getSensorValue();
+    
+    derivative = error - prevError;
+    prevError = error;
+
+    power = error * kP + derivative * kD;
+    
+    leftMotor1.spin(forward,power,pct);
+    rightMotor1.spin(reverse,power,pct);
+    wait(20,msec);
+  }
+
+  exitAutonInformation(error, derivative);
+}
+
+//current function for turning the robot, converts the degrees given to inches required and sends it to the PDLoop
+void turnRobot(double setDegrees)
+{
+  double trackWidth = 16; //guess for now
+  double requiredDistance, rotationDegree;
+
+  //this calculates how many inches is required to be moved each degree, can be simplified to the straight value when the trackWidth is known
+  rotationDegree = trackWidth * 3.14159 / 360;
+
+  //this converts the degrees given into an amount of rotations that can be used for the PDLoop
+  requiredDistance = rotationDegree * setDegrees / 2 / 0.02836;
+  
+  PDLoop(requiredDistance, true);
 }

@@ -13,7 +13,7 @@
 /*    Description:  Competition Template                                      */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-//my comment
+
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
@@ -62,7 +62,8 @@ void pre_auton(void)
 
 void autonomous(void) 
 {
-  double setpoint = 1410;
+  turnRobot(180);
+  double setpoint = 1376;
   PDLoop(setpoint);
 }
 
@@ -79,6 +80,7 @@ void autonomous(void)
 
 void usercontrol(void) 
 {
+  //basic drive, will never exit
   while (1) 
   {
     leftMotor1.spin(fwd, Controller1.Axis3.value(), pct);
