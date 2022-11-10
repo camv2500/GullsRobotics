@@ -32,7 +32,10 @@ void autonPage();
 void debugPage();
 void __buttonMechanics();
 void __printXYZ(int, int, int);
-void __leftButtons();
+void __leftButtons1(int);
+void __leftButtons2(int);
+void __leftButtons3(int);
+void __leftButtons4(int);
 void __drawBottomStatusBar();
 void __updateBottomStatusBar();
 void __infoBlock();
@@ -64,7 +67,10 @@ void menuScreen(){
     Brain.Screen.setPenWidth(2);
     Brain.Screen.clearScreen("#000000");
     //initialize the left buttons
-    __leftButtons();
+    __leftButtons1(0);
+    __leftButtons2(0);
+    __leftButtons3(0);
+    __leftButtons4(0);
     //initialize the info block that sits to the left of the buttons
     __infoBlock();
     // draw the status bar
@@ -174,18 +180,26 @@ void __buttonMechanics(){
 
       //Condition if competition button is pressed to call competition mode.
       if(((x>=buttonX && x<=(buttonX+buttonWidth)) && (y>=buttonCompetitionY && y<= (buttonCompetitionY+buttonHeight)))){
+        __leftButtons1(1);
+        wait(1, sec);
         competitionScreen();
       }
       //Condition if auton button is pressed to call competition mode.
       else if(((x>=buttonX && x<=buttonWidth) && (y>=buttonAutonY && y<= (buttonAutonY+buttonHeight)))){
+        __leftButtons2(1);
+        wait(1, sec);
         autonPage();
       }
       //Condition if driver button is pressed to call competition mode.
       else if(((x>=buttonX && x<=buttonWidth)&&(y>=buttonDriverY && y<= (buttonDriverY+buttonHeight)))){
+        __leftButtons3(1);
+        wait(1, sec);
         driverPage();
       }
       //Condition if debug button is pressed to call debug mode.
       else if(((x>=buttonX && x<=buttonWidth) && (y>=buttonDebugY && y<= (buttonDebugY+buttonHeight)))){
+        __leftButtons4(1);
+        wait(1, sec);
         debugPage();
       }
     }
@@ -195,18 +209,22 @@ void __buttonMechanics(){
       //condition if the selector is at the first button
       if(locator==COMPETITION){
         competitionScreen();
+        __leftButtons1(1);
       }
       //condition if the selector is at the second button
       else if(locator==AUTONPAGE){
         autonPage();
+        __leftButtons2(1);
       }
       //condition if the selector is at the third button
       else if(locator==DRIVERPAGE){
         driverPage();
+        __leftButtons3(1);
       }
       //condition if the selector is at the fourth button
       else if(locator==DEBUGPAGE){
         debugPage();
+        __leftButtons4(1);
       }
     }
     // condition to move button down 1 or set to 0 if it reaches 3
@@ -258,34 +276,119 @@ void __infoBlock(){
     Brain.Screen.print("");
 }
 //Function to create the 4 buttons as well as the box for the menu
-void __leftButtons(){
-    Brain.Screen.setFont(monoM);
-    Brain.Screen.setFillColor("#808080");
-    //Sets color for the background of the buttons
-    Brain.Screen.setPenColor("#808080");
-    //Draws Box 1 for "Competition":
-    Brain.Screen.drawRectangle(buttonX, buttonCompetitionY, buttonWidth, buttonHeight, "#808080");
-    //Draws Box 2 for "Auton":
-    Brain.Screen.drawRectangle(buttonX, buttonAutonY, buttonWidth, buttonHeight, "#808080");
-    //Draws Box 3 for "Driver":
-    Brain.Screen.drawRectangle(buttonX, buttonDriverY, buttonWidth, buttonHeight, "#808080");
-    //Draws Box 4 for "Debug":
-    Brain.Screen.drawRectangle(buttonX, buttonDebugY, buttonWidth, buttonHeight, "#808080");
+void __leftButtons1(int value){
+    if(value == 0){
+        Brain.Screen.setFont(monoM);
+        Brain.Screen.setFillColor("#808080");
+        //Sets color for the background of the buttons
+        Brain.Screen.setPenColor("#808080");
+        //Draws Box 1 for "Competition":
+        Brain.Screen.drawRectangle(buttonX, buttonCompetitionY, buttonWidth, buttonHeight, "#808080");
 
-    //Pen color for the letters
-    Brain.Screen.setPenColor(black);
-    //Button 1: 
-    Brain.Screen.setCursor(3, 2);
-    Brain.Screen.print("Competition");
-    //Button 2:
-    Brain.Screen.setCursor(5, 2);
-    Brain.Screen.print("Auton");
-    //Button 3:
-    Brain.Screen.setCursor(7, 2);
-    Brain.Screen.print("Driver");
-    //Button 4:
-    Brain.Screen.setCursor(9, 2);
-    Brain.Screen.print("Debug");
+        //Pen color for the letters
+        Brain.Screen.setPenColor(black);
+        //Button 1: 
+        Brain.Screen.setCursor(3, 2);
+        Brain.Screen.print("Competition");
+    }
+    else{
+        Brain.Screen.setFont(monoM);
+        Brain.Screen.setFillColor("#d3d3d3 ");
+        //Sets color for the background of the buttons
+        Brain.Screen.setPenColor("#d3d3d3 ");
+        //Draws Box 1 for "Competition":
+        Brain.Screen.drawRectangle(buttonX, buttonCompetitionY, buttonWidth, buttonHeight, "#d3d3d3");
+
+        //Pen color for the letters
+        Brain.Screen.setPenColor(black);
+        //Button 1: 
+        Brain.Screen.setCursor(3, 2);
+        Brain.Screen.print("Competition");
+    }
+}
+void __leftButtons2(int value){
+    if(value == 0){
+        Brain.Screen.setFont(monoM);
+        Brain.Screen.setFillColor("#808080");
+        //Sets color for the background of the buttons
+        Brain.Screen.setPenColor("#808080");
+        //Draws Box 2 for "Auton":
+        Brain.Screen.drawRectangle(buttonX, buttonAutonY, buttonWidth, buttonHeight, "#808080");
+        //Pen color for the letters
+        Brain.Screen.setPenColor(black);
+        //Button 2:
+        Brain.Screen.setCursor(5, 2);
+        Brain.Screen.print("Auton");
+    }
+    else{
+        Brain.Screen.setFont(monoM);
+        Brain.Screen.setFillColor("#d3d3d3");
+        //Sets color for the background of the buttons
+        Brain.Screen.setPenColor("#d3d3d3");
+        //Draws Box 2 for "Auton":
+        Brain.Screen.drawRectangle(buttonX, buttonAutonY, buttonWidth, buttonHeight, "#d3d3d3");
+        //Pen color for the letters
+        Brain.Screen.setPenColor(black);
+        //Button 2:
+        Brain.Screen.setCursor(5, 2);
+        Brain.Screen.print("Auton");
+    }
+}
+void __leftButtons3(int value){
+    if(value == 0){
+        Brain.Screen.setFont(monoM);
+        Brain.Screen.setFillColor("#808080");
+        //Sets color for the background of the buttons
+        Brain.Screen.setPenColor("#808080");
+        //Draws Box 3 for "Driver":
+        Brain.Screen.drawRectangle(buttonX, buttonDriverY, buttonWidth, buttonHeight, "#808080");
+        //Pen color for the letters
+        Brain.Screen.setPenColor(black);
+        //Button 3:
+        Brain.Screen.setCursor(7, 2);
+        Brain.Screen.print("Driver");
+    }
+    else{
+        Brain.Screen.setFont(monoM);
+        Brain.Screen.setFillColor("#d3d3d3");
+        //Sets color for the background of the buttons
+        Brain.Screen.setPenColor("#d3d3d3");
+        //Draws Box 3 for "Driver":
+        Brain.Screen.drawRectangle(buttonX, buttonDriverY, buttonWidth, buttonHeight, "#d3d3d3");
+        //Pen color for the letters
+        Brain.Screen.setPenColor(black);
+        //Button 3:
+        Brain.Screen.setCursor(7, 2);
+        Brain.Screen.print("Driver");
+    }
+}
+void __leftButtons4(int value){
+    if(value == 0){
+        Brain.Screen.setFont(monoM);
+        Brain.Screen.setFillColor("#808080");
+        //Sets color for the background of the buttons
+        Brain.Screen.setPenColor("#808080");
+        //Draws Box 4 for "Debug":
+        Brain.Screen.drawRectangle(buttonX, buttonDebugY, buttonWidth, buttonHeight, "#808080");
+        //Pen color for the letters
+        Brain.Screen.setPenColor(black);
+        //Button 4:
+        Brain.Screen.setCursor(9, 2);
+        Brain.Screen.print("Debug");
+    }
+    else{
+        Brain.Screen.setFont(monoM);
+        Brain.Screen.setFillColor("#d3d3d3");
+        //Sets color for the background of the buttons
+        Brain.Screen.setPenColor("#d3d3d3");
+        //Draws Box 4 for "Debug":
+        Brain.Screen.drawRectangle(buttonX, buttonDebugY, buttonWidth, buttonHeight, "#d3d3d3");
+        //Pen color for the letters
+        Brain.Screen.setPenColor(black);
+        //Button 4:
+        Brain.Screen.setCursor(9, 2);
+        Brain.Screen.print("Debug");
+    }
 }
 /* this function prints the continue button in 2 different states
   First state is the normal button print
