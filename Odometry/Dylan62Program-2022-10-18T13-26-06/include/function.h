@@ -98,11 +98,11 @@ void PDLoop(double setpoint, bool isTurning = false){
 //current function for turning the robot, converts the degrees given to inches required and sends it to the PDLoop
 void turnRobot(double setDegrees)
 {
-  double trackWidth = 16; //guess for now
+  double trackWidth = 6; //guess for now
   double requiredDistance, rotationDegree;
 
   //this calculates how many inches is required to be moved each degree, can be simplified to the straight value when the trackWidth is known
-  rotationDegree = trackWidth * 3.14159 / 360;
+  rotationDegree = trackWidth * 3.14 / 360;
 
   //this converts the degrees given into an amount of rotations that can be used for the PDLoop
   requiredDistance = rotationDegree * setDegrees / 2 / 0.02836;

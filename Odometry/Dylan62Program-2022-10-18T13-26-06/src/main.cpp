@@ -1,6 +1,20 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
+// leftMotor1           motor         11              
+// rightMotor1          motor         12              
+// Controller1          controller                    
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// leftMotor1           motor         11              
+// rightMotor1          motor         10              
+// Controller1          controller                    
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
 // leftMotor1           motor         1               
 // rightMotor1          motor         10              
 // Controller1          controller                    
@@ -62,9 +76,11 @@ void pre_auton(void)
 
 void autonomous(void) 
 {
-  turnRobot(180);
-  double setpoint = 1376;
-  PDLoop(setpoint);
+  turnRobot(90);
+  wait(50, msec);
+  turnRobot(270);
+  //double setpoint = 1376;
+  //PDLoop(setpoint);
 }
 
 
