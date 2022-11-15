@@ -59,7 +59,8 @@ competition Competition;
 void pre_auton(void) 
 {
   vexcodeInit();
-
+  leftMotor1.setPosition(0,degrees);
+  rightMotor1.setPosition(0,degrees);
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
 }
