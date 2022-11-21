@@ -1,6 +1,20 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
+// leftMotor1           motor         13              
+// rightMotor1          motor         14              
+// Controller1          controller                    
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// leftMotor1           motor         13              
+// rightMotor1          motor         12              
+// Controller1          controller                    
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
 // leftMotor1           motor         11              
 // rightMotor1          motor         12              
 // Controller1          controller                    
@@ -77,11 +91,9 @@ void pre_auton(void)
 
 void autonomous(void) 
 {
-  turnRobot(90);
-  wait(50, msec);
-  turnRobot(270);
-  //double setpoint = 1376;
-  //PDLoop(setpoint);
+  //this function is just tests at this point
+  //every 30 degrees equates to roughly 1 inch traveled
+  PDLoop(1440);
 }
 
 
