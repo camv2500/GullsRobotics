@@ -16,6 +16,7 @@
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
+#include "motion.h"
 
 using namespace vex;
 
@@ -53,9 +54,23 @@ void pre_auton(void) {
 /*---------------------------------------------------------------------------*/
 
 void autonomous(void) {
-  // ..........................................................................
-  // Insert autonomous user code here.
-  // ..........................................................................
+  //this function is just tests at this point
+  //every 30 degrees equates to roughly 1 inch traveled
+  //PDLoop(360);
+  double circumferenceOfWheel = 3.5 * M_PI;
+  double outputRat = 3.0/5.0;
+  //In inches
+  double distance = 10;
+  double convDistance = (distance/circumferenceOfWheel)*outputRat;
+  /*
+  leftMotor1.startRotateFor(convDistance, vex::rotationUnits::rev, 100, vex::velocityUnits::pct);
+  rightMotor1.rotateFor(convDistance, vex::rotationUnits::rev, 100, vex::velocityUnits::pct);
+  leftMotor1.stop(brakeType::brake);
+  rightMotor1.stop(brakeType::brake);
+  */
+  Brain.Screen.print(convDistance);
+  PDLoop(10);
+  Brain.Screen.print("isExited");
 }
 
 /*---------------------------------------------------------------------------*/
