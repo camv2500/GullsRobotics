@@ -5,6 +5,13 @@
 // rightMotor1          motor         14              
 // Controller1          controller                    
 // ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// leftMotor1           motor         13              
+// rightMotor1          motor         14              
+// Controller1          controller                    
+// ---- END VEXCODE CONFIGURED DEVICES ----
 
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
@@ -17,6 +24,7 @@
 
 #include "vex.h"
 #include "function.h"
+#include <cmath>
 
 using namespace vex;
 
@@ -58,7 +66,25 @@ void autonomous(void)
 {
   //this function is just tests at this point
   //every 30 degrees equates to roughly 1 inch traveled
-  PDLoop(1440);
+  //PDLoop(360);
+  double circumferenceOfWheel = 3.5 * M_PI;
+  double outputRat = 3.0/5.0;
+  //In inches
+  double distance = 10;
+  double convDistance = (distance/circumferenceOfWheel)*outputRat;
+  Brain.Screen.print("  ");
+  Brain.Screen.print(convDistance);
+  /*
+  leftMotor1.startRotateFor(convDistance, vex::rotationUnits::rev, 100, vex::velocityUnits::pct);
+  rightMotor1.rotateFor(convDistance, vex::rotationUnits::rev, 100, vex::velocityUnits::pct);
+  leftMotor1.stop(brakeType::brake);
+  rightMotor1.stop(brakeType::brake);
+  */
+
+  Brain.Screen.print("  ");
+  PDLoop(convDistance*360);
+  Brain.Screen.print("  ");
+  Brain.Screen.print(convDistance*360);
 }
 
 
@@ -78,8 +104,8 @@ void usercontrol(void)
   while (1) 
   {
     leftMotor1.spin(fwd, Controller1.Axis3.value(), pct);
-    rightMotor1.spin(fwd, Controller1.Axis2.value(), pct);
-    wait(20, msec);
+    rightMotor1.spin(fwd, Controller1.Axis3.value(), pct);
+    //wait(20, msec);
   }
 }
 

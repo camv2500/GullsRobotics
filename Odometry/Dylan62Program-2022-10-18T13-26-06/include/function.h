@@ -60,7 +60,7 @@ void PDLoop(double setpoint, bool isTurning = false){
   rightMotor1.setPosition(0,degrees);
 
   //the loop that calculates how much further to go and then gives the motors an appropriate amount of power
-  while (fabs(error) >= 1.5 && !isTurning)
+  while (fabs(error) >= 1.0 && !isTurning)
   {
     //wheel diameter 3.25, circumference 10.21017612416682802499 or 3.25 * pi
     //0.02836160034490785562 per degree
@@ -82,7 +82,7 @@ void PDLoop(double setpoint, bool isTurning = false){
   }
 
   //the only difference in this loop is if it is turning, one of the motors is in reverse instead
-  while (fabs(error) >= 1 && isTurning) 
+  while (fabs(error) >= 1.0 && isTurning) 
   {
     error = setpoint - getSensorValue();
     
@@ -96,9 +96,10 @@ void PDLoop(double setpoint, bool isTurning = false){
     wait(20,msec);
   }
 
-  //in case the motors still have a small amout of power after exiting the auton loop,
+  //in case the motors still have a small amount of power after exiting the auton loop,
   //these loops will slowly power the motors down before exiting at 0 power, in the way needed for turning on not
-  if (fabs(power) > 0 && !isTurning) {
+  
+  if (fabs(power) > 0) {
     power = power / 2;
     leftMotor1.spin(forward,power,pct);
     rightMotor1.spin(forward,power,pct);
@@ -107,16 +108,7 @@ void PDLoop(double setpoint, bool isTurning = false){
     leftMotor1.spin(forward,power,pct);
     rightMotor1.spin(forward,power,pct);
   }
-  if (fabs(power) > 0 && isTurning) {
-    power = power / 2;
-    leftMotor1.spin(forward,power,pct);
-    rightMotor1.spin(reverse,power,pct);
-    wait(30,msec);
-    power = 0;
-    leftMotor1.spin(forward,power,pct);
-    rightMotor1.spin(reverse,power,pct);
-  }
-
+  
   exitAutonInformation(error, derivative);
 }
 
