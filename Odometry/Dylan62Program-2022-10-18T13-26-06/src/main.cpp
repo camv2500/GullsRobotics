@@ -5,34 +5,7 @@
 // rightMotor1          motor         14              
 // Controller1          controller                    
 // ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// leftMotor1           motor         13              
-// rightMotor1          motor         12              
-// Controller1          controller                    
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// leftMotor1           motor         11              
-// rightMotor1          motor         12              
-// Controller1          controller                    
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// leftMotor1           motor         11              
-// rightMotor1          motor         10              
-// Controller1          controller                    
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// leftMotor1           motor         1               
-// rightMotor1          motor         10              
-// Controller1          controller                    
-// ---- END VEXCODE CONFIGURED DEVICES ----
+
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
@@ -41,14 +14,6 @@
 /*    Description:  Competition Template                                      */
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
-
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// leftMotor1           motor         1               
-// rightMotor1          motor         10              
-// Controller1          controller                    
-// ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
 #include "function.h"

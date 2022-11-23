@@ -21,7 +21,7 @@ void exitAutonInformation(double error, double derivative){
     Brain.Screen.print("Leaving Auton");
 }
 
-//returns the average of all the motos sensor values
+//returns the average of all the motors sensor values
 double getSensorValue(){
   double sensorValueLeft,sensorValueRight,sensorValueTotal;
   sensorValueLeft = leftMotor1.position(degrees);
@@ -43,8 +43,6 @@ double getSensorValueRight() {
 //the pd loop for the robot, when given a specific distance the robot will travel that amount of distance. The setpoint is in
 //degrees of the wheel. if the robot overshoots, it will return backwards slightly. already mostly tuned but will need to be refined to the final robot
 void PDLoop(double setpoint, bool isTurning = false){
-  
-  //sensorValueTotal : average of left and right motor encoders
   //setpoint : the amount of rotations that we aim to move in degrees
   //derivative : holds the current amount of the derivative
   //prevError : holds the pervious error for calculation in the next cycle
@@ -64,16 +62,20 @@ void PDLoop(double setpoint, bool isTurning = false){
   //the loop that calculates how much further to go and then gives the motors an appropriate amount of power
   while (fabs(error) >= 1.5 && !isTurning)
   {
-    //wheel diamtere 3.25, circumference 10.21017612416682802499 or 3.25 * pi
+    //wheel diameter 3.25, circumference 10.21017612416682802499 or 3.25 * pi
     //0.02836160034490785562 per degree
 
+    //calculate the error by subtracting how far the robot has moved from how far it needs to go
     error = setpoint - getSensorValue();
     
+    //calculate the derivative by subtrating our last error from our new current error
     derivative = error - prevError;
     prevError = error;
 
+    //set the amount of power for the robot
     power = error * kP + derivative * kD;
     
+    //spin the wheels based off the power we calculated
     leftMotor1.spin(forward,power,pct);
     rightMotor1.spin(forward,power,pct);
     wait(20,msec);
@@ -104,7 +106,6 @@ void PDLoop(double setpoint, bool isTurning = false){
     power = 0;
     leftMotor1.spin(forward,power,pct);
     rightMotor1.spin(forward,power,pct);
-    wait(30,msec);
   }
   if (fabs(power) > 0 && isTurning) {
     power = power / 2;
@@ -114,7 +115,6 @@ void PDLoop(double setpoint, bool isTurning = false){
     power = 0;
     leftMotor1.spin(forward,power,pct);
     rightMotor1.spin(reverse,power,pct);
-    wait(30,msec);
   }
 
   exitAutonInformation(error, derivative);
@@ -125,13 +125,13 @@ void turnRobot(double setDegrees)
 {
   double requiredDistance, rotationDegree;
 
-  //this calculates how many inches is required to be moved each degree, can be simplified to the straight value when the trackWidth is known
-  //track width * pi / total degrees in one rotation
+  //this calculates how many inches is required to be moved each degree
+  //track width * pi / total degrees in one rotation = 0.0575958653
   rotationDegree = 6.6 * 3.14159265358979323846 / 360;
 
   //this converts the degrees given into an amount of rotations that can be used for the PDLoop
+  //rotation degree above * how many degrees we wish to move / 2? / inches per degree = amount of degrees to move the robot
   requiredDistance = rotationDegree * setDegrees / 2 / 0.02836160034490785562;
   
-  //it seems to work about 80%, for example if you want to rotate 360 degrees, it goes about 305 degrees. Still working it out
   PDLoop(requiredDistance, true);
 }
