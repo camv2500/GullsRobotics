@@ -8,6 +8,11 @@
 /*----------------------------------------------------------------------------*/
 
 // ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// LeftMotor1           motor         13              
+// RightMotor1          motor         14              
+// Controller1          controller                    
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
@@ -66,17 +71,9 @@ void autonomous(void) {
 void usercontrol(void) {
   // User control code here, inside the loop
   while (1) {
-    // This is the main execution loop for the user control program.
-    // Each time through the loop your program should update motor + servo
-    // values based on feedback from the joysticks.
-
-    // ........................................................................
-    // Insert user code here. This is where you use the joystick values to
-    // update your motors, etc.
-    // ........................................................................
-
-    wait(20, msec); // Sleep the task for a short amount of time to
-                    // prevent wasted resources.
+    LeftMotor1.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
+    RightMotor1.spin(fwd, Controller1.Axis3.position(percent), vex::velocityUnits::pct);
+    wait(20, msec);
   }
 }
 
