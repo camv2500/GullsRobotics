@@ -1,18 +1,3 @@
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// leftMotor1           motor         13              
-// rightMotor1          motor         14              
-// Controller1          controller                    
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// leftMotor1           motor         13              
-// rightMotor1          motor         14              
-// Controller1          controller                    
-// ---- END VEXCODE CONFIGURED DEVICES ----
-
 /*----------------------------------------------------------------------------*/
 /*                                                                            */
 /*    Module:       main.cpp                                                  */
@@ -22,9 +7,10 @@
 /*                                                                            */
 /*----------------------------------------------------------------------------*/
 
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// ---- END VEXCODE CONFIGURED DEVICES ----
+
 #include "vex.h"
-#include "function.h"
-#include <cmath>
 
 using namespace vex;
 
@@ -43,11 +29,10 @@ competition Competition;
 /*  not every time that the robot is disabled.                               */
 /*---------------------------------------------------------------------------*/
 
-void pre_auton(void) 
-{
+void pre_auton(void) {
+  // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
-  leftMotor1.setPosition(0,degrees);
-  rightMotor1.setPosition(0,degrees);
+
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
 }
@@ -62,26 +47,11 @@ void pre_auton(void)
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
-void autonomous(void) 
-{
-  //this function is just tests at this point
-  //every 30 degrees equates to roughly 1 inch traveled
-  //PDLoop(360);
-  double circumferenceOfWheel = 3.5 * M_PI;
-  double outputRat = 3.0/5.0;
-  //In inches
-  double distance = 10;
-  double convDistance = (distance/circumferenceOfWheel)*outputRat;
-  /*
-  leftMotor1.startRotateFor(convDistance, vex::rotationUnits::rev, 100, vex::velocityUnits::pct);
-  rightMotor1.rotateFor(convDistance, vex::rotationUnits::rev, 100, vex::velocityUnits::pct);
-  leftMotor1.stop(brakeType::brake);
-  rightMotor1.stop(brakeType::brake);
-  */
-  
-  PDLoop(convDistance*360);
+void autonomous(void) {
+  // ..........................................................................
+  // Insert autonomous user code here.
+  // ..........................................................................
 }
-
 
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
@@ -93,14 +63,20 @@ void autonomous(void)
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
-void usercontrol(void) 
-{
-  //basic drive, will never exit
-  while (1) 
-  {
-    leftMotor1.spin(fwd, Controller1.Axis3.value(), pct);
-    rightMotor1.spin(fwd, Controller1.Axis3.value(), pct);
-    //wait(20, msec);
+void usercontrol(void) {
+  // User control code here, inside the loop
+  while (1) {
+    // This is the main execution loop for the user control program.
+    // Each time through the loop your program should update motor + servo
+    // values based on feedback from the joysticks.
+
+    // ........................................................................
+    // Insert user code here. This is where you use the joystick values to
+    // update your motors, etc.
+    // ........................................................................
+
+    wait(20, msec); // Sleep the task for a short amount of time to
+                    // prevent wasted resources.
   }
 }
 
