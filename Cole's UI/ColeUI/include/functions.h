@@ -13,8 +13,10 @@ void __leftButtons1(int);
 void __leftButtons2(int);
 void __leftButtons3(int);
 void __leftButtons4(int);
+void __buttonCursor(int);
 void __bottomStatusBar();
 void __updateBottomStatusBar();
 void __infoBlock();
 void __continueButton();
+void __compButtons(int, vex::color);
 #endif
