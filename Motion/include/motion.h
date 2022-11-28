@@ -6,7 +6,7 @@ void PDLoop(double setPoint) {
   double kP = 0.8, kI = 0, kD = 0, prevError = 0, integral = 0, derivative = 0, power = 0;
   double sensorValue = 0;
 
-  while (fabs(error) > 1) {
+  while (fabs(error) > 0.01) {
     sensorValue = (LeftMotor1.position(rev) + RightMotor1.position(rev)) / 2;
     error = setPoint - sensorValue;
     integral = integral + error;
