@@ -16,7 +16,7 @@ const int buttonDriverY = 118;
 const int buttonDebugY = 158;
 const int buttonWidth = 150;
 const int buttonHeight = 27;
- 
+
 //constant values for the odometry 
 const int value1 = 6;
 const int value2 = 0;
@@ -36,10 +36,12 @@ void __leftButtons1(int);
 void __leftButtons2(int);
 void __leftButtons3(int);
 void __leftButtons4(int);
+void __buttonCursor(int);
 void __drawBottomStatusBar();
 void __updateBottomStatusBar();
 void __infoBlock();
 void __continueButton(int);
+void __compButtons(int, color);
 
 /*
   This function prints the landing page for the UI.
@@ -108,14 +110,19 @@ void competitionScreen(){
   Brain.Screen.print("Welcome to the competition page!");
   Brain.Screen.setCursor(3, 4);
   Brain.Screen.print("Please choose a team and an auton below:");
+  __compButtons(1, red);
+  __compButtons(2, red);
+  __compButtons(3, red);
+  __compButtons(1, blue);
+  __compButtons(2, blue);
+  __compButtons(3, blue);
   Brain.Screen.setPenColor(red);
   Brain.Screen.setPenWidth(4);
   Brain.Screen.setCursor(7, 3);
   Brain.Screen.setFont(propM);
+  Brain.Screen.setFillColor("#808080");
   Brain.Screen.print("RED TEAM");
-  Brain.Screen.drawRectangle(120, 100, 320, 48, black);
   Brain.Screen.setPenColor(blue);
-  Brain.Screen.drawRectangle(120, 175, 320, 48, black);
   Brain.Screen.setCursor(10, 2);
   Brain.Screen.print("BLUE TEAM");
 }
@@ -154,8 +161,9 @@ void __buttonMechanics(){
     //if a button is selected, the rest of the button mechanics are called
     if(select.pressing()==1){
       selected = true;
-      menuScreen();
+      __continueButton(1);
       wait(1, sec);
+      menuScreen();
     }
     else if(Brain.Screen.pressing()==1){
       int x = Brain.Screen.xPosition();
@@ -204,53 +212,65 @@ void __buttonMechanics(){
       }
     }
     // condition if select is pressed
-    // checking each condition of the selector
     else if(select.pressing()==1){
       //condition if the selector is at the first button
       if(locator==COMPETITION){
-        competitionScreen();
         __leftButtons1(1);
+        wait(1, sec);
+        competitionScreen();
       }
       //condition if the selector is at the second button
       else if(locator==AUTONPAGE){
-        autonPage();
         __leftButtons2(1);
+        autonPage();
       }
       //condition if the selector is at the third button
       else if(locator==DRIVERPAGE){
-        driverPage();
         __leftButtons3(1);
+        driverPage();
       }
       //condition if the selector is at the fourth button
       else if(locator==DEBUGPAGE){
-        debugPage();
         __leftButtons4(1);
+        debugPage();
       }
+      select.pressed(0);
     }
     // condition to move button down 1 or set to 0 if it reaches 3
     else if(DOWN.pressing()==1){
+      menuScreen();
+      //__buttonCursor(locator);
       //reset condition
       if(locator==DEBUGPAGE){
         locator=COMPETITION;
+        //__buttonCursor(locator);
       }
       //condition for moving the locator down
-      else
-        locator++;
+      else{
+        ++locator;
+        //__buttonCursor(locator);
+      }
+      DOWN.pressed(0);
     }
     // condition to move button up 1 or set to 3 if it reaches 0
     else if(UP.pressing()==1){
+      menuScreen();
+      //__buttonCursor(locator);
       //reset condition
       if(locator==COMPETITION){
+        //__buttonCursor(locator);
         locator=DEBUGPAGE;
       }
       //condition to move button up
-      else
-        locator--;
+      else{
+        --locator;
+        //__buttonCursor(locator);
+      }
+      UP.pressed(0);
     }
-    wait(5, msec);
+    wait(1, sec);
   }
 }
-
 //This function allows the odom points to be passed through
 void __printXYZ(int x, int y, int z){
     Brain.Screen.setPenWidth(12);
@@ -277,118 +297,142 @@ void __infoBlock(){
 }
 //Function to create the 4 buttons as well as the box for the menu
 void __leftButtons1(int value){
-    if(value == 0){
-        Brain.Screen.setFont(monoM);
-        Brain.Screen.setFillColor("#808080");
-        //Sets color for the background of the buttons
-        Brain.Screen.setPenColor("#808080");
-        //Draws Box 1 for "Competition":
-        Brain.Screen.drawRectangle(buttonX, buttonCompetitionY, buttonWidth, buttonHeight, "#808080");
-
-        //Pen color for the letters
-        Brain.Screen.setPenColor(black);
-        //Button 1: 
-        Brain.Screen.setCursor(3, 2);
-        Brain.Screen.print("Competition");
-    }
-    else{
-        Brain.Screen.setFont(monoM);
-        Brain.Screen.setFillColor("#d3d3d3 ");
-        //Sets color for the background of the buttons
-        Brain.Screen.setPenColor("#d3d3d3 ");
-        //Draws Box 1 for "Competition":
-        Brain.Screen.drawRectangle(buttonX, buttonCompetitionY, buttonWidth, buttonHeight, "#d3d3d3");
-
-        //Pen color for the letters
-        Brain.Screen.setPenColor(black);
-        //Button 1: 
-        Brain.Screen.setCursor(3, 2);
-        Brain.Screen.print("Competition");
-    }
+  if(value == 0){
+      Brain.Screen.setFont(monoM);
+      Brain.Screen.setFillColor("#808080");
+      //Sets color for the background of the buttons
+      Brain.Screen.setPenColor("#808080");
+      //Draws Box 1 for "Competition":
+      Brain.Screen.drawRectangle(buttonX, buttonCompetitionY, buttonWidth, buttonHeight, "#808080");
+      //Pen color for the letters
+      Brain.Screen.setPenColor(black);
+      //Button 1: 
+      Brain.Screen.setCursor(3, 2);
+      Brain.Screen.setFillColor("#808080");
+      Brain.Screen.print("Competition");
+  }
+  else{
+      Brain.Screen.setFont(monoM);
+      Brain.Screen.setFillColor("#D0D0D0");
+      //Sets color for the background of the buttons
+      Brain.Screen.setPenColor("#D0D0D0");
+      //Draws Box 1 for "Competition":
+      Brain.Screen.drawRectangle(buttonX, buttonCompetitionY, buttonWidth-10, buttonHeight-10, "#D0D0D0");
+      //Pen color for the letters
+      //Button 1: 
+      Brain.Screen.setFillColor("#D0D0D0");
+      Brain.Screen.setCursor(3, 2);
+      Brain.Screen.setPenColor(black);
+      Brain.Screen.print("Competition");
+  }
 }
+//function to create the second main left button
 void __leftButtons2(int value){
-    if(value == 0){
-        Brain.Screen.setFont(monoM);
-        Brain.Screen.setFillColor("#808080");
-        //Sets color for the background of the buttons
-        Brain.Screen.setPenColor("#808080");
-        //Draws Box 2 for "Auton":
-        Brain.Screen.drawRectangle(buttonX, buttonAutonY, buttonWidth, buttonHeight, "#808080");
-        //Pen color for the letters
-        Brain.Screen.setPenColor(black);
-        //Button 2:
-        Brain.Screen.setCursor(5, 2);
-        Brain.Screen.print("Auton");
+  if(value == 0){
+      Brain.Screen.setFont(monoM);
+      Brain.Screen.setFillColor("#808080");
+      //Sets color for the background of the buttons
+      Brain.Screen.setPenColor("#808080");
+      //Draws Box 2 for "Auton":
+      Brain.Screen.drawRectangle(buttonX, buttonAutonY, buttonWidth, buttonHeight, "#808080");
+      //Pen color for the letters
+      Brain.Screen.setPenColor(black);
+      //Button 2:
+      Brain.Screen.setCursor(5, 2);
+      Brain.Screen.print("Auton");
     }
-    else{
-        Brain.Screen.setFont(monoM);
-        Brain.Screen.setFillColor("#d3d3d3");
-        //Sets color for the background of the buttons
-        Brain.Screen.setPenColor("#d3d3d3");
-        //Draws Box 2 for "Auton":
-        Brain.Screen.drawRectangle(buttonX, buttonAutonY, buttonWidth, buttonHeight, "#d3d3d3");
-        //Pen color for the letters
-        Brain.Screen.setPenColor(black);
-        //Button 2:
-        Brain.Screen.setCursor(5, 2);
-        Brain.Screen.print("Auton");
-    }
+  else{
+      Brain.Screen.setFont(monoM);
+      Brain.Screen.setFillColor("#D0D0D0");
+      //Sets color for the background of the buttons
+      Brain.Screen.setPenColor("#D0D0D0");
+      //Draws Box 2 for "Auton":
+      Brain.Screen.drawRectangle(buttonX, buttonAutonY, buttonWidth-10, buttonHeight-10, "#D0D0D0");
+      //Pen color for the letters
+      Brain.Screen.setPenColor(black);
+      //Button 2:
+      Brain.Screen.setCursor(5, 2);
+      Brain.Screen.print("Auton");
+  }
 }
+// function to create the 3rd main button 
 void __leftButtons3(int value){
-    if(value == 0){
-        Brain.Screen.setFont(monoM);
-        Brain.Screen.setFillColor("#808080");
-        //Sets color for the background of the buttons
-        Brain.Screen.setPenColor("#808080");
-        //Draws Box 3 for "Driver":
-        Brain.Screen.drawRectangle(buttonX, buttonDriverY, buttonWidth, buttonHeight, "#808080");
-        //Pen color for the letters
-        Brain.Screen.setPenColor(black);
-        //Button 3:
-        Brain.Screen.setCursor(7, 2);
-        Brain.Screen.print("Driver");
-    }
-    else{
-        Brain.Screen.setFont(monoM);
-        Brain.Screen.setFillColor("#d3d3d3");
-        //Sets color for the background of the buttons
-        Brain.Screen.setPenColor("#d3d3d3");
-        //Draws Box 3 for "Driver":
-        Brain.Screen.drawRectangle(buttonX, buttonDriverY, buttonWidth, buttonHeight, "#d3d3d3");
-        //Pen color for the letters
-        Brain.Screen.setPenColor(black);
-        //Button 3:
-        Brain.Screen.setCursor(7, 2);
-        Brain.Screen.print("Driver");
-    }
+  if(value == 0){
+    Brain.Screen.setFont(monoM);
+    Brain.Screen.setFillColor("#808080");
+    //Sets color for the background of the buttons
+    Brain.Screen.setPenColor("#808080");
+    //Draws Box 3 for "Driver":
+    Brain.Screen.drawRectangle(buttonX, buttonDriverY, buttonWidth, buttonHeight, "#808080");
+    //Pen color for the letters
+    Brain.Screen.setPenColor(black);
+    //Button 3:
+    Brain.Screen.setCursor(7, 2);
+    Brain.Screen.print("Driver");
+  }
+  else{
+    Brain.Screen.setFont(monoM);
+    Brain.Screen.setFillColor("#D0D0D0");
+    //Sets color for the background of the buttons
+    Brain.Screen.setPenColor("#D0D0D0");
+    //Draws Box 3 for "Driver":
+    Brain.Screen.drawRectangle(buttonX, buttonDriverY, buttonWidth-10, buttonHeight-10, "#D0D0D0");
+    //Pen color for the letters
+    Brain.Screen.setPenColor(black);
+    //Button 3:
+    Brain.Screen.setCursor(7, 2);
+    Brain.Screen.print("Driver");
+  }
 }
+//function to create the 4th main button
 void __leftButtons4(int value){
-    if(value == 0){
-        Brain.Screen.setFont(monoM);
-        Brain.Screen.setFillColor("#808080");
-        //Sets color for the background of the buttons
-        Brain.Screen.setPenColor("#808080");
-        //Draws Box 4 for "Debug":
-        Brain.Screen.drawRectangle(buttonX, buttonDebugY, buttonWidth, buttonHeight, "#808080");
-        //Pen color for the letters
-        Brain.Screen.setPenColor(black);
-        //Button 4:
-        Brain.Screen.setCursor(9, 2);
-        Brain.Screen.print("Debug");
-    }
-    else{
-        Brain.Screen.setFont(monoM);
-        Brain.Screen.setFillColor("#d3d3d3");
-        //Sets color for the background of the buttons
-        Brain.Screen.setPenColor("#d3d3d3");
-        //Draws Box 4 for "Debug":
-        Brain.Screen.drawRectangle(buttonX, buttonDebugY, buttonWidth, buttonHeight, "#d3d3d3");
-        //Pen color for the letters
-        Brain.Screen.setPenColor(black);
-        //Button 4:
-        Brain.Screen.setCursor(9, 2);
-        Brain.Screen.print("Debug");
-    }
+  if(value == 0){
+      Brain.Screen.setFont(monoM);
+      Brain.Screen.setFillColor("#808080");
+      //Sets color for the background of the buttons
+      Brain.Screen.setPenColor("#808080");
+      //Draws Box 4 for "Debug":
+      Brain.Screen.drawRectangle(buttonX, buttonDebugY, buttonWidth, buttonHeight, "#808080");
+      //Pen color for the letters
+      Brain.Screen.setPenColor(black);
+      //Button 4:
+      Brain.Screen.setCursor(9, 2);
+      Brain.Screen.print("Debug");
+  }
+  else{
+      Brain.Screen.setFont(monoM);
+      Brain.Screen.setFillColor("#D0D0D0");
+      //Sets color for the background of the buttons
+      Brain.Screen.setPenColor("#D0D0D0");
+      //Draws Box 4 for "Debug":
+      Brain.Screen.drawRectangle(buttonX, buttonDebugY, buttonWidth-10, buttonHeight-10, "#D0D0D0");
+      //Pen color for the letters
+      Brain.Screen.setPenColor(black);
+      //Button 4:
+      Brain.Screen.setCursor(9, 2);
+      Brain.Screen.print("Debug");
+  }
+}
+// function which should take a location as perameter and print the button which is cursored to as a lighter color
+void __buttonCursor(int location){
+  switch(location){
+    case 0: __leftButtons1(1);
+      __leftButtons2(0);
+      __leftButtons3(0);
+      __leftButtons4(0);
+    case 1: __leftButtons2(1);
+      __leftButtons1(0);
+      __leftButtons3(0);
+      __leftButtons4(0);
+    case 2: __leftButtons3(1);
+      __leftButtons2(0);
+      __leftButtons1(0);
+      __leftButtons4(0);
+    case 3: __leftButtons4(1);
+      __leftButtons1(0);
+      __leftButtons2(0);
+      __leftButtons3(0);
+  }
 }
 /* this function prints the continue button in 2 different states
   First state is the normal button print
@@ -473,4 +517,52 @@ void __updateBottomStatusBar(){
     Brain.Screen.print(Brain.Battery.capacity());
     Brain.Screen.print("%%");
 
+}
+/*
+This function prints the buttons on the competition screen
+*/
+void __compButtons(int button, color team){
+  Brain.Screen.setPenWidth(3);
+  if(button==1){
+    if(team==red){
+      Brain.Screen.drawRectangle(120, 102, 100, 48, red);
+      Brain.Screen.setFillColor(red);
+      Brain.Screen.setCursor(7, 14);
+      Brain.Screen.print("Auton 1");
+    }
+    else{
+      Brain.Screen.setFillColor(blue);
+      Brain.Screen.drawRectangle(120, 172, 100, 48, blue);
+      Brain.Screen.setCursor(10, 14);
+      Brain.Screen.print("Auton 1");
+    }
+  }
+  else if(button==2){
+    if(team==red){
+      Brain.Screen.drawRectangle(236, 102, 100, 48, red);
+      Brain.Screen.setFillColor(red);
+      Brain.Screen.setCursor(7, 26);
+      Brain.Screen.print("Auton 2");
+    }
+    else{
+      Brain.Screen.setFillColor(blue);
+      Brain.Screen.drawRectangle(236, 172, 100, 48, blue);
+      Brain.Screen.setCursor(10, 26);
+      Brain.Screen.print("Auton 2");
+    }
+  }
+  else{
+    if(team==red){
+      Brain.Screen.drawRectangle(350, 102, 100, 48, red);
+      Brain.Screen.setFillColor(red);
+      Brain.Screen.setCursor(7, 38);
+      Brain.Screen.print("Skills");
+    }
+    else{
+      Brain.Screen.setFillColor(blue);
+      Brain.Screen.drawRectangle(350, 172, 100, 48, blue);
+      Brain.Screen.setCursor(10, 38);
+      Brain.Screen.print("Skills");
+    }
+  }
 }
