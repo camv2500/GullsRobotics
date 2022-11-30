@@ -10,8 +10,8 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
-// LeftMotor1           motor         13              
-// RightMotor1          motor         14              
+// LeftMotor1           motor         14              
+// RightMotor1          motor         13              
 // Controller1          controller                    
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
@@ -54,13 +54,10 @@ void pre_auton(void) {
 /*---------------------------------------------------------------------------*/
 
 void autonomous(void) {
-  //this function is just tests at this point
-  //every 30 degrees equates to roughly 1 inch traveled
-  //PDLoop(360);
   double circumferenceOfWheel = 3.5 * M_PI;
   double outputRat = 3.0/5.0;
   //In inches
-  double distance = 10;
+  double distance = 12;
   double convDistance = (distance/circumferenceOfWheel)*outputRat;
   /*
   leftMotor1.startRotateFor(convDistance, vex::rotationUnits::rev, 100, vex::velocityUnits::pct);
@@ -69,8 +66,10 @@ void autonomous(void) {
   rightMotor1.stop(brakeType::brake);
   */
   Brain.Screen.print(convDistance);
-  PDLoop(10);
+  PDLoop(convDistance);
   Brain.Screen.print("isExited");
+  LeftMotor1.spin(forward, 0, pct);
+  RightMotor1.spin(forward, 0, pct);
 }
 
 /*---------------------------------------------------------------------------*/
