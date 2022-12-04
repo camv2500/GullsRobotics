@@ -38,7 +38,7 @@ competition Competition;
 void pre_auton(void) {
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
-
+  
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
 }
@@ -59,13 +59,6 @@ void autonomous(void) {
   //In inches
   double distance = 12;
   double convDistance = (distance/circumferenceOfWheel)*outputRat;
-  /*
-  leftMotor1.startRotateFor(convDistance, vex::rotationUnits::rev, 100, vex::velocityUnits::pct);
-  rightMotor1.rotateFor(convDistance, vex::rotationUnits::rev, 100, vex::velocityUnits::pct);
-  leftMotor1.stop(brakeType::brake);
-  rightMotor1.stop(brakeType::brake);
-  */
-  Brain.Screen.print(convDistance);
   PDLoop(convDistance);
   Brain.Screen.print("isExited");
   LeftMotor1.spin(forward, 0, pct);
