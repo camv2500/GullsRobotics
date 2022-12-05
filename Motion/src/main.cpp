@@ -59,7 +59,7 @@ void autonomous(void) {
   //In inches
   double distance = 12;
   double convDistance = (distance/circumferenceOfWheel)*outputRat;
-  PDLoop(convDistance);
+  PIDLoop(convDistance);
   Brain.Screen.print("isExited");
   LeftMotor1.spin(forward, 0, pct);
   RightMotor1.spin(forward, 0, pct);
