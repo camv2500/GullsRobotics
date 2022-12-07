@@ -6,6 +6,8 @@ extern brain Brain;
 extern motor LeftMotor1;
 extern motor RightMotor1;
 extern controller Controller1;
+extern motor FlyWheel1;
+extern motor FlyWheel2;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.

@@ -70,7 +70,7 @@ void autonomous(void)
   double circumferenceOfWheel = 3.5 * M_PI;
   double outputRat = 3.0/5.0;
   //In inches
-  double distance = 10;
+  double distance = 12;
   double convDistance = (distance/circumferenceOfWheel)*outputRat;
   /*
   leftMotor1.startRotateFor(convDistance, vex::rotationUnits::rev, 100, vex::velocityUnits::pct);
@@ -78,8 +78,10 @@ void autonomous(void)
   leftMotor1.stop(brakeType::brake);
   rightMotor1.stop(brakeType::brake);
   */
-  
+  Brain.Screen.print(convDistance * 360);
+  Brain.Screen.newLine();
   PDLoop(convDistance*360);
+  Brain.Screen.print("IsExited");
 }
 
 

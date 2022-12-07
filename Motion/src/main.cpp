@@ -13,6 +13,8 @@
 // LeftMotor1           motor         14              
 // RightMotor1          motor         13              
 // Controller1          controller                    
+// FlyWheel1            motor         11              
+// FlyWheel2            motor         12              
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
@@ -54,15 +56,22 @@ void pre_auton(void) {
 /*---------------------------------------------------------------------------*/
 
 void autonomous(void) {
+  /*
   double circumferenceOfWheel = 3.5 * M_PI;
   double outputRat = 3.0/5.0;
   //In inches
-  double distance = 12;
-  double convDistance = (distance/circumferenceOfWheel)*outputRat;
+  double distance = 24;
+  double convDistance = (distance/circumferenceOfWheel)*outputRat*360.0;
+  //sending number of degrees to the PDLoop
   PIDLoop(convDistance);
+  //turnRobot(90);
   Brain.Screen.print("isExited");
   LeftMotor1.spin(forward, 0, pct);
   RightMotor1.spin(forward, 0, pct);
+  */
+
+  //enter target rpm and it takes like 5-7 seconds to wind up
+  PIDLoop(400, false, true);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -80,6 +89,14 @@ void usercontrol(void) {
   while (1) {
     LeftMotor1.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
     RightMotor1.spin(fwd, Controller1.Axis3.position(percent), vex::velocityUnits::pct);
+    if (Controller1.ButtonUp.pressing()) {
+      FlyWheel1.spin(forward, 100, pct);
+      FlyWheel2.spin(forward, 100, pct);
+    }
+    else {
+      FlyWheel1.spin(forward, 0, pct);
+      FlyWheel2.spin(forward, 0, pct);
+    }
     wait(20, msec);
   }
 }
