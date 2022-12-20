@@ -55,24 +55,71 @@ void pre_auton(void) {
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
+static bool pidRunning = true;
+static bool resetEncoders = false;
+static float pidSetDegrees = 0;
+
+double kP = 0.28, kI = 0.01, kD = 0.25;
+double error = 0, prevError = 0, integral = 0, derivative = 0;
+double power = 0, sensorValue = 0;
+
+int pidController() {
+  while (pidRunning) {
+    if (resetEncoders) {
+      resetEncoders = false;
+      LeftMotor1.setPosition(0, degrees);
+      RightMotor1.setPosition(0, degrees);
+      integral = 0;
+      derivative = 0;
+    }
+
+    sensorValue = (LeftMotor1.position(degrees) + RightMotor1.position(degrees)) / 2;
+    error = pidSetDegrees - sensorValue;
+
+    integral = integral + error;
+    if (fabs(integral) > 500) {integral = 500;}
+
+    derivative = error - prevError;
+    prevError = error;
+
+    power = error * kP + integral * kI + derivative * kD;
+
+    LeftMotor1.spin(forward, power, pct);
+    RightMotor1.spin(forward, power, pct);
+    wait(20, msec);
+  }
+
+  return 1;
+}
+
 void autonomous(void) {
   /*
-  double circumferenceOfWheel = 3.5 * M_PI;
-  double outputRat = 3.0/5.0;
-  //In inches
-  double distance = 24;
-  double convDistance = (distance/circumferenceOfWheel)*outputRat*360.0;
-  //sending number of degrees to the PDLoop
+  sending number of degrees to the PDLoop
   PIDLoop(convDistance);
   //turnRobot(90);
   Brain.Screen.print("isExited");
   LeftMotor1.spin(forward, 0, pct);
   RightMotor1.spin(forward, 0, pct);
   */
+  task StartTask(pidController);
 
-  //enter target rpm and it takes like 5-7 seconds to wind up
-  PIDLoop(400, false, true);
+  double circumferenceOfWheel = 3.5 * M_PI;
+  double outputRat = 3.0/5.0;
+  //In inches
+  double distance = 12;
+  double convDistance = (distance/circumferenceOfWheel)*outputRat*360.0;
+
+  resetEncoders = true;
+  pidSetDegrees = convDistance;
+
+  vex::task::sleep(1000);
+
+  distance = 24;
+  convDistance = (distance/circumferenceOfWheel)*outputRat*360.0;
+  resetEncoders = true;
+  pidSetDegrees = convDistance;
 }
+
 
 /*---------------------------------------------------------------------------*/
 /*                                                                           */
