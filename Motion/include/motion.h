@@ -6,6 +6,7 @@ void PIDLoop(double setPoint, bool isTurning = false, bool usingFlyWheel = false
   double error = setPoint;
   double kP = 0.28, kI = 0.01, kD = 0.25, prevError = 0, integral = 0, derivative = 0, power = 0;
   double sensorValue = 0;
+  bool firstTime = true;
 
   LeftMotor1.setPosition(0, degrees);
   RightMotor1.setPosition(0, degrees);
@@ -41,6 +42,9 @@ void PIDLoop(double setPoint, bool isTurning = false, bool usingFlyWheel = false
     kP = 0.5;
     kI = 0.005;
     kD = 0.5;
+
+    if (firstTime) {power = power + 200;}
+
     //sensorValue = FlyWheel1.position(rev);
     error = setPoint - power;
 

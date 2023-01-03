@@ -94,6 +94,7 @@ int pidController() {
 
 void autonomous(void) {
   /*
+  non-task pid
   sending number of degrees to the PDLoop
   PIDLoop(convDistance);
   //turnRobot(90);
