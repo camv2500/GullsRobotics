@@ -102,6 +102,9 @@ void autonomous(void) {
   LeftMotor1.spin(forward, 0, pct);
   RightMotor1.spin(forward, 0, pct);
   */
+
+  /*
+  task based pid
   task StartTask(pidController);
 
   double circumferenceOfWheel = 3.5 * M_PI;
@@ -119,6 +122,12 @@ void autonomous(void) {
   convDistance = (distance/circumferenceOfWheel)*outputRat*360.0;
   resetEncoders = true;
   pidSetDegrees = convDistance;
+  */
+
+  PIDLoop(400, false, true);
+  Brain.Screen.print("isExited");
+  LeftMotor1.spin(forward, 0, pct);
+  RightMotor1.spin(forward, 0, pct);
 }
 
 

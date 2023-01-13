@@ -39,27 +39,29 @@ void PIDLoop(double setPoint, bool isTurning = false, bool usingFlyWheel = false
   }
 
   while (usingFlyWheel) {
-    kP = 0.5;
+    kP = 0.2;
     kI = 0.005;
-    kD = 0.5;
+    kD = 0.005;
 
-    if (firstTime) {power = power + 200;}
+    if (firstTime) {
+    firstTime = false;
+    power = power + 0;}
 
-    //sensorValue = FlyWheel1.position(rev);
-    error = setPoint - power;
+    error = setPoint - (FlyWheel1.velocity(rpm) + FlyWheel2.velocity(rpm) / 2);
 
     integral = integral + error;
-    //if (fabs(integral) > 500) {integral = 500;}
+    if (fabs(integral) > 12000) {integral = 12000;}
 
     derivative = error - prevError;
     prevError = error;
 
-    power += error * kP + integral * kI + derivative * kD;
+    power = error * kP + integral * kI + derivative * kD;
+    power = power * 4;
 
     FlyWheel1.spin(forward, power, rpm);
     FlyWheel2.spin(forward, power, rpm);
 
-    wait(20, msec);
+    wait(10, msec);
   }
 }
 
