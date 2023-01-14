@@ -6,14 +6,13 @@ void PIDLoop(double setPoint, bool isTurning = false, bool usingFlyWheel = false
   double error = setPoint;
   double kP = 0.28, kI = 0.01, kD = 0.25, prevError = 0, integral = 0, derivative = 0, power = 0;
   double sensorValue = 0;
+  double kF, feedForward;
   bool firstTime = true;
 
-  LeftMotor1.setPosition(0, degrees);
-  RightMotor1.setPosition(0, degrees);
   FlyWheel1.setPosition(0,degrees);
   FlyWheel2.setPosition(0,degrees);
 
-  while (fabs(error) > 0.4 && !usingFlyWheel) {
+  /*while (fabs(error) > 0.4 && !usingFlyWheel) {
     if (isTurning) {sensorValue = RightMotor1.position(degrees);}
     else {sensorValue = (LeftMotor1.position(degrees) + RightMotor1.position(degrees)) / 2;}
     error = setPoint - sensorValue;
@@ -36,16 +35,16 @@ void PIDLoop(double setPoint, bool isTurning = false, bool usingFlyWheel = false
     }
 
     wait(20, msec);
-  }
+  }*/
 
   while (usingFlyWheel) {
-    kP = 0.2;
-    kI = 0.005;
-    kD = 0.005;
-
     if (firstTime) {
     firstTime = false;
-    power = power + 0;}
+    feedForward = setPoint;
+    kP = 0.0018;
+    kI = 0;
+    kD = 0.000018;
+    kF = 0.0213;}
 
     error = setPoint - (FlyWheel1.velocity(rpm) + FlyWheel2.velocity(rpm) / 2);
 
@@ -55,11 +54,10 @@ void PIDLoop(double setPoint, bool isTurning = false, bool usingFlyWheel = false
     derivative = error - prevError;
     prevError = error;
 
-    power = error * kP + integral * kI + derivative * kD;
-    power = power * 4;
+    power = error * kP + integral * kI + derivative * kD + feedForward * kF;
 
-    FlyWheel1.spin(forward, power, rpm);
-    FlyWheel2.spin(forward, power, rpm);
+    FlyWheel1.spin(forward, power, volt);
+    FlyWheel2.spin(forward, power, volt);
 
     wait(10, msec);
   }

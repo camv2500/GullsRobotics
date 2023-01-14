@@ -10,11 +10,17 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
-// LeftMotor1           motor         14              
-// RightMotor1          motor         13              
+// lMotor14             motor         14              
+// lMotor13             motor         13              
 // Controller1          controller                    
-// FlyWheel1            motor         11              
-// FlyWheel2            motor         12              
+// FlyWheel1            motor         16              
+// FlyWheel2            motor         15              
+// rMotor17             motor         17              
+// rMotor18             motor         18              
+// rMotor19             motor         19              
+// rMotor20             motor         20              
+// lMotor11             motor         11              
+// lMotor12             motor         12              
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
@@ -59,33 +65,50 @@ static bool pidRunning = true;
 static bool resetEncoders = false;
 static float pidSetDegrees = 0;
 
-double kP = 0.28, kI = 0.01, kD = 0.25;
+double kP = 0.24, kI = 0.0, kD = 0;
 double error = 0, prevError = 0, integral = 0, derivative = 0;
-double power = 0, sensorValue = 0;
+double power = 0, sensorValue = 0, lSensor = 0, rSensor = 0;
 
 int pidController() {
   while (pidRunning) {
     if (resetEncoders) {
       resetEncoders = false;
-      LeftMotor1.setPosition(0, degrees);
-      RightMotor1.setPosition(0, degrees);
+      lMotor11.setPosition(0, degrees);
+      lMotor12.setPosition(0, degrees);
+      lMotor13.setPosition(0, degrees);
+      lMotor14.setPosition(0, degrees);
+      rMotor17.setPosition(0, degrees);
+      rMotor18.setPosition(0, degrees);
+      rMotor19.setPosition(0, degrees);
+      rMotor20.setPosition(0, degrees);
       integral = 0;
       derivative = 0;
     }
-
-    sensorValue = (LeftMotor1.position(degrees) + RightMotor1.position(degrees)) / 2;
+    
+    lSensor = (lMotor11.position(degrees) + lMotor12.position(degrees) + 
+      lMotor13.position(degrees) + lMotor14.position(degrees)) / 4;
+    rSensor = (rMotor17.position(degrees) + rMotor18.position(degrees) + 
+      rMotor19.position(degrees) + rMotor20.position(degrees)) / 4;
+    sensorValue = (lSensor + rSensor) / 2;
     error = pidSetDegrees - sensorValue;
 
     integral = integral + error;
-    if (fabs(integral) > 500) {integral = 500;}
+    if (fabs(integral) > 5000) {integral = 500;}
 
     derivative = error - prevError;
     prevError = error;
 
     power = error * kP + integral * kI + derivative * kD;
 
-    LeftMotor1.spin(forward, power, pct);
-    RightMotor1.spin(forward, power, pct);
+    lMotor11.spin(forward, power, pct);
+    lMotor12.spin(forward, power, pct);
+    lMotor13.spin(forward, power, pct);
+    lMotor14.spin(forward, power, pct);
+    rMotor17.spin(forward, power, pct);
+    rMotor18.spin(forward, power, pct);
+    rMotor19.spin(forward, power, pct);
+    rMotor20.spin(forward, power, pct);
+
     wait(20, msec);
   }
 
@@ -103,8 +126,8 @@ void autonomous(void) {
   RightMotor1.spin(forward, 0, pct);
   */
 
-  /*
-  task based pid
+  
+  //task based pid
   task StartTask(pidController);
 
   double circumferenceOfWheel = 3.5 * M_PI;
@@ -116,18 +139,29 @@ void autonomous(void) {
   resetEncoders = true;
   pidSetDegrees = convDistance;
 
-  vex::task::sleep(1000);
+  vex::task::sleep(5000);
 
-  distance = 24;
-  convDistance = (distance/circumferenceOfWheel)*outputRat*360.0;
   resetEncoders = true;
-  pidSetDegrees = convDistance;
-  */
+  pidSetDegrees = 0;
 
-  PIDLoop(400, false, true);
+  //distance = 24;
+  //convDistance = (distance/circumferenceOfWheel)*outputRat*360.0;
+  //resetEncoders = true;
+  //pidSetDegrees = convDistance;
+  
+
+  
+  //PIDLoop(400, false, true);
   Brain.Screen.print("isExited");
-  LeftMotor1.spin(forward, 0, pct);
-  RightMotor1.spin(forward, 0, pct);
+  lMotor11.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
+  rMotor17.spin(fwd, Controller1.Axis3.position(percent), vex::velocityUnits::pct);
+  lMotor12.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
+  rMotor18.spin(fwd, Controller1.Axis3.position(percent), vex::velocityUnits::pct);
+  lMotor13.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
+  rMotor19.spin(fwd, Controller1.Axis3.position(percent), vex::velocityUnits::pct);
+  lMotor14.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
+  rMotor20.spin(fwd, Controller1.Axis3.position(percent), vex::velocityUnits::pct);
+  
 }
 
 
@@ -144,8 +178,14 @@ void autonomous(void) {
 void usercontrol(void) {
   // User control code here, inside the loop
   while (1) {
-    LeftMotor1.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
-    RightMotor1.spin(fwd, Controller1.Axis3.position(percent), vex::velocityUnits::pct);
+    lMotor11.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
+    rMotor17.spin(fwd, Controller1.Axis3.position(percent), vex::velocityUnits::pct);
+    lMotor12.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
+    rMotor18.spin(fwd, Controller1.Axis3.position(percent), vex::velocityUnits::pct);
+    lMotor13.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
+    rMotor19.spin(fwd, Controller1.Axis3.position(percent), vex::velocityUnits::pct);
+    lMotor14.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
+    rMotor20.spin(fwd, Controller1.Axis3.position(percent), vex::velocityUnits::pct);
     if (Controller1.ButtonUp.pressing()) {
       FlyWheel1.spin(forward, 100, pct);
       FlyWheel2.spin(forward, 100, pct);
