@@ -23,6 +23,7 @@ motor intakeMotor = motor(PORT5, ratio18_1, false);
 digital_out magLifter = digital_out(Brain.ThreeWirePort.A);
 digital_out diskPusher1 = digital_out(Brain.ThreeWirePort.B);
 digital_out endGame = digital_out(Brain.ThreeWirePort.C);
+motor rollerMotor = motor(PORT1, ratio18_1, false);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable

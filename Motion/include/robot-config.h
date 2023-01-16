@@ -18,6 +18,7 @@ extern motor intakeMotor;
 extern digital_out magLifter;
 extern digital_out diskPusher1;
 extern digital_out endGame;
+extern motor rollerMotor;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.

@@ -64,7 +64,7 @@ void PIDLoop(double setPoint, bool isTurning = false, bool usingFlyWheel = false
 }
 
 //current function for turning the robot, converts the degrees given to revolutions required and sends it to the PIDLoop
-void turnRobot(double setDegrees) {
+/*void turnRobot(double setDegrees) {
   //need to convert to using radians to decrease the amount of math
 
   //setDegrees is the amount of degrees we want to turn
@@ -80,4 +80,4 @@ void turnRobot(double setDegrees) {
   double requiredRevolutions = (requiredInches / circumferenceOfWheel) * outputRat * 360.0;
 
   PIDLoop(requiredRevolutions, true);
-}
+}*/
