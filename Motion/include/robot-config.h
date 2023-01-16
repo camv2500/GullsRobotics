@@ -14,6 +14,10 @@ extern motor rMotor19;
 extern motor rMotor20;
 extern motor lMotor11;
 extern motor lMotor12;
+extern motor intakeMotor;
+extern digital_out magLifter;
+extern digital_out diskPusher1;
+extern digital_out endGame;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.

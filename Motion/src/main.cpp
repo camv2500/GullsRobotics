@@ -21,6 +21,10 @@
 // rMotor20             motor         20              
 // lMotor11             motor         11              
 // lMotor12             motor         12              
+// intakeMotor          motor         5               
+// magLifter            digital_out   A               
+// diskPusher1          digital_out   B               
+// endGame              digital_out   C               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
@@ -65,7 +69,7 @@ static bool pidRunning = true;
 static bool resetEncoders = false;
 static float pidSetDegrees = 0;
 
-double kP = 0.24, kI = 0.0, kD = 0;
+double kP = 0.05, kI = 0.0, kD = 0.05;
 double error = 0, prevError = 0, integral = 0, derivative = 0;
 double power = 0, sensorValue = 0, lSensor = 0, rSensor = 0;
 
@@ -101,12 +105,12 @@ int pidController() {
     power = error * kP + integral * kI + derivative * kD;
 
     lMotor11.spin(forward, power, pct);
-    lMotor12.spin(forward, power, pct);
-    lMotor13.spin(forward, power, pct);
-    lMotor14.spin(forward, power, pct);
     rMotor17.spin(forward, power, pct);
+    lMotor12.spin(forward, power, pct);
     rMotor18.spin(forward, power, pct);
+    lMotor13.spin(forward, power, pct);
     rMotor19.spin(forward, power, pct);
+    lMotor14.spin(forward, power, pct);
     rMotor20.spin(forward, power, pct);
 
     wait(20, msec);
@@ -114,6 +118,43 @@ int pidController() {
 
   return 1;
 }
+
+static bool flyWheelRunning = false;
+/*
+static bool resetFlywheelEncoders = false;
+static float flywheelSetRPM = 0;
+double fkP = 0.0018, fkI = 0, fkD = 0.00018, fkF = 0.0212;
+double flyWheelError = 0, fprevError = 0, fintegral = 0, fderivative = 0, fpower = 0;
+double kF, feedForward;
+
+int flyWheelController() {
+  while (flyWheelRunning) {
+    if (resetFlywheelEncoders) {
+      resetFlywheelEncoders = false;
+      fintegral = 0;
+      fderivative = 0;
+      feedForward = flywheelSetRPM; 
+    }
+
+    flyWheelError = flywheelSetRPM - (FlyWheel1.velocity(rpm) + FlyWheel2.velocity(rpm) / 2);
+
+    fintegral = fintegral + flyWheelError;
+    if (fabs(fintegral) > 12000) {fintegral = 12000;}
+
+    fderivative = flyWheelError - fprevError;
+    fprevError = flyWheelError;
+
+    fpower = flyWheelError * fkP + fintegral * fkI + fderivative * fkD + feedForward * fkF;
+
+    FlyWheel1.spin(forward, fpower, volt);
+    FlyWheel2.spin(forward, fpower, volt);
+
+    wait(20, msec);
+  }
+
+  return 1;
+}
+*/
 
 void autonomous(void) {
   /*
@@ -128,12 +169,13 @@ void autonomous(void) {
 
   
   //task based pid
+  /*
   task StartTask(pidController);
 
   double circumferenceOfWheel = 3.5 * M_PI;
   double outputRat = 3.0/5.0;
   //In inches
-  double distance = 12;
+  double distance = 24;
   double convDistance = (distance/circumferenceOfWheel)*outputRat*360.0;
 
   resetEncoders = true;
@@ -143,6 +185,7 @@ void autonomous(void) {
 
   resetEncoders = true;
   pidSetDegrees = 0;
+  */
 
   //distance = 24;
   //convDistance = (distance/circumferenceOfWheel)*outputRat*360.0;
@@ -151,16 +194,18 @@ void autonomous(void) {
   
 
   
-  //PIDLoop(400, false, true);
+  PIDLoop(400, false, true);
   Brain.Screen.print("isExited");
-  lMotor11.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
-  rMotor17.spin(fwd, Controller1.Axis3.position(percent), vex::velocityUnits::pct);
-  lMotor12.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
-  rMotor18.spin(fwd, Controller1.Axis3.position(percent), vex::velocityUnits::pct);
-  lMotor13.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
-  rMotor19.spin(fwd, Controller1.Axis3.position(percent), vex::velocityUnits::pct);
-  lMotor14.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
-  rMotor20.spin(fwd, Controller1.Axis3.position(percent), vex::velocityUnits::pct);
+  /*
+  lMotor11.spin(fwd, 0, vex::velocityUnits::pct);
+  rMotor17.spin(fwd, 0, vex::velocityUnits::pct);
+  lMotor12.spin(fwd, 0, vex::velocityUnits::pct);
+  rMotor18.spin(fwd, 0, vex::velocityUnits::pct);
+  lMotor13.spin(fwd, 0, vex::velocityUnits::pct);
+  rMotor19.spin(fwd, 0, vex::velocityUnits::pct);
+  lMotor14.spin(fwd, 0, vex::velocityUnits::pct);
+  rMotor20.spin(fwd, 0, vex::velocityUnits::pct);
+  */
   
 }
 
@@ -175,9 +220,25 @@ void autonomous(void) {
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
+void toggleFlyWheel() {
+  if (flyWheelRunning == true) {flyWheelRunning = false;}
+  else {flyWheelRunning = true;}
+
+  PIDLoop(462, false, true);
+}
+
 void usercontrol(void) {
+  //flywheelSetRPM = 400;
   // User control code here, inside the loop
   while (1) {
+    
+    if (Controller1.ButtonR2.pressing()) {
+      intakeMotor.spin(fwd, 12, volt);
+    }
+    else {
+      intakeMotor.spin(fwd, 0, volt);
+    }
+    
     lMotor11.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
     rMotor17.spin(fwd, Controller1.Axis3.position(percent), vex::velocityUnits::pct);
     lMotor12.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
@@ -186,14 +247,24 @@ void usercontrol(void) {
     rMotor19.spin(fwd, Controller1.Axis3.position(percent), vex::velocityUnits::pct);
     lMotor14.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
     rMotor20.spin(fwd, Controller1.Axis3.position(percent), vex::velocityUnits::pct);
-    if (Controller1.ButtonUp.pressing()) {
-      FlyWheel1.spin(forward, 100, pct);
-      FlyWheel2.spin(forward, 100, pct);
+    Controller1.ButtonA.pressed(toggleFlyWheel);
+
+    if (Controller1.ButtonX.pressing()) {
+      magLifter.set(true);
     }
     else {
-      FlyWheel1.spin(forward, 0, pct);
-      FlyWheel2.spin(forward, 0, pct);
+      magLifter.set(false);
     }
+
+    if (Controller1.ButtonY.pressing()) {
+      diskPusher1.set(true);
+    }
+    else {
+      diskPusher1.set(false);
+    }
+    
+    //magLifter.set(false);
+    //diskPusher1.set(false);
     wait(20, msec);
   }
 }
