@@ -104,7 +104,7 @@ int autonController() {
 }
 
 void autonomous(void) {
-  isAuton = true;
+  isAuton = true; resetPID = true; resetTurning = true; resetFlywheel = true;
   task StartAuton(autonController);
 
   setFlywheel = 400;
@@ -167,16 +167,36 @@ void autonomous(void) {
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
-/*
-void toggleFlyWheelOn() {
-  resetFlywheelEncoders = true;
-  flywheelSetRPM = 462;
+static bool isUser = false, isUserFlywheel = false, resetUserFlywheel = false;
+static double setUserFlywheel = 0;
+
+int userController() {
+  while(isUser) {
+    if (isUserFlywheel) {
+      if (resetUserFlywheel) {
+        runFlywheel(setUserFlywheel, true);
+        resetUserFlywheel = false;
+      }
+      else {runFlywheel(setUserFlywheel);}
+    }
+
+    wait(10, msec);
+  }
+  return 1;
 }
 
-void toggleFlyWheelOff() {
-  flywheelSetRPM = 0;
+void ToggleFlywheelOn(double speed = 0) {
+  resetUserFlywheel = true;
+  setUserFlywheel = 450;
+  isUserFlywheel = true;
 }
-*/
+
+void ToggleFlywheelOff() {
+  isUserFlywheel = false;
+  resetUserFlywheel = true;
+  setUserFlywheel = 0;
+  isUserFlywheel = true;
+}
 
 void usercontrol(void) {
   //task StartFlyWheel(flyWheelController);

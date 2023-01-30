@@ -199,7 +199,7 @@ void runPID(double pidSetDegrees, bool resetEncoders = false, bool isTurning = f
 
 double fkP = 0.0018, fkI = 0, fkD = 0.00018, fkF = 0.0212;
 double flyWheelError = 0, fprevError = 0, fintegral = 0, fderivative = 0, fpower = 0;
-double kF, feedForward;
+double kF, feedForward, count = 1;
 
 void runFlywheel(double flywheelSetRPM = 0, bool resetFlywheelEncoders = false) {
   if (resetFlywheelEncoders) {
@@ -222,6 +222,12 @@ void runFlywheel(double flywheelSetRPM = 0, bool resetFlywheelEncoders = false) 
 
     FlyWheel1.spin(forward, fpower, volt);
     FlyWheel2.spin(forward, fpower, volt);
+
+    if (flyWheelError < 5 && count > 4) {Controller1.rumble(rumbleShort); count = 1;}
+    else {
+      if (count > 4) {Controller1.rumble(" ");}
+      else {count++;}
+    }
   }
   else {
     FlyWheel1.spin(forward, 0, volt);
