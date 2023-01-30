@@ -22,7 +22,7 @@
 // lMotor11             motor         11              
 // lMotor12             motor         12              
 // intakeMotor          motor         5               
-// magLifter            digital_out   A               
+// magLifterLifter            digital_out   A               
 // diskPusher1          digital_out   B               
 // endGame              digital_out   C               
 // rollerMotor          motor         1               
@@ -204,7 +204,7 @@ void autonomous(void) {
   pidSetDegrees = convDistance;
   vex::task::sleep(1000);
 
-  rollerMotor.spin(fwd, 12, volt);
+  rollerMotor.spin(reverse, 12, volt);
   vex::task::sleep(290);
   rollerMotor.spin(fwd, 0, volt);
 
@@ -289,7 +289,7 @@ void autonomous(void) {
 
 void toggleFlyWheelOn() {
   resetFlywheelEncoders = true;
-  flywheelSetRPM = 462;
+  flywheelSetRPM = 445;
 }
 
 void toggleFlyWheelOff() {
@@ -297,54 +297,84 @@ void toggleFlyWheelOff() {
 }
 
 void usercontrol(void) {
-  task StartFlyWheel(flyWheelController);
-  // User control code here, inside the loop
   while (1) {
-    lMotor11.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
-    rMotor17.spin(fwd, Controller1.Axis3.position(percent), vex::velocityUnits::pct);
-    lMotor12.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
-    rMotor18.spin(fwd, Controller1.Axis3.position(percent), vex::velocityUnits::pct);
-    lMotor13.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
-    rMotor19.spin(fwd, Controller1.Axis3.position(percent), vex::velocityUnits::pct);
-    lMotor14.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
-    rMotor20.spin(fwd, Controller1.Axis3.position(percent), vex::velocityUnits::pct);
 
-    Controller1.ButtonX.pressed(toggleFlyWheelOn);
-    Controller1.ButtonY.pressed(toggleFlyWheelOff);
+    /*Controls:
+    Axis 3: Left Drive
+    Axis 2: Right Drive
+    L1: Rotate Roller
+    L2: Intake in, set magLifter down and indexer retracted
+    R1: Hold to spin up flywheel and bring magLifter up (when released flywheel slows down and magLifter lowers)
+    R2: Single press - triple piston actuation
+    ArrowRight: Intake out
+    Y: Endgame deploy*/
 
-    if (Controller1.ButtonR1.pressing()) {
-      magLifter.set(true);
-    }
-    else {
-      magLifter.set(false);
-    }
+    task StartFlyWheel(flyWheelController);
 
-    if (Controller1.ButtonL1.pressing()) {
-      intakeMotor.spin(fwd, 12, volt);
-    }
-    else {
-      intakeMotor.spin(fwd, 0, volt);
-    }
-
-    if (Controller1.ButtonL2.pressing()) {
-      rollerMotor.spin(fwd, 12, volt);
-    }
-    else {
-      rollerMotor.spin(fwd, 0, volt);
-    }
-
-    if (Controller1.ButtonR2.pressing()) {
-      diskPusher1.set(true);
-    }
-    else {
-      diskPusher1.set(false);
-    }
+    //Drive motor control---------------------------------------------
     
-    //magLifter.set(false);
-    //diskPusher1.set(false);
-    wait(20, msec);
+    lMotor11.spin(fwd, Controller1.Axis2.value(), vex::velocityUnits::pct);
+    lMotor12.spin(fwd, Controller1.Axis2.value(), vex::velocityUnits::pct);
+    lMotor13.spin(fwd, Controller1.Axis2.value(), vex::velocityUnits::pct);
+    lMotor14.spin(fwd, Controller1.Axis2.value(), vex::velocityUnits::pct);
+    rMotor17.spin(fwd, Controller1.Axis3.value(), vex::velocityUnits::pct);
+    rMotor18.spin(fwd, Controller1.Axis3.value(), vex::velocityUnits::pct);
+    rMotor19.spin(fwd, Controller1.Axis3.value(), vex::velocityUnits::pct);
+    rMotor20.spin(fwd, Controller1.Axis3.value(), vex::velocityUnits::pct);
+    //----------------------------------------------------------------
+
+    //Intake Control-----------------------------
+    if(Controller1.ButtonL2.pressing()){
+      magLifter.set(true);
+      diskPusher1.set(false);
+      intakeMotor.spin(fwd, 100, pct);
+    }else if(Controller1.ButtonRight.pressing()){
+      intakeMotor.spin(reverse, 100, pct);
+    }else
+      intakeMotor.stop(brakeType::coast);
+    //-------------------------------------------
+
+    //Roller Control-----------------------------------------------------------------
+    if(Controller1.ButtonL1.pressing()){
+      rollerMotor.spin(reverse, 100, pct);
+    }
+    else{
+      rollerMotor.stop();
+    }
+    //-------------------------------------------------------------------------------
+
+    //Flywheel Control-----------------------------------------------------------
+    if(Controller1.ButtonR1.pressing()){
+      magLifter.set(false);
+      toggleFlyWheelOn();
+      if(Controller1.ButtonR2.pressing())
+      {
+        diskPusher1.set(true);
+        vex::task::sleep(500);
+        diskPusher1.set(false);
+        vex::task::sleep(500);
+      }
+    }else{
+      toggleFlyWheelOff();
+    }
+    //---------------------------------------------------------------------------
+
+    //Endgame deploy----------------------
+    if(Controller1.ButtonY.pressing()){
+      endGame.set(true);
+    }
+    //-----------------------------------
+    
+    wait(20, msec); // Sleep the task for a short amount of time to
+                    // prevent wasted resources.
   }
 }
+
+    //magLifterLifter.set(false);
+    //diskPusher1.set(false);
+    //wait(20, msec);
+  //}
+//}
 
 //
 // Main will set up the competition functions and callbacks.

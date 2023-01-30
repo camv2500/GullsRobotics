@@ -15,7 +15,7 @@
 // dL3                  motor         15              
 // dL4                  motor         16              
 // dR1                  motor         17              
-// dR2                  motor         18              
+// dR2                  motor         10              
 // dR3                  motor         19              
 // dR4                  motor         20              
 // rlr                  motor         2               
@@ -89,6 +89,54 @@ void autonomous(void) {
 /*                                                                           */
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
+static bool resetFlywheelEncoders = false;
+static float flywheelSetRPM = 0;
+double fkP = 0.0018, fkI = 0, fkD = 0.00018, fkF = 0.0212;
+double flyWheelError = 0, fprevError = 0, fintegral = 0, fderivative = 0, fpower = 0;
+double kF, feedForward;
+
+int flyWheelController() {
+  while (1) {
+    if (resetFlywheelEncoders) {
+      resetFlywheelEncoders = false;
+      fintegral = 0;
+      fderivative = 0;
+      feedForward = flywheelSetRPM; 
+    }
+
+    if (flywheelSetRPM != 0) {
+      flyWheelError = flywheelSetRPM - (fw1.velocity(rpm) + fw2.velocity(rpm) / 2);
+
+      fintegral = fintegral + flyWheelError;
+      if (fabs(fintegral) > 12000) {fintegral = 12000;}
+
+      fderivative = flyWheelError - fprevError;
+      fprevError = flyWheelError;
+
+      fpower = flyWheelError * fkP + fintegral * fkI + fderivative * fkD + feedForward * fkF;
+
+      fw1.spin(fwd, fpower, volt);
+      fw2.spin(fwd, fpower, volt);
+
+      wait(20, msec);
+    }
+    else {
+      fw1.spin(fwd, 0, volt);
+      fw2.spin(fwd, 0, volt);
+    }
+  }
+
+  return 1;
+}
+
+void toggleFlyWheelOn() {
+  resetFlywheelEncoders = true;
+  flywheelSetRPM = 425;
+}
+
+void toggleFlyWheelOff() {
+  flywheelSetRPM = 0;
+}
 
 void usercontrol(void) {
   while (1) {
@@ -103,16 +151,18 @@ void usercontrol(void) {
     ArrowRight: Intake out
     Y: Endgame deploy*/
 
+    task StartFlyWheel(flyWheelController);
+
     //Drive motor control---------------------------------------------
     
-    dL1.spin(fwd, Controller1.Axis2.value(), vex::velocityUnits::pct);
-    dL2.spin(fwd, Controller1.Axis2.value(), vex::velocityUnits::pct);
-    dL3.spin(fwd, Controller1.Axis2.value(), vex::velocityUnits::pct);
-    dL4.spin(fwd, Controller1.Axis2.value(), vex::velocityUnits::pct);
-    dR1.spin(fwd, Controller1.Axis3.value(), vex::velocityUnits::pct);
-    dR2.spin(fwd, Controller1.Axis3.value(), vex::velocityUnits::pct);
-    dR3.spin(fwd, Controller1.Axis3.value(), vex::velocityUnits::pct);
-    dR4.spin(fwd, Controller1.Axis3.value(), vex::velocityUnits::pct);
+    dL1.spin(fwd, (Controller1.Axis2.value()- Controller1.Axis1.value())/2, vex::velocityUnits::pct);
+    dL2.spin(fwd, (Controller1.Axis2.value()- Controller1.Axis1.value())/2, vex::velocityUnits::pct);
+    dL3.spin(fwd, (Controller1.Axis2.value()- Controller1.Axis1.value())/2, vex::velocityUnits::pct);
+    dL4.spin(fwd, (Controller1.Axis2.value()- Controller1.Axis1.value())/2, vex::velocityUnits::pct);
+    dR1.spin(fwd, (Controller1.Axis2.value()+ Controller1.Axis1.value())/2, vex::velocityUnits::pct);
+    dR2.spin(fwd, (Controller1.Axis2.value()+ Controller1.Axis1.value())/2, vex::velocityUnits::pct);
+    dR3.spin(fwd, (Controller1.Axis2.value()+ Controller1.Axis1.value())/2, vex::velocityUnits::pct);
+    dR4.spin(fwd, (Controller1.Axis2.value()+ Controller1.Axis1.value())/2, vex::velocityUnits::pct);
     //----------------------------------------------------------------
 
     //Intake Control-----------------------------
@@ -128,39 +178,25 @@ void usercontrol(void) {
 
     //Roller Control-----------------------------------------------------------------
     if(Controller1.ButtonL1.pressing()){
-      rlr.startRotateFor(100, vex::rotationUnits::raw, 100, vex::velocityUnits::pct);
+      rlr.spin(reverse, 50, pct);
+    }else{
+      rlr.stop(brakeType::hold);
     }
     //-------------------------------------------------------------------------------
 
     //Flywheel Control-----------------------------------------------------------
     if(Controller1.ButtonR1.pressing()){
       mag.set(false);
-      fw1.spin(reverse, 100, pct);
-      fw2.spin(reverse, 100, pct);
+      toggleFlyWheelOn();
       if(Controller1.ButtonR2.pressing())
       {
-        fw1.spin(reverse, 100, pct);
-        fw2.spin(reverse, 100, pct);
         indx.set(true);
         vex::task::sleep(500);
         indx.set(false);
         vex::task::sleep(500);
       }
-    }else if(Controller1.ButtonR1.pressing() && Controller1.ButtonR2.pressing()){
-      indx.set(true);
-      vex::task::sleep(1000);
-      indx.set(false);
-      wait(1000, msec);
-      indx.set(true);
-      wait(1000, msec);
-      indx.set(false);
-      wait(1000, msec);
-      indx.set(true);
-      wait(1000, msec);
-      indx.set(false);
     }else{
-      fw1.stop(brakeType::coast);
-      fw2.stop(brakeType::coast);
+      toggleFlyWheelOff();
     }
     //---------------------------------------------------------------------------
 
