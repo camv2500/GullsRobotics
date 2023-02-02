@@ -170,22 +170,7 @@ void autonomous(void) {
 static bool isUser = false, isUserFlywheel = false, resetUserFlywheel = false;
 static double setUserFlywheel = 0;
 
-int userController() {
-  while(isUser) {
-    if (isUserFlywheel) {
-      if (resetUserFlywheel) {
-        runFlywheel(setUserFlywheel, true);
-        resetUserFlywheel = false;
-      }
-      else {runFlywheel(setUserFlywheel);}
-    }
-
-    wait(10, msec);
-  }
-  return 1;
-}
-
-void ToggleFlywheelOn(double speed = 0) {
+void ToggleFlywheelOn() {
   resetUserFlywheel = true;
   setUserFlywheel = 450;
   isUserFlywheel = true;
@@ -198,8 +183,69 @@ void ToggleFlywheelOff() {
   isUserFlywheel = true;
 }
 
+void userSpinMotors() {
+
+}
+
+int userController() {
+  while(isUser) {
+    if (isUserFlywheel) {
+      if (resetUserFlywheel) {
+        runFlywheel(setUserFlywheel, true);
+        resetUserFlywheel = false;
+      }
+      else {runFlywheel(setUserFlywheel);}
+    }
+
+    lMotor11.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
+    rMotor17.spin(fwd, Controller1.Axis3.position(percent), vex::velocityUnits::pct);
+    lMotor12.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
+    rMotor18.spin(fwd, Controller1.Axis3.position(percent), vex::velocityUnits::pct);
+    lMotor13.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
+    rMotor19.spin(fwd, Controller1.Axis3.position(percent), vex::velocityUnits::pct);
+    lMotor14.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
+    rMotor20.spin(fwd, Controller1.Axis3.position(percent), vex::velocityUnits::pct);
+
+    Controller1.ButtonX.pressed(ToggleFlywheelOn);
+    Controller1.ButtonY.pressed(ToggleFlywheelOff);
+
+    if (Controller1.ButtonR1.pressing()) {
+      magLifter.set(true);
+    }
+    else {
+      magLifter.set(false);
+    }
+
+    if (Controller1.ButtonL1.pressing()) {
+      intakeMotor.spin(fwd, 12, volt);
+    }
+    else {
+      intakeMotor.spin(fwd, 0, volt);
+    }
+
+    if (Controller1.ButtonL2.pressing()) {
+      rollerMotor.spin(fwd, 12, volt);
+    }
+    else {
+      rollerMotor.spin(fwd, 0, volt);
+    }
+
+    if (Controller1.ButtonR2.pressing()) {
+      diskPusher1.set(true);
+    }
+    else {
+      diskPusher1.set(false);
+    }
+
+    wait(10,msec);
+  }
+
+  return 1;
+}
+
 void usercontrol(void) {
-  //task StartFlyWheel(flyWheelController);
+  task StartUser(userController);
+  /*task StartFlyWheel(flyWheelController);
   // User control code here, inside the loop
   while (1) {
     lMotor11.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
@@ -246,6 +292,7 @@ void usercontrol(void) {
     //diskPusher1.set(false);
     wait(20, msec);
   }
+  */
 }
 
 //
