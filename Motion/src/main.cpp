@@ -1,35 +1,6 @@
-/*----------------------------------------------------------------------------*/
-/*                                                                            */
-/*    Module:       main.cpp                                                  */
-/*    Author:       VEX                                                       */
-/*    Created:      Thu Sep 26 2019                                           */
-/*    Description:  Competition Template                                      */
-/*                                                                            */
-/*----------------------------------------------------------------------------*/
-
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// lMotor1              motor         15              
-// lMotor2              motor         16              
-// Controller1          controller                    
-// FlyWheel1            motor         9               
-// FlyWheel2            motor         10              
-// rMotor1              motor         11              
-// rMotor2              motor         12              
-// rMotor3              motor         13              
-// rMotor4              motor         14              
-// lMotor3              motor         17              
-// lMotor4              motor         19              
-// intakeMotor          motor         5               
-// magLifter            digital_out   A               
-// diskPusher1          digital_out   B               
-// endGame              digital_out   C               
-// rollerMotor          motor         21              
-// ---- END VEXCODE CONFIGURED DEVICES ----
-
 #include "vex.h"
 #include "motion.h"
+#include "math.h"
 
 using namespace vex;
 
@@ -65,75 +36,19 @@ void pre_auton(void) {
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
-static bool isAuton = false, isPID = false, isTurning = false, isFlywheel = false, isUser = false; 
-static bool resetPID = true, resetTurning = true, resetFlywheel = true;
-static double setPID = 0, setTurning = 0, setFlywheel = 0;
-
-int autonController() {
-  while(isAuton) {
-    if (isPID) {
-      if (resetPID) {
-        setPID = ConvertInchesToRevolutions(setPID);
-        runPID(setPID, true);
-        resetPID = false;
-      }
-      else {runPID(setPID);}
-    }
-
-    if (isTurning) {
-      if (resetTurning) {
-        setTurning = ConvertDegreesToInches(setTurning);
-        setTurning = ConvertInchesToRevolutions(setTurning);
-        runPID(setTurning, true, true);
-        resetTurning = false;
-      }
-      else {runPID(setTurning, false, true);}
-    }
-
-    if (isFlywheel) {
-      if (resetFlywheel) {
-        runFlywheel(setFlywheel, true);
-        resetFlywheel = false;
-      }
-      else {runFlywheel(setFlywheel);}
-    }
-
-    wait(10, msec);
-  }
-  return 1;
-}
-
 void autonomous(void) {
   isAuton = true; resetPID = true; resetTurning = true; resetFlywheel = true; isUser = false;
   task StartAuton(autonController);
+  GoToPoint(24,15);
+  //setFlywheel = 400;
+  //isFlywheel = true;
 
-  setFlywheel = 400;
-  isFlywheel = true;
-
-  setPID = 12;
-  isPID = true;
-  wait(1000, msec);
-  isPID = false;
-  
-  /*
-  task StartPID(pidController);
-  task StartFlyWheel(flyWheelController);
-  double circumferenceOfWheel = 3.5 * M_PI;
-  double outputRat = 3.0/5.0;
-
-  //In inches
-  double distance = -8;
-  double convDistance = (distance/circumferenceOfWheel)*outputRat*360.0;
-  resetEncoders = true;
-  pidSetDegrees = convDistance;
-  vex::task::sleep(1000);
-
-  rollerMotor.spin(fwd, 12, volt);
-  vex::task::sleep(290);
-  rollerMotor.spin(fwd, 0, volt);
+  //setPID = 12;
+  //isPID = true;
+  //wait(1000, msec);
 
   Brain.Screen.print("isExited");
-  SpinMotors(0); */
+  SpinMotors(0); 
 }
 
 
@@ -148,7 +63,7 @@ void autonomous(void) {
 /*---------------------------------------------------------------------------*/
 
 static bool isUserFlywheel = false, resetUserFlywheel = false;
-static double setUserFlywheel = 0;
+static double setUserFlywheel = 0, indexerCount = 0;
 
 void ToggleFlywheelOn() {
   resetUserFlywheel = true;
@@ -174,47 +89,71 @@ int userController() {
         runFlywheel(setUserFlywheel, true);
         resetUserFlywheel = false;
       }
-      else {runFlywheel(setUserFlywheel);}
+      else {
+        runFlywheel(setUserFlywheel);
+        Brain.Screen.print(FlyWheel1.velocity(rpm));
+        Brain.Screen.newLine();
+      }
     }
 
-    lMotor1.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
-    rMotor1.spin(fwd, Controller1.Axis3.position(percent), vex::velocityUnits::pct);
-    lMotor2.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
-    rMotor2.spin(fwd, Controller1.Axis3.position(percent), vex::velocityUnits::pct);
-    lMotor3.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
-    rMotor3.spin(fwd, Controller1.Axis3.position(percent), vex::velocityUnits::pct);
-    lMotor4.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
-    rMotor4.spin(fwd, Controller1.Axis3.position(percent), vex::velocityUnits::pct);
+    lMotor1.spin(fwd, (Controller1.Axis2.value() - Controller1.Axis1.value()) / 2, vex::velocityUnits::pct);
+    lMotor2.spin(fwd, (Controller1.Axis2.value() - Controller1.Axis1.value()) / 2, vex::velocityUnits::pct);
+    lMotor3.spin(fwd, (Controller1.Axis2.value() - Controller1.Axis1.value()) / 2, vex::velocityUnits::pct);
+    lMotor4.spin(fwd, (Controller1.Axis2.value() - Controller1.Axis1.value()) / 2, vex::velocityUnits::pct);
+    rMotor1.spin(fwd, (Controller1.Axis3.value() + Controller1.Axis1.value()) / 2, vex::velocityUnits::pct);
+    rMotor2.spin(fwd, (Controller1.Axis3.value() + Controller1.Axis1.value()) / 2, vex::velocityUnits::pct);
+    rMotor3.spin(fwd, (Controller1.Axis3.value() + Controller1.Axis1.value()) / 2, vex::velocityUnits::pct);
+    rMotor4.spin(fwd, (Controller1.Axis3.value() + Controller1.Axis1.value()) / 2, vex::velocityUnits::pct);
 
-    Controller1.ButtonX.pressed(ToggleFlywheelOn);
-    Controller1.ButtonY.pressed(ToggleFlywheelOff);
-
-    if (Controller1.ButtonR1.pressing()) {
+    //intake control
+    if(Controller1.ButtonL2.pressing()) {
       magLifter.set(true);
+      indexer1.set(false);
+      intakeMotor.spin(fwd, 100, pct);
+    }
+    else if (Controller1.ButtonRight.pressing()) {
+      intakeMotor.spin(reverse, 100, pct);
     }
     else {
+      intakeMotor.stop(brakeType::coast);
+    }
+
+    //roller control
+    if(Controller1.ButtonL1.pressing()) {
+      rollerMotor.spin(reverse, 50, pct);
+    }
+    else {
+      rollerMotor.stop(brakeType::hold);
+    }
+
+    //flywheel controller
+    if(Controller1.ButtonR1.pressing()) {
       magLifter.set(false);
-    }
-
-    if (Controller1.ButtonL1.pressing()) {
-      intakeMotor.spin(fwd, 12, volt);
+      ToggleFlywheelOn();
+      if (Controller1.ButtonR2.pressing()) {
+        if (indexerCount < 50) {
+          indexer1.set(true);
+          indexerCount += 12;
+        }
+        else if (indexerCount < 500) {
+          indexer1.set(false);
+          indexerCount += 12;
+        }
+        else if (count >= 500) {
+          indexerCount = 0;
+        }
+        else {
+          indexerCount += 12;
+        }
+      }
     }
     else {
-      intakeMotor.spin(fwd, 0, volt);
+      ToggleFlywheelOff();
     }
 
-    if (Controller1.ButtonL2.pressing()) {
-      rollerMotor.spin(fwd, 12, volt);
-    }
-    else {
-      rollerMotor.spin(fwd, 0, volt);
-    }
-
-    if (Controller1.ButtonR2.pressing()) {
-      diskPusher1.set(true);
-    }
-    else {
-      diskPusher1.set(false);
+    //endgame deploy
+    if (Controller1.ButtonY.pressing()) {
+      endGame.set(true);
     }
 
     wait(10,msec);

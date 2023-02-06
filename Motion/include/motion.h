@@ -1,6 +1,8 @@
 #include "robot-config.h"
 #include "vex.h"
 
+
+
 //current function for turning the robot, converts the degrees given to revolutions required and sends it to the PIDLoop
 /*void turnRobot(double setDegrees) {
   //need to convert to using radians to decrease the amount of math
@@ -163,7 +165,7 @@ void SpinMotors(double power, bool isTurning = false) {
   }
 }
 
-double kP = 0.088, kI = 0.0, kD = 0.06;
+double kP = 0.088, kI = 0, kD = 0;
 double error = 0, prevError = 0, integral = 0, derivative = 0;
 double power = 0, sensorValue = 0, lSensor = 0, rSensor = 0;
 
@@ -197,7 +199,7 @@ void runPID(double pidSetDegrees, bool resetEncoders = false, bool isTurning = f
   else {SpinMotors(power);}
 }
 
-double fkP = 0.0018, fkI = 0, fkD = 0.00018, fkF = 0.0212;
+double fkP = 0.128, fkI = 0, fkD = 0, fkF = 0.023;
 double flyWheelError = 0, fprevError = 0, fintegral = 0, fderivative = 0, fpower = 0;
 double kF, feedForward, count = 1;
 
@@ -222,22 +224,23 @@ void runFlywheel(double flywheelSetRPM = 0, bool resetFlywheelEncoders = false) 
 
     FlyWheel1.spin(forward, fpower, volt);
     FlyWheel2.spin(forward, fpower, volt);
-
-    if (flyWheelError < 5 && count > 4) {Controller1.rumble(rumbleShort); count = 1;}
+    /*
+    if (flyWheelError < 5 && count > 4) {Controller1.rumble(rumbleLong); count = 1;}
     else {
       if (count > 4) {Controller1.rumble(" ");}
       else {count++;}
     }
+    */
   }
   else {
-    FlyWheel1.spin(forward, 0, volt);
-    FlyWheel2.spin(forward, 0, volt);
+    FlyWheel1.stop(brakeType::coast);
+    FlyWheel2.stop(brakeType::coast);
   }
 }
 
 //convert degrees to inches
 double ConvertDegreesToInches(double setDegrees) {
-  double turnDiameter = 12.0;
+  double turnDiameter = 12.17;
   double requiredInches = setDegrees / 360 * M_PI * turnDiameter;
   return requiredInches;
 }
@@ -248,4 +251,77 @@ double ConvertInchesToRevolutions(double requiredInches) {
   double outputRat = 3.0/5.0;
   double requiredRevolutions = (requiredInches / circumferenceOfWheel) * outputRat * 360.0;
   return requiredRevolutions;
+}
+
+//testing stuff, current, self, goal
+double goalAngle, requiredAngle, currentAngle, requiredDistance, x_c, y_c, x_s = 24, y_s = 0;
+
+static bool isAuton = false, isPID = false, isTurning = false, isFlywheel = false, isUser = false; 
+static bool resetPID = true, resetTurning = true, resetFlywheel = true;
+static double setPID = 0, setTurning = 0, setFlywheel = 0;
+
+int autonController() {
+  while(isAuton) {
+    if (isPID) {
+      if (resetPID) {
+        setPID = ConvertInchesToRevolutions(setPID);
+        runPID(setPID, true);
+        resetPID = false;
+      }
+      else {runPID(setPID);}
+    }
+
+    if (isTurning) {
+      if (resetTurning) {
+        setTurning = ConvertDegreesToInches(setTurning);
+        setTurning = ConvertInchesToRevolutions(setTurning);
+        runPID(setTurning, true, true);
+        resetTurning = false;
+      }
+      else {runPID(setTurning, false, true);}
+    }
+
+    if (isFlywheel) {
+      if (resetFlywheel) {
+        runFlywheel(setFlywheel, true);
+        resetFlywheel = false;
+      }
+      else {runFlywheel(setFlywheel);}
+    }
+
+    wait(10, msec);
+  }
+  return 1;
+}
+
+void GoToPoint(double x_g, double y_g) {
+  //turn the robot
+  
+  x_c = x_g - x_s;
+  y_c = y_g - y_s;
+  requiredDistance = sqrt((x_c * x_c) + (y_c * y_c));
+
+  goalAngle = asin(x_c / requiredDistance) * 57.2958;
+  requiredAngle = goalAngle - currentAngle;
+  if (fabs(requiredAngle) > 3) {
+    setTurning = requiredAngle;
+    isTurning = true;
+    wait(6000, msec);
+    isTurning = false;
+    currentAngle = requiredAngle;
+  }
+
+  setPID = requiredDistance;
+  isPID = true;
+  wait(8000,msec);
+  isPID = false;
+  x_s += x_c;
+  y_s += y_c;
+
+  Brain.Screen.print(x_s);
+  Brain.Screen.print(" , ");
+  Brain.Screen.print(y_s);
+  Brain.Screen.print(" , ");
+  Brain.Screen.print(currentAngle);
+  Brain.Screen.newLine();
 }

@@ -8,20 +8,20 @@ using code = vision::code;
 brain  Brain;
 
 // VEXcode device constructors
-motor lMotor1 = motor(PORT15, ratio18_1, false);
-motor lMotor2 = motor(PORT16, ratio18_1, false);
+motor lMotor1 = motor(PORT11, ratio18_1, false);
+motor lMotor2 = motor(PORT12, ratio18_1, false);
 controller Controller1 = controller(primary);
 motor FlyWheel1 = motor(PORT9, ratio6_1, false);
 motor FlyWheel2 = motor(PORT10, ratio6_1, true);
-motor rMotor1 = motor(PORT11, ratio18_1, true);
-motor rMotor2 = motor(PORT12, ratio18_1, true);
-motor rMotor3 = motor(PORT13, ratio18_1, true);
-motor rMotor4 = motor(PORT14, ratio18_1, true);
-motor lMotor3 = motor(PORT17, ratio18_1, false);
-motor lMotor4 = motor(PORT19, ratio18_1, false);
+motor rMotor1 = motor(PORT15, ratio18_1, true);
+motor rMotor2 = motor(PORT16, ratio18_1, true);
+motor rMotor3 = motor(PORT17, ratio18_1, true);
+motor rMotor4 = motor(PORT19, ratio18_1, true);
+motor lMotor3 = motor(PORT13, ratio18_1, false);
+motor lMotor4 = motor(PORT14, ratio18_1, false);
 motor intakeMotor = motor(PORT5, ratio18_1, false);
 digital_out magLifter = digital_out(Brain.ThreeWirePort.A);
-digital_out diskPusher1 = digital_out(Brain.ThreeWirePort.B);
+digital_out indexer1 = digital_out(Brain.ThreeWirePort.B);
 digital_out endGame = digital_out(Brain.ThreeWirePort.C);
 motor rollerMotor = motor(PORT21, ratio18_1, false);
 

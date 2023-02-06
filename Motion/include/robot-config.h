@@ -16,7 +16,7 @@ extern motor lMotor3;
 extern motor lMotor4;
 extern motor intakeMotor;
 extern digital_out magLifter;
-extern digital_out diskPusher1;
+extern digital_out indexer1;
 extern digital_out endGame;
 extern motor rollerMotor;
 
