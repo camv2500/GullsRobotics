@@ -150,16 +150,16 @@ void turnRobot(double setDegrees) {
 
 void SpinMotors(double power, bool isTurning = false) {
   if(isTurning) {
-    lMotor11.spin(reverse, power, pct); rMotor17.spin(forward, power, pct);
-    lMotor12.spin(reverse, power, pct); rMotor18.spin(forward, power, pct);
-    lMotor13.spin(reverse, power, pct); rMotor19.spin(forward, power, pct);
-    lMotor14.spin(reverse, power, pct); rMotor20.spin(forward, power, pct);
+    lMotor1.spin(reverse, power, pct); rMotor1.spin(forward, power, pct);
+    lMotor2.spin(reverse, power, pct); rMotor2.spin(forward, power, pct);
+    lMotor3.spin(reverse, power, pct); rMotor3.spin(forward, power, pct);
+    lMotor4.spin(reverse, power, pct); rMotor4.spin(forward, power, pct);
   }
   else {
-    lMotor11.spin(forward, power, pct); rMotor17.spin(forward, power, pct);
-    lMotor12.spin(forward, power, pct); rMotor18.spin(forward, power, pct);
-    lMotor13.spin(forward, power, pct); rMotor19.spin(forward, power, pct);
-    lMotor14.spin(forward, power, pct); rMotor20.spin(forward, power, pct);
+    lMotor1.spin(forward, power, pct); rMotor1.spin(forward, power, pct);
+    lMotor2.spin(forward, power, pct); rMotor2.spin(forward, power, pct);
+    lMotor3.spin(forward, power, pct); rMotor3.spin(forward, power, pct);
+    lMotor4.spin(forward, power, pct); rMotor4.spin(forward, power, pct);
   }
 }
 
@@ -171,16 +171,16 @@ double power = 0, sensorValue = 0, lSensor = 0, rSensor = 0;
 void runPID(double pidSetDegrees, bool resetEncoders = false, bool isTurning = false) {
   if (resetEncoders) {
     resetEncoders = false;
-    lMotor11.setPosition(0, degrees); lMotor12.setPosition(0, degrees); lMotor13.setPosition(0, degrees); lMotor14.setPosition(0, degrees);
-    rMotor17.setPosition(0, degrees); rMotor18.setPosition(0, degrees); rMotor19.setPosition(0, degrees); rMotor20.setPosition(0, degrees);
+    lMotor1.setPosition(0, degrees); lMotor2.setPosition(0, degrees); lMotor3.setPosition(0, degrees); lMotor4.setPosition(0, degrees);
+    rMotor1.setPosition(0, degrees); rMotor2.setPosition(0, degrees); rMotor3.setPosition(0, degrees); rMotor4.setPosition(0, degrees);
     integral = 0;
     derivative = 0;
   }
 
-  lSensor = (lMotor11.position(degrees) + lMotor12.position(degrees) + 
-    lMotor13.position(degrees) + lMotor14.position(degrees)) / 4;
-  rSensor = (rMotor17.position(degrees) + rMotor18.position(degrees) + 
-    rMotor19.position(degrees) + rMotor20.position(degrees)) / 4;
+  lSensor = (lMotor1.position(degrees) + lMotor2.position(degrees) + 
+    lMotor3.position(degrees) + lMotor4.position(degrees)) / 4;
+  rSensor = (rMotor1.position(degrees) + rMotor2.position(degrees) + 
+    rMotor3.position(degrees) + rMotor4.position(degrees)) / 4;
   if (isTurning) {sensorValue = rSensor;}
   else {sensorValue = (lSensor + rSensor) / 2;}
   error = pidSetDegrees - sensorValue;

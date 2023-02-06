@@ -10,22 +10,22 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
-// lMotor14             motor         14              
-// lMotor13             motor         13              
+// lMotor1              motor         15              
+// lMotor2              motor         16              
 // Controller1          controller                    
-// FlyWheel1            motor         16              
-// FlyWheel2            motor         15              
-// rMotor17             motor         17              
-// rMotor18             motor         18              
-// rMotor19             motor         19              
-// rMotor20             motor         20              
-// lMotor11             motor         11              
-// lMotor12             motor         12              
+// FlyWheel1            motor         9               
+// FlyWheel2            motor         10              
+// rMotor1              motor         11              
+// rMotor2              motor         12              
+// rMotor3              motor         13              
+// rMotor4              motor         14              
+// lMotor3              motor         17              
+// lMotor4              motor         19              
 // intakeMotor          motor         5               
 // magLifter            digital_out   A               
 // diskPusher1          digital_out   B               
 // endGame              digital_out   C               
-// rollerMotor          motor         1               
+// rollerMotor          motor         21              
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
@@ -65,7 +65,7 @@ void pre_auton(void) {
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
-static bool isAuton = false, isPID = false, isTurning = false, isFlywheel = false; 
+static bool isAuton = false, isPID = false, isTurning = false, isFlywheel = false, isUser = false; 
 static bool resetPID = true, resetTurning = true, resetFlywheel = true;
 static double setPID = 0, setTurning = 0, setFlywheel = 0;
 
@@ -104,7 +104,7 @@ int autonController() {
 }
 
 void autonomous(void) {
-  isAuton = true; resetPID = true; resetTurning = true; resetFlywheel = true;
+  isAuton = true; resetPID = true; resetTurning = true; resetFlywheel = true; isUser = false;
   task StartAuton(autonController);
 
   setFlywheel = 400;
@@ -132,28 +132,8 @@ void autonomous(void) {
   vex::task::sleep(290);
   rollerMotor.spin(fwd, 0, volt);
 
-  distance = 5;
-  convDistance = (distance/circumferenceOfWheel)*outputRat*360.0;
-  resetEncoders = true;
-  pidSetDegrees = convDistance;
-  resetFlywheelEncoders = true;
-  flywheelSetRPM = 550;
-  vex::task::sleep(1500);
-  pidSetDegrees = 0;
-
-  turnRobot(-7);
-  vex::task::sleep(3000);
-  isTurning = false;
-  pidSetDegrees = 0;
-
-  diskPusher1.set(true);
-  vex::task::sleep(1000);
-  diskPusher1.set(false);
-  vex::task::sleep(1000);
-  diskPusher1.set(true);
-  */
   Brain.Screen.print("isExited");
-  SpinMotors(0);
+  SpinMotors(0); */
 }
 
 
@@ -167,7 +147,7 @@ void autonomous(void) {
 /*  You must modify the code to add your own robot specific commands here.   */
 /*---------------------------------------------------------------------------*/
 
-static bool isUser = false, isUserFlywheel = false, resetUserFlywheel = false;
+static bool isUserFlywheel = false, resetUserFlywheel = false;
 static double setUserFlywheel = 0;
 
 void ToggleFlywheelOn() {
@@ -197,14 +177,14 @@ int userController() {
       else {runFlywheel(setUserFlywheel);}
     }
 
-    lMotor11.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
-    rMotor17.spin(fwd, Controller1.Axis3.position(percent), vex::velocityUnits::pct);
-    lMotor12.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
-    rMotor18.spin(fwd, Controller1.Axis3.position(percent), vex::velocityUnits::pct);
-    lMotor13.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
-    rMotor19.spin(fwd, Controller1.Axis3.position(percent), vex::velocityUnits::pct);
-    lMotor14.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
-    rMotor20.spin(fwd, Controller1.Axis3.position(percent), vex::velocityUnits::pct);
+    lMotor1.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
+    rMotor1.spin(fwd, Controller1.Axis3.position(percent), vex::velocityUnits::pct);
+    lMotor2.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
+    rMotor2.spin(fwd, Controller1.Axis3.position(percent), vex::velocityUnits::pct);
+    lMotor3.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
+    rMotor3.spin(fwd, Controller1.Axis3.position(percent), vex::velocityUnits::pct);
+    lMotor4.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
+    rMotor4.spin(fwd, Controller1.Axis3.position(percent), vex::velocityUnits::pct);
 
     Controller1.ButtonX.pressed(ToggleFlywheelOn);
     Controller1.ButtonY.pressed(ToggleFlywheelOff);
@@ -244,55 +224,8 @@ int userController() {
 }
 
 void usercontrol(void) {
+  isUser = true; isAuton = false;
   task StartUser(userController);
-  /*task StartFlyWheel(flyWheelController);
-  // User control code here, inside the loop
-  while (1) {
-    lMotor11.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
-    rMotor17.spin(fwd, Controller1.Axis3.position(percent), vex::velocityUnits::pct);
-    lMotor12.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
-    rMotor18.spin(fwd, Controller1.Axis3.position(percent), vex::velocityUnits::pct);
-    lMotor13.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
-    rMotor19.spin(fwd, Controller1.Axis3.position(percent), vex::velocityUnits::pct);
-    lMotor14.spin(fwd, Controller1.Axis2.position(percent), vex::velocityUnits::pct);
-    rMotor20.spin(fwd, Controller1.Axis3.position(percent), vex::velocityUnits::pct);
-
-    //Controller1.ButtonX.pressed(toggleFlyWheelOn);
-    //Controller1.ButtonY.pressed(toggleFlyWheelOff);
-
-    if (Controller1.ButtonR1.pressing()) {
-      magLifter.set(true);
-    }
-    else {
-      magLifter.set(false);
-    }
-
-    if (Controller1.ButtonL1.pressing()) {
-      intakeMotor.spin(fwd, 12, volt);
-    }
-    else {
-      intakeMotor.spin(fwd, 0, volt);
-    }
-
-    if (Controller1.ButtonL2.pressing()) {
-      rollerMotor.spin(fwd, 12, volt);
-    }
-    else {
-      rollerMotor.spin(fwd, 0, volt);
-    }
-
-    if (Controller1.ButtonR2.pressing()) {
-      diskPusher1.set(true);
-    }
-    else {
-      diskPusher1.set(false);
-    }
-    
-    //magLifter.set(false);
-    //diskPusher1.set(false);
-    wait(20, msec);
-  }
-  */
 }
 
 //
