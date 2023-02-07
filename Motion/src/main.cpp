@@ -100,10 +100,10 @@ int userController() {
     lMotor2.spin(fwd, (Controller1.Axis2.value() - Controller1.Axis1.value()) / 2, vex::velocityUnits::pct);
     lMotor3.spin(fwd, (Controller1.Axis2.value() - Controller1.Axis1.value()) / 2, vex::velocityUnits::pct);
     lMotor4.spin(fwd, (Controller1.Axis2.value() - Controller1.Axis1.value()) / 2, vex::velocityUnits::pct);
-    rMotor1.spin(fwd, (Controller1.Axis3.value() + Controller1.Axis1.value()) / 2, vex::velocityUnits::pct);
-    rMotor2.spin(fwd, (Controller1.Axis3.value() + Controller1.Axis1.value()) / 2, vex::velocityUnits::pct);
-    rMotor3.spin(fwd, (Controller1.Axis3.value() + Controller1.Axis1.value()) / 2, vex::velocityUnits::pct);
-    rMotor4.spin(fwd, (Controller1.Axis3.value() + Controller1.Axis1.value()) / 2, vex::velocityUnits::pct);
+    rMotor1.spin(fwd, (Controller1.Axis2.value() + Controller1.Axis1.value()) / 2, vex::velocityUnits::pct);
+    rMotor2.spin(fwd, (Controller1.Axis2.value() + Controller1.Axis1.value()) / 2, vex::velocityUnits::pct);
+    rMotor3.spin(fwd, (Controller1.Axis2.value() + Controller1.Axis1.value()) / 2, vex::velocityUnits::pct);
+    rMotor4.spin(fwd, (Controller1.Axis2.value() + Controller1.Axis1.value()) / 2, vex::velocityUnits::pct);
 
     //intake control
     if(Controller1.ButtonL2.pressing()) {
@@ -131,7 +131,7 @@ int userController() {
       magLifter.set(false);
       ToggleFlywheelOn();
       if (Controller1.ButtonR2.pressing()) {
-        if (indexerCount < 50) {
+        if (indexerCount < 100) {
           indexer1.set(true);
           indexerCount += 12;
         }
@@ -145,6 +145,9 @@ int userController() {
         else {
           indexerCount += 12;
         }
+      }
+      else {
+        indexerCount = 0;
       }
     }
     else {
