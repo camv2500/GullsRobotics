@@ -1,3 +1,23 @@
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// lMotor1              motor         11              
+// lMotor2              motor         12              
+// Controller1          controller                    
+// FlyWheel1            motor         9               
+// FlyWheel2            motor         10              
+// rMotor1              motor         15              
+// rMotor2              motor         16              
+// rMotor3              motor         17              
+// rMotor4              motor         19              
+// lMotor3              motor         13              
+// lMotor4              motor         14              
+// intakeMotor          motor         5               
+// magLifter            digital_out   A               
+// indexer1             digital_out   B               
+// endGame              digital_out   C               
+// rollerMotor          motor         21              
+// ---- END VEXCODE CONFIGURED DEVICES ----
 #include "vex.h"
 #include "motion.h"
 #include "math.h"
@@ -75,7 +95,7 @@ void ToggleFlywheelOff() {
   isUserFlywheel = false;
   resetUserFlywheel = true;
   setUserFlywheel = 0;
-  isUserFlywheel = true;
+  isUserFlywheel = false;
 }
 
 void userSpinMotors() {
@@ -126,10 +146,21 @@ int userController() {
       rollerMotor.stop(brakeType::hold);
     }
 
+    if (Controller1.ButtonX.pressing()) {
+      FlyWheel1.spin(fwd, 80, pct);
+      FlyWheel2.spin(fwd,80,pct);
+    }
+    else if (!Controller1.ButtonX.pressing() && !Controller1.ButtonR1.pressing()) {
+      FlyWheel1.stop(brakeType::coast);
+      FlyWheel2.stop(brakeType::coast);
+    }
+
     //flywheel controller
     if(Controller1.ButtonR1.pressing()) {
       magLifter.set(false);
-      ToggleFlywheelOn();
+      if (!isUserFlywheel) {
+        ToggleFlywheelOn();
+      }
       if (Controller1.ButtonR2.pressing()) {
         if (indexerCount < 100) {
           indexer1.set(true);
@@ -148,10 +179,12 @@ int userController() {
       }
       else {
         indexerCount = 0;
+        indexer1.set(false);
       }
     }
     else {
       ToggleFlywheelOff();
+      indexer1.set(false);
     }
 
     //endgame deploy

@@ -199,7 +199,7 @@ void runPID(double pidSetDegrees, bool resetEncoders = false, bool isTurning = f
   else {SpinMotors(power);}
 }
 
-double fkP = 0.128, fkI = 0, fkD = 0, fkF = 0.023;
+double fkP = 0.000000, fkI = 0, fkD = 0.000000, fkF = 0.024;
 double flyWheelError = 0, fprevError = 0, fintegral = 0, fderivative = 0, fpower = 0;
 double kF, feedForward, count = 1;
 
@@ -286,7 +286,9 @@ int autonController() {
         runFlywheel(setFlywheel, true);
         resetFlywheel = false;
       }
-      else {runFlywheel(setFlywheel);}
+      else {
+        runFlywheel(setFlywheel);
+      }
     }
 
     wait(10, msec);
