@@ -59,7 +59,7 @@ void autonomous(void) {
   intakeMotor.spin(fwd, 0, pct);
   ToggleFlywheelOn();
   magLifter.set(false);
-  GoToPoint(0,30,true);
+  GoToPoint(0,30);
   GoToPoint(2,35);
   indexer1.set(true);
   wait(120, msec);

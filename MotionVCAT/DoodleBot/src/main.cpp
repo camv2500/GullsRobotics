@@ -37,34 +37,36 @@ void pre_auton(void) {
 /*---------------------------------------------------------------------------*/
 
 void autonomous(void) {
-  //THIS IS THE BOT THAT STARTS RIGHT IN FRONT OF THE ROLLERR
-  //MAKE SURE YOU HAVE THE RIGHT PROGRAM UPLOADED
+  //THIS IS THE BOT THAT STARTS AWAY FROM THE ROLLER
+  //MAKE SURE YOU HAVE THE RIGHT PROGRAM
   isAuton = true; resetPID = true; resetTurning = true; resetFlywheel = true; isUser = false;
   task StartAuton(autonController);
+
   magLifter.set(false);
-  GoToPoint(0,-4,true);
+  GoToPoint(24,0);
+  GoToPoint(24,1);
+  GoToPoint(24,-4);
   rollerMotor.spin(fwd, 50, pct);
   wait(120, msec);
   rollerMotor.spin(fwd, 0, pct);
   ToggleFlywheelOn();
-  GoToPoint(-3,12);
+  GoToPoint(26,18);
   indexer1.set(true);
   wait(120, msec);
   indexer1.set(false);
   magLifter.set(true);
   ToggleFlywheelOff();
   intakeMotor.spin(fwd, 100, pct);
-  GoToPoint(-6,23);
-  GoToPoint(0,35);
+  GoToPoint(-6,24);
+  GoToPoint(-18,35);
   intakeMotor.spin(fwd, 0, pct);
   ToggleFlywheelOn();
   magLifter.set(false);
-  GoToPoint(0,30,true);
-  GoToPoint(2,35);
+  GoToPoint(-14,47);
   indexer1.set(true);
   wait(120, msec);
   indexer1.set(false);
-
+  ToggleFlywheelOff();
   Brain.Screen.print("isExited");
   SpinMotors(0); 
 }
