@@ -42,6 +42,30 @@ void autonomous(void) {
   isAuton = true; resetPID = true; resetTurning = true; resetFlywheel = true; isUser = false;
   task StartAuton(autonController);
 
+  GoToPoint(20,-1);
+  setTurning = -105;
+  resetTurning = true;
+  isTurning = true;
+  wait(4000, msec);
+  isTurning = false;
+  rollerMotor.spin(fwd,100,pct);
+  lMotor1.spin(reverse,20,pct);
+  lMotor2.spin(reverse,20,pct);
+  lMotor3.spin(reverse,20,pct);
+  lMotor4.spin(reverse,20,pct);
+  rMotor1.spin(reverse,20,pct);
+  rMotor2.spin(reverse,20,pct);
+  rMotor3.spin(reverse,20,pct);
+  rMotor4.spin(reverse,20,pct);
+
+  /*
+  GoToPoint(22,0);
+  GoToPoint(22,2);
+  GoToPoint(22,-4,true);
+  rollerMotor.spin(fwd, 50, pct);
+  wait(120, msec);
+  rollerMotor.spin(fwd, 0, pct);
+  
   magLifter.set(false);
   GoToPoint(24,0);
   GoToPoint(24,1);
@@ -54,19 +78,29 @@ void autonomous(void) {
   indexer1.set(true);
   wait(120, msec);
   indexer1.set(false);
+  wait(120,msec);
+  indexer1.set(true);
+  wait(120, msec);
+  indexer1.set(false);
   magLifter.set(true);
   ToggleFlywheelOff();
   intakeMotor.spin(fwd, 100, pct);
-  GoToPoint(-6,24);
-  GoToPoint(-18,35);
+  GoToPoint(-6,20);
+  GoToPoint(-18,31);
   intakeMotor.spin(fwd, 0, pct);
   ToggleFlywheelOn();
   magLifter.set(false);
-  GoToPoint(-14,47);
+  GoToPoint(-14,43);
+  indexer1.set(true);
+  wait(120, msec);
+  indexer1.set(false);
+  wait(120,msec);
   indexer1.set(true);
   wait(120, msec);
   indexer1.set(false);
   ToggleFlywheelOff();
+  */
+  wait(3000,msec);
   Brain.Screen.print("isExited");
   SpinMotors(0); 
 }

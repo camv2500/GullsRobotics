@@ -194,13 +194,17 @@ void GoToPoint(double x_g, double y_g, bool isReversing = false) {
 }
 
 static bool isUserFlywheel = false, resetUserFlywheel = false;
-static double setUserFlywheel = 0;
+static double setUserFlywheel = 0, indexerCount = 0;
 
-void ToggleFlywheelOn(double speed = 450) {
+void ToggleFlywheelOn(double speed = 532) {
   resetUserFlywheel = true;
   if (speed == 450) {
-    setUserFlywheel = 450;
+    setUserFlywheel = 600;
     fkF = 0.024;
+  }
+  if (speed == 532) {
+    setUserFlywheel = 532;
+    fkF = 0.022;
   }
   isUserFlywheel = true;
 }
@@ -218,6 +222,8 @@ int userController() {
       if (resetUserFlywheel) {
         runFlywheel(setUserFlywheel, true);
         resetUserFlywheel = false;
+        Brain.Screen.print(FlyWheel1.velocity(rpm));
+        Brain.Screen.newLine();
       }
       else {
         runFlywheel(setUserFlywheel);
@@ -237,7 +243,7 @@ int userController() {
 
     //intake control
     if(Controller1.ButtonL2.pressing()) {
-      magLifter.set(true);
+      magLifter.set(false);
       indexer1.set(false);
       intakeMotor.spin(fwd, 100, pct);
     }
@@ -250,7 +256,10 @@ int userController() {
 
     //roller control
     if(Controller1.ButtonL1.pressing()) {
-      rollerMotor.spin(reverse, 50, pct);
+      rollerMotor.spin(reverse, 65, pct);
+    }
+    else if(Controller1.ButtonLeft.pressing()) {
+      rollerMotor.spin(fwd, 100, pct);
     }
     else {
       rollerMotor.stop(brakeType::hold);
@@ -258,10 +267,10 @@ int userController() {
 
     //flywheel controller
     if(Controller1.ButtonR1.pressing()) {
-      magLifter.set(false);
-      if (!isUserFlywheel) {
-        ToggleFlywheelOn();
-      }
+      magLifter.set(true);
+      ToggleFlywheelOn();
+      //FlyWheel1.spin(fwd,100,pct);
+      //FlyWheel2.spin(fwd,100,pct);
       if (Controller1.ButtonR2.pressing()) {
         indexer1.set(true);
       }
@@ -271,12 +280,26 @@ int userController() {
     }
     else {
       ToggleFlywheelOff();
+      //FlyWheel1.stop(brakeType::coast);
+      //FlyWheel2.stop(brakeType::coast);
       indexer1.set(false);
+    }
+
+    if (Controller1.ButtonX.pressing()) {
+      FlyWheel1.spin(fwd, 80, pct);
+      FlyWheel2.spin(fwd,80,pct);
+    }
+    else if (!Controller1.ButtonX.pressing() && !Controller1.ButtonR1.pressing()) {
+      FlyWheel1.stop(brakeType::coast);
+      FlyWheel2.stop(brakeType::coast);
     }
 
     //endgame deploy
     if (Controller1.ButtonY.pressing()) {
       endGame.set(true);
+    }
+    else {
+      endGame.set(false);
     }
 
     wait(10,msec);
