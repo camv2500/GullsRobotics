@@ -1,5 +1,6 @@
 #include "robot-config.h"
 #include "vex.h"
+#include <cmath>
 
 //spin the motors for pid
 void SpinMotors(double power, bool isTurning = false) {
@@ -196,6 +197,11 @@ void GoToPoint(double x_g, double y_g, bool isReversing = false) {
 static bool isUserFlywheel = false, resetUserFlywheel = false;
 static double setUserFlywheel = 0, indexerCount = 0;
 
+double controlCurve(double controllerPos){
+  //Slow curve
+  return (exp(-14.6/10)+exp((fabs(controllerPos)-100)/10)*(1-exp(-14.6/10)))*controllerPos;
+}
+
 void ToggleFlywheelOn(double speed = 532) {
   resetUserFlywheel = true;
   if (speed == 450) {
@@ -232,14 +238,20 @@ int userController() {
       }
     }
 
-    lMotor1.spin(fwd, (Controller1.Axis2.value() - Controller1.Axis1.value()) / 2, vex::velocityUnits::pct);
-    lMotor2.spin(fwd, (Controller1.Axis2.value() - Controller1.Axis1.value()) / 2, vex::velocityUnits::pct);
-    lMotor3.spin(fwd, (Controller1.Axis2.value() - Controller1.Axis1.value()) / 2, vex::velocityUnits::pct);
-    lMotor4.spin(fwd, (Controller1.Axis2.value() - Controller1.Axis1.value()) / 2, vex::velocityUnits::pct);
-    rMotor1.spin(fwd, (Controller1.Axis2.value() + Controller1.Axis1.value()) / 2, vex::velocityUnits::pct);
-    rMotor2.spin(fwd, (Controller1.Axis2.value() + Controller1.Axis1.value()) / 2, vex::velocityUnits::pct);
-    rMotor3.spin(fwd, (Controller1.Axis2.value() + Controller1.Axis1.value()) / 2, vex::velocityUnits::pct);
-    rMotor4.spin(fwd, (Controller1.Axis2.value() + Controller1.Axis1.value()) / 2, vex::velocityUnits::pct);
+    double leftDrive = (Controller1.Axis2.value() - Controller1.Axis1.value());
+    double rightDrive = (Controller1.Axis2.value() + Controller1.Axis1.value());
+
+
+
+
+    lMotor1.spin(fwd, controlCurve(leftDrive), vex::velocityUnits::pct);
+    lMotor2.spin(fwd, controlCurve(leftDrive), vex::velocityUnits::pct);
+    lMotor3.spin(fwd, controlCurve(leftDrive), vex::velocityUnits::pct);
+    lMotor4.spin(fwd, controlCurve(leftDrive), vex::velocityUnits::pct);
+    rMotor1.spin(fwd, controlCurve(rightDrive), vex::velocityUnits::pct);
+    rMotor2.spin(fwd, controlCurve(rightDrive), vex::velocityUnits::pct);
+    rMotor3.spin(fwd, controlCurve(rightDrive), vex::velocityUnits::pct);
+    rMotor4.spin(fwd, controlCurve(rightDrive), vex::velocityUnits::pct);
 
     //intake control
     if(Controller1.ButtonL2.pressing()) {
