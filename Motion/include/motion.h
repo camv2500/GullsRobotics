@@ -68,7 +68,7 @@ void runPID(double pidSetDegrees, bool resetEncoders = false, bool isTurning = f
 }
 
 //variables for the flywheel
-double fkP = 0.000000, fkI = 0, fkD = 0.000000, fkF = 0.024;
+double fkP = 0.008, fkI = 0, fkD = 0, fkF = 0.02;
 double flyWheelError = 0, fprevError = 0, fintegral = 0, fderivative = 0, fpower = 0;
 double kF, feedForward, count = 1;
 
@@ -82,7 +82,7 @@ void runFlywheel(double flywheelSetRPM = 0, bool resetFlywheelEncoders = false) 
   }
 
   if (flywheelSetRPM != 0) {
-    flyWheelError = flywheelSetRPM - (FlyWheel1.velocity(rpm) + FlyWheel2.velocity(rpm) / 2);
+    flyWheelError = flywheelSetRPM - ((FlyWheel1.velocity(rpm) * -1) + FlyWheel2.velocity(rpm) / 2);
 
     fintegral = fintegral + flyWheelError;
     if (fabs(fintegral) > 12000) {fintegral = 12000;}
@@ -91,6 +91,9 @@ void runFlywheel(double flywheelSetRPM = 0, bool resetFlywheelEncoders = false) 
     fprevError = flyWheelError;
 
     fpower = flyWheelError * fkP + fintegral * fkI + fderivative * fkD + feedForward * fkF;
+    if (fpower > (flywheelSetRPM / 600 * 12)) {
+      fpower = flywheelSetRPM / 600 * 12;
+    }
 
     FlyWheel1.spin(forward, fpower, volt);
     FlyWheel2.spin(forward, fpower, volt);
@@ -194,13 +197,13 @@ void GoToPoint(double x_g, double y_g, bool isReversing = false) {
 }
 
 static bool isUserFlywheel = false, resetUserFlywheel = false;
-static double setUserFlywheel = 0;
+static double setUserFlywheel = 0, indexerCount = 0;
 
 void ToggleFlywheelOn(double speed = 450) {
   resetUserFlywheel = true;
   if (speed == 450) {
     setUserFlywheel = 450;
-    fkF = 0.024;
+    //fkF = 0.02;
   }
   isUserFlywheel = true;
 }
@@ -218,6 +221,8 @@ int userController() {
       if (resetUserFlywheel) {
         runFlywheel(setUserFlywheel, true);
         resetUserFlywheel = false;
+        Brain.Screen.print(FlyWheel1.velocity(rpm));
+        Brain.Screen.newLine();
       }
       else {
         runFlywheel(setUserFlywheel);
@@ -225,16 +230,27 @@ int userController() {
         Brain.Screen.newLine();
       }
     }
-
-    lMotor1.spin(fwd, (Controller1.Axis2.value() - Controller1.Axis1.value()) / 2, vex::velocityUnits::pct);
-    lMotor2.spin(fwd, (Controller1.Axis2.value() - Controller1.Axis1.value()) / 2, vex::velocityUnits::pct);
-    lMotor3.spin(fwd, (Controller1.Axis2.value() - Controller1.Axis1.value()) / 2, vex::velocityUnits::pct);
-    lMotor4.spin(fwd, (Controller1.Axis2.value() - Controller1.Axis1.value()) / 2, vex::velocityUnits::pct);
-    rMotor1.spin(fwd, (Controller1.Axis2.value() + Controller1.Axis1.value()) / 2, vex::velocityUnits::pct);
-    rMotor2.spin(fwd, (Controller1.Axis2.value() + Controller1.Axis1.value()) / 2, vex::velocityUnits::pct);
-    rMotor3.spin(fwd, (Controller1.Axis2.value() + Controller1.Axis1.value()) / 2, vex::velocityUnits::pct);
-    rMotor4.spin(fwd, (Controller1.Axis2.value() + Controller1.Axis1.value()) / 2, vex::velocityUnits::pct);
-
+    
+    if(abs(Controller1.Axis2.value()+Controller1.Axis1.value()) < 50 || abs(Controller1.Axis2.value()-Controller1.Axis1.value()) < 50) { 
+      lMotor1.spin(fwd, ((Controller1.Axis2.value() - Controller1.Axis1.value())/2), vex::velocityUnits::pct);
+      lMotor2.spin(fwd, ((Controller1.Axis2.value() - Controller1.Axis1.value())/2), vex::velocityUnits::pct);
+      lMotor3.spin(fwd, ((Controller1.Axis2.value() - Controller1.Axis1.value())/2), vex::velocityUnits::pct);
+      lMotor4.spin(fwd, ((Controller1.Axis2.value() - Controller1.Axis1.value())/2), vex::velocityUnits::pct);
+      rMotor1.spin(fwd, ((Controller1.Axis2.value() + Controller1.Axis1.value())/2), vex::velocityUnits::pct);
+      rMotor2.spin(fwd, ((Controller1.Axis2.value() + Controller1.Axis1.value())/2), vex::velocityUnits::pct);
+      rMotor3.spin(fwd, ((Controller1.Axis2.value() + Controller1.Axis1.value())/2), vex::velocityUnits::pct);
+      rMotor4.spin(fwd, ((Controller1.Axis2.value() + Controller1.Axis1.value())/2), vex::velocityUnits::pct);
+    }
+    else {
+      lMotor1.spin(fwd, (Controller1.Axis2.value() - Controller1.Axis1.value()), vex::velocityUnits::pct);
+      lMotor2.spin(fwd, (Controller1.Axis2.value() - Controller1.Axis1.value()), vex::velocityUnits::pct);
+      lMotor3.spin(fwd, (Controller1.Axis2.value() - Controller1.Axis1.value()), vex::velocityUnits::pct);
+      lMotor4.spin(fwd, (Controller1.Axis2.value() - Controller1.Axis1.value()), vex::velocityUnits::pct);
+      rMotor1.spin(fwd, (Controller1.Axis2.value() + Controller1.Axis1.value()), vex::velocityUnits::pct);
+      rMotor2.spin(fwd, (Controller1.Axis2.value() + Controller1.Axis1.value()), vex::velocityUnits::pct);
+      rMotor3.spin(fwd, (Controller1.Axis2.value() + Controller1.Axis1.value()), vex::velocityUnits::pct);
+      rMotor4.spin(fwd, (Controller1.Axis2.value() + Controller1.Axis1.value()), vex::velocityUnits::pct);
+    }
     //intake control
     if(Controller1.ButtonL2.pressing()) {
       magLifter.set(true);
@@ -252,6 +268,9 @@ int userController() {
     if(Controller1.ButtonL1.pressing()) {
       rollerMotor.spin(reverse, 50, pct);
     }
+    else if(Controller1.ButtonLeft.pressing()) {
+      rollerMotor.spin(fwd, 80, pct);
+    }
     else {
       rollerMotor.stop(brakeType::hold);
     }
@@ -259,9 +278,9 @@ int userController() {
     //flywheel controller
     if(Controller1.ButtonR1.pressing()) {
       magLifter.set(false);
-      if (!isUserFlywheel) {
-        ToggleFlywheelOn();
-      }
+      ToggleFlywheelOn();
+      //FlyWheel1.spin(fwd,100,pct);
+      //FlyWheel2.spin(fwd,100,pct);
       if (Controller1.ButtonR2.pressing()) {
         indexer1.set(true);
       }
@@ -271,12 +290,26 @@ int userController() {
     }
     else {
       ToggleFlywheelOff();
+      //FlyWheel1.stop(brakeType::coast);
+      //FlyWheel2.stop(brakeType::coast);
       indexer1.set(false);
+    }
+
+    if (Controller1.ButtonX.pressing()) {
+      FlyWheel1.spin(fwd, 80, pct);
+      FlyWheel2.spin(fwd,80,pct);
+    }
+    else if (!Controller1.ButtonX.pressing() && !Controller1.ButtonR1.pressing()) {
+      FlyWheel1.stop(brakeType::coast);
+      FlyWheel2.stop(brakeType::coast);
     }
 
     //endgame deploy
     if (Controller1.ButtonY.pressing()) {
       endGame.set(true);
+    }
+    else {
+      endGame.set(false);
     }
 
     wait(10,msec);
