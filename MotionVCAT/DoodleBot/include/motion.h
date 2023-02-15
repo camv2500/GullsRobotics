@@ -241,9 +241,6 @@ int userController() {
     double leftDrive = (Controller1.Axis2.value() - Controller1.Axis1.value());
     double rightDrive = (Controller1.Axis2.value() + Controller1.Axis1.value());
 
-
-
-
     lMotor1.spin(fwd, controlCurve(leftDrive), vex::velocityUnits::pct);
     lMotor2.spin(fwd, controlCurve(leftDrive), vex::velocityUnits::pct);
     lMotor3.spin(fwd, controlCurve(leftDrive), vex::velocityUnits::pct);

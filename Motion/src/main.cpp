@@ -37,10 +37,44 @@ void pre_auton(void) {
 /*---------------------------------------------------------------------------*/
 
 void autonomous(void) {
-  //THIS IS THE BOT THAT STARTS RIGHT IN FRONT OF THE ROLLERR
-  //MAKE SURE YOU HAVE THE RIGHT PROGRAM UPLOADED
-  //isAuton = true; resetPID = true; resetTurning = true; resetFlywheel = true; isUser = false;
-  //task StartAuton(autonController);
+  isAuton = true; resetPID = true; resetTurning = true; resetFlywheel = true; isUser = false;
+  task StartAuton(autonController);
+
+  GoToPoint(18,-1);
+  GoToPoint(18,2);
+  setPID = -18;
+  resetPID = true;
+  isPID = true;
+  wait(3000,msec);
+  isPID = false;
+  rollerMotor.spin(fwd,80,pct);
+  wait(200,msec); //replace with color sensor
+  rollerMotor.spin(fwd,0,pct);
+  setPID = 5;
+  resetPID = true;
+  isPID = true;
+  wait(3000,msec);
+  isPID = false;
+  GoToPoint(20.3,9);
+  SpinMotors(0);
+
+  //shooting
+  magLifter.set(true);
+  setFlywheel = 600;
+  resetFlywheel = true;
+  isFlywheel = true;
+  wait(2000,msec);
+  indexer1.set(true);
+  wait(500,msec);
+  indexer1.set(false);
+  wait(2000,msec);
+  indexer1.set(true);
+  wait(500,msec);
+  indexer1.set(false);
+  setFlywheel = 0;
+  isFlywheel = false;
+
+  /*
   rollerMotor.spin(fwd,100,pct);
   lMotor1.spin(reverse,20,pct);
   lMotor2.spin(reverse,20,pct);
@@ -51,7 +85,6 @@ void autonomous(void) {
   rMotor2.spin(reverse,20,pct);
   rMotor3.spin(reverse,20,pct);
   rMotor4.spin(reverse,20,pct);
-  /*
   GoToPoint(0,-4,true);
   rollerMotor.spin(fwd, 50, pct);
   wait(120, msec);

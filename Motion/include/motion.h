@@ -68,7 +68,7 @@ void runPID(double pidSetDegrees, bool resetEncoders = false, bool isTurning = f
 }
 
 //variables for the flywheel
-double fkP = 0.008, fkI = 0, fkD = 0, fkF = 0.02;
+double fkP = 0.008, fkI = 0, fkD = 0.008, fkF = 0.02;
 double flyWheelError = 0, fprevError = 0, fintegral = 0, fderivative = 0, fpower = 0;
 double kF, feedForward, count = 1;
 
@@ -85,7 +85,7 @@ void runFlywheel(double flywheelSetRPM = 0, bool resetFlywheelEncoders = false) 
     flyWheelError = flywheelSetRPM - ((FlyWheel1.velocity(rpm) * -1) + FlyWheel2.velocity(rpm) / 2);
 
     fintegral = fintegral + flyWheelError;
-    if (fabs(fintegral) > 12000) {fintegral = 12000;}
+    //if (fabs(fintegral) > 12000) {fintegral = 12000;}
 
     fderivative = flyWheelError - fprevError;
     fprevError = flyWheelError;
@@ -157,7 +157,7 @@ int autonController() {
 double goalAngle, requiredAngle, currentAngle, requiredDistance, x_c, y_c, x_s = 0, y_s = 0;
 
 //odometry function
-void GoToPoint(double x_g, double y_g, bool isReversing = false) {
+void GoToPoint(double x_g, double y_g) {
   //calculate distance  
   x_c = x_g - x_s;
   y_c = y_g - y_s;
@@ -168,19 +168,18 @@ void GoToPoint(double x_g, double y_g, bool isReversing = false) {
   requiredAngle = goalAngle - currentAngle;
 
   //if angle is more than 2 degrees, turns the robot
-  if (fabs(requiredAngle) > 2 && !isReversing) {
+  if (fabs(requiredAngle) > 2) {
     setTurning = requiredAngle;
+    resetTurning = true;
     isTurning = true;
     wait(4000, msec);
     isTurning = false;
-    currentAngle = requiredAngle;
-  }
-  if (isReversing) {
-    requiredDistance *= -1;
+    currentAngle = currentAngle + requiredAngle;
   }
 
   //moves the required distance
   setPID = requiredDistance;
+  resetPID = true;
   isPID = true;
   wait(4000,msec);
   isPID = false;
@@ -201,10 +200,7 @@ static double setUserFlywheel = 0, indexerCount = 0;
 
 void ToggleFlywheelOn(double speed = 450) {
   resetUserFlywheel = true;
-  if (speed == 450) {
-    setUserFlywheel = 450;
-    //fkF = 0.02;
-  }
+  setUserFlywheel = speed;
   isUserFlywheel = true;
 }
 
@@ -213,6 +209,11 @@ void ToggleFlywheelOff() {
   resetUserFlywheel = true;
   setUserFlywheel = 0;
   isUserFlywheel = false;
+}
+
+double controlCurve(double controllerPos){
+  //Slow curve
+  return (exp(-14.6/10)+exp((fabs(controllerPos)-100)/10)*(1-exp(-14.6/10)))*controllerPos;
 }
 
 int userController() {
@@ -231,29 +232,21 @@ int userController() {
       }
     }
     
-    if(abs(Controller1.Axis2.value()+Controller1.Axis1.value()) < 50 || abs(Controller1.Axis2.value()-Controller1.Axis1.value()) < 50) { 
-      lMotor1.spin(fwd, ((Controller1.Axis2.value() - Controller1.Axis1.value())/2), vex::velocityUnits::pct);
-      lMotor2.spin(fwd, ((Controller1.Axis2.value() - Controller1.Axis1.value())/2), vex::velocityUnits::pct);
-      lMotor3.spin(fwd, ((Controller1.Axis2.value() - Controller1.Axis1.value())/2), vex::velocityUnits::pct);
-      lMotor4.spin(fwd, ((Controller1.Axis2.value() - Controller1.Axis1.value())/2), vex::velocityUnits::pct);
-      rMotor1.spin(fwd, ((Controller1.Axis2.value() + Controller1.Axis1.value())/2), vex::velocityUnits::pct);
-      rMotor2.spin(fwd, ((Controller1.Axis2.value() + Controller1.Axis1.value())/2), vex::velocityUnits::pct);
-      rMotor3.spin(fwd, ((Controller1.Axis2.value() + Controller1.Axis1.value())/2), vex::velocityUnits::pct);
-      rMotor4.spin(fwd, ((Controller1.Axis2.value() + Controller1.Axis1.value())/2), vex::velocityUnits::pct);
-    }
-    else {
-      lMotor1.spin(fwd, (Controller1.Axis2.value() - Controller1.Axis1.value()), vex::velocityUnits::pct);
-      lMotor2.spin(fwd, (Controller1.Axis2.value() - Controller1.Axis1.value()), vex::velocityUnits::pct);
-      lMotor3.spin(fwd, (Controller1.Axis2.value() - Controller1.Axis1.value()), vex::velocityUnits::pct);
-      lMotor4.spin(fwd, (Controller1.Axis2.value() - Controller1.Axis1.value()), vex::velocityUnits::pct);
-      rMotor1.spin(fwd, (Controller1.Axis2.value() + Controller1.Axis1.value()), vex::velocityUnits::pct);
-      rMotor2.spin(fwd, (Controller1.Axis2.value() + Controller1.Axis1.value()), vex::velocityUnits::pct);
-      rMotor3.spin(fwd, (Controller1.Axis2.value() + Controller1.Axis1.value()), vex::velocityUnits::pct);
-      rMotor4.spin(fwd, (Controller1.Axis2.value() + Controller1.Axis1.value()), vex::velocityUnits::pct);
-    }
+    double leftDrive = (Controller1.Axis2.value() - Controller1.Axis1.value());
+    double rightDrive = (Controller1.Axis2.value() + Controller1.Axis1.value());
+
+    lMotor1.spin(fwd, controlCurve(leftDrive), vex::velocityUnits::pct);
+    lMotor2.spin(fwd, controlCurve(leftDrive), vex::velocityUnits::pct);
+    lMotor3.spin(fwd, controlCurve(leftDrive), vex::velocityUnits::pct);
+    lMotor4.spin(fwd, controlCurve(leftDrive), vex::velocityUnits::pct);
+    rMotor1.spin(fwd, controlCurve(rightDrive), vex::velocityUnits::pct);
+    rMotor2.spin(fwd, controlCurve(rightDrive), vex::velocityUnits::pct);
+    rMotor3.spin(fwd, controlCurve(rightDrive), vex::velocityUnits::pct);
+    rMotor4.spin(fwd, controlCurve(rightDrive), vex::velocityUnits::pct);
+
     //intake control
     if(Controller1.ButtonL2.pressing()) {
-      magLifter.set(true);
+      magLifter.set(false);
       indexer1.set(false);
       intakeMotor.spin(fwd, 100, pct);
     }
@@ -277,8 +270,8 @@ int userController() {
 
     //flywheel controller
     if(Controller1.ButtonR1.pressing()) {
-      magLifter.set(false);
-      ToggleFlywheelOn();
+      magLifter.set(true);
+      ToggleFlywheelOn(600);
       //FlyWheel1.spin(fwd,100,pct);
       //FlyWheel2.spin(fwd,100,pct);
       if (Controller1.ButtonR2.pressing()) {
