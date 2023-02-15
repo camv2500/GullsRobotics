@@ -67,57 +67,13 @@ void autonomous(void) {
   indexer1.set(true);
   wait(500,msec);
   indexer1.set(false);
-  wait(2000,msec);
+  wait(1500,msec);
   indexer1.set(true);
   wait(500,msec);
   indexer1.set(false);
   setFlywheel = 0;
   isFlywheel = false;
 
-  /*
-  rollerMotor.spin(fwd,100,pct);
-  lMotor1.spin(reverse,20,pct);
-  lMotor2.spin(reverse,20,pct);
-  lMotor3.spin(reverse,20,pct);
-  lMotor4.spin(reverse,20,pct);
-  wait(100,msec);
-  rMotor1.spin(reverse,20,pct);
-  rMotor2.spin(reverse,20,pct);
-  rMotor3.spin(reverse,20,pct);
-  rMotor4.spin(reverse,20,pct);
-  GoToPoint(0,-4,true);
-  rollerMotor.spin(fwd, 50, pct);
-  wait(120, msec);
-  rollerMotor.spin(fwd, 0, pct);
-  
-  magLifter.set(false);
-  GoToPoint(0,-4,true);
-  rollerMotor.spin(fwd, 50, pct);
-  wait(120, msec);
-  rollerMotor.spin(fwd, 0, pct);
-  ToggleFlywheelOn();
-  GoToPoint(-3,12);
-  indexer1.set(true);
-  wait(120, msec);
-  indexer1.set(false);
-  wait(120,msec);
-  indexer1.set(true);
-  wait(120, msec);
-  indexer1.set(false);
-  magLifter.set(true);
-  ToggleFlywheelOff();
-  intakeMotor.spin(fwd, 100, pct);
-  GoToPoint(-6,19);
-  GoToPoint(0,31);
-  intakeMotor.spin(fwd, 0, pct);
-  ToggleFlywheelOn();
-  magLifter.set(false);
-  GoToPoint(0,30);
-  GoToPoint(2,35);
-  indexer1.set(true);
-  wait(120, msec);
-  indexer1.set(false);
-  */
   Brain.Screen.print("isExited");
 }
 
