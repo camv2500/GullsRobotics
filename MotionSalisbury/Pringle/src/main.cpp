@@ -45,7 +45,7 @@ void autonomous(void) {
   isAuton = true; resetPID = true; resetTurning = true; resetFlywheel = true; isUser = false;
   task StartAuton(autonController);
 
-  setPID = -2;
+  setPID = -8;
   resetPID = true;
   isPID = true;
   wait(3000,msec);
@@ -55,15 +55,16 @@ void autonomous(void) {
   wait(200,msec); //replace with color sensor
   rollerMotor.spin(fwd,0,pct);
 
-  setPID = 2;
+  setPID = 8;
   resetPID = true;
   isPID = true;
   wait(3000,msec);
   isPID = false;
 
-  GoToPoint(-2,6);
+  GoToPoint(-1.65,5.75);
 
   //shooting
+  SpinMotors(0);
   magLifter.set(true);
   setFlywheel = 600;
   resetFlywheel = true;
@@ -79,6 +80,7 @@ void autonomous(void) {
   setFlywheel = 0;
   isFlywheel = false;
 
+  isAuton = false;
   Brain.Screen.print("isExited");
 }
 
