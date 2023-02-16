@@ -37,26 +37,31 @@ void pre_auton(void) {
 /*---------------------------------------------------------------------------*/
 
 void autonomous(void) {
+  /*
+  -------------------------
+  starts in front of roller
+  -------------------------
+  */
   isAuton = true; resetPID = true; resetTurning = true; resetFlywheel = true; isUser = false;
   task StartAuton(autonController);
 
-  GoToPoint(18,-1);
-  GoToPoint(18,2);
-  setPID = -18;
+  setPID = -2;
   resetPID = true;
   isPID = true;
   wait(3000,msec);
   isPID = false;
+
   rollerMotor.spin(fwd,80,pct);
   wait(200,msec); //replace with color sensor
   rollerMotor.spin(fwd,0,pct);
-  setPID = 5;
+
+  setPID = 2;
   resetPID = true;
   isPID = true;
   wait(3000,msec);
   isPID = false;
-  GoToPoint(20.3,9);
-  SpinMotors(0);
+
+  GoToPoint(-2,6);
 
   //shooting
   magLifter.set(true);
