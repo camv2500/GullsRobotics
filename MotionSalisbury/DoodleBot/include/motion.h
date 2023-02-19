@@ -259,10 +259,10 @@ int userController() {
 
     //roller control
     if(Controller1.ButtonL1.pressing()) {
-      rollerMotor.spin(reverse, 50, pct);
+      rollerMotor.spin(reverse, 100, pct);
     }
     else if(Controller1.ButtonLeft.pressing()) {
-      rollerMotor.spin(fwd, 80, pct);
+      rollerMotor.spin(fwd, 100, pct);
     }
     else {
       rollerMotor.stop(brakeType::hold);
@@ -271,7 +271,7 @@ int userController() {
     //flywheel controller
     if(Controller1.ButtonR1.pressing()) {
       magLifter.set(true);
-      ToggleFlywheelOn(600);
+      ToggleFlywheelOn(500);
       //FlyWheel1.spin(fwd,100,pct);
       //FlyWheel2.spin(fwd,100,pct);
       if (Controller1.ButtonR2.pressing()) {

@@ -52,7 +52,7 @@ void autonomous(void) {
   isPID = false;
 
   rollerMotor.spin(fwd,80,pct);
-  wait(200,msec); //replace with color sensor
+  wait(280,msec); //replace with color sensor
   rollerMotor.spin(fwd,0,pct);
 
   setPID = 8;
@@ -61,11 +61,11 @@ void autonomous(void) {
   wait(3000,msec);
   isPID = false;
 
-  GoToPoint(-1.65,5.75);
+  GoToPoint(-1.1,11.5);
 
   //shooting
   SpinMotors(0);
-  magLifter.set(true);
+  magLifter.set(false);
   setFlywheel = 600;
   resetFlywheel = true;
   isFlywheel = true;
@@ -73,7 +73,7 @@ void autonomous(void) {
   indexer1.set(true);
   wait(500,msec);
   indexer1.set(false);
-  wait(1500,msec);
+  wait(3500,msec);
   indexer1.set(true);
   wait(500,msec);
   indexer1.set(false);

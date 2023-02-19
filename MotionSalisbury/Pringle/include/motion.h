@@ -246,7 +246,7 @@ int userController() {
 
     //intake control
     if(Controller1.ButtonL2.pressing()) {
-      magLifter.set(false);
+      magLifter.set(true);
       indexer1.set(false);
       intakeMotor.spin(fwd, 100, pct);
     }
@@ -270,8 +270,8 @@ int userController() {
 
     //flywheel controller
     if(Controller1.ButtonR1.pressing()) {
-      magLifter.set(true);
-      ToggleFlywheelOn(600);
+      magLifter.set(false);
+      ToggleFlywheelOn(543);
       //FlyWheel1.spin(fwd,100,pct);
       //FlyWheel2.spin(fwd,100,pct);
       if (Controller1.ButtonR2.pressing()) {

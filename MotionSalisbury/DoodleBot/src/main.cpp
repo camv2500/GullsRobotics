@@ -47,13 +47,13 @@ void autonomous(void) {
 
   GoToPoint(18,-1);
   GoToPoint(18,2);
-  setPID = -18;
+  setPID = -20;
   resetPID = true;
   isPID = true;
   wait(3000,msec);
   isPID = false;
   rollerMotor.spin(fwd,80,pct);
-  wait(200,msec); //replace with color sensor
+  wait(350,msec); //replace with color sensor
   rollerMotor.spin(fwd,0,pct);
   setPID = 5;
   resetPID = true;
@@ -65,7 +65,7 @@ void autonomous(void) {
 
   //shooting
   magLifter.set(true);
-  setFlywheel = 600;
+  setFlywheel = 595;
   resetFlywheel = true;
   isFlywheel = true;
   wait(2000,msec);
