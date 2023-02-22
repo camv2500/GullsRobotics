@@ -2,7 +2,7 @@
 #include "vex.h"
 
 //variables for pid
-double kP = 0.088, kI = 0, kD = 0;
+double kP = 0.48, kI = 0, kD = 0.05;
 double error = 0, prevError = 0, integral = 0, derivative = 0;
 double power = 0, sensorValue = 0, lSensor = 0, rSensor = 0;
 
@@ -20,10 +20,10 @@ static double setPID = 0, setTurning = 0, setFlywheel = 0;
 double xSelf = 0, ySelf = 0, tSelf = 0, xCurrent = 0, yCurrent = 0, tCurrent = 0;
 double goalAngle, requiredAngle, requiredDistance, displayCount = 0;
 double prevLeftEncoder = 0, prevRightEncoder = 0, currLeftEncoder, currRightEncoder, changeLeftEncoder, changeRightEncoder;
-double changeAngle, changeX, changeY, currAngle, prevAngle;
+double changeAngle, changeX, changeY, tempHyp, currAngle, prevAngle, averageAngle, tempAngle;
 
 //variables for the user version of the flywheel
-static bool isUserFlywheel = false, resetUserFlywheel = false;
+static bool isUserFlywheel = false, resetUserFlywheel = false, flywheelNeedReset = false;
 static double setUserFlywheel = 0, indexerCount = 0;
 
 //spin the motors for pid
@@ -51,7 +51,7 @@ double ConvertDegreesToInches(double setDegrees) {
 
 //convert the inches to revolutions
 double ConvertInchesToRevolutions(double requiredInches) {
-  double circumferenceOfWheel = 3.5 * M_PI;
+  double circumferenceOfWheel = 3.865 * M_PI;
   double outputRat = 3.0/5.0;
   double requiredRevolutions = (requiredInches / circumferenceOfWheel) * outputRat * 360.0;
   return requiredRevolutions;
@@ -76,12 +76,14 @@ void runPID(double pidSetDegrees, bool resetEncoders = false, bool isTurning = f
   error = pidSetDegrees - sensorValue;
 
   integral = integral + error;
-  if (fabs(integral) > 5000) {integral = 500;}
+  //if (fabs(integral) > 5000) {integral = 5000;}
 
   derivative = error - prevError;
   prevError = error;
 
   power = error * kP + integral * kI + derivative * kD;
+  if (power > 33.5) {power = 33.5;}
+  if (power < -33.5) {power = -33.5;}
   
   if (isTurning) {SpinMotors(power, true);}
   else {SpinMotors(power);}
@@ -92,9 +94,10 @@ void runFlywheel(double flywheelSetRPM = 0, bool resetFlywheelEncoders = false) 
   if (resetFlywheelEncoders) {
     resetFlywheelEncoders = false;
     fintegral = 0;
-    fderivative = 0;
-    feedForward = flywheelSetRPM; 
+    fderivative = 0; 
   }
+
+  feedForward = flywheelSetRPM;
 
   if (flywheelSetRPM != 0) {
     flyWheelError = flywheelSetRPM - ((FlyWheel1.velocity(rpm) * -1) + FlyWheel2.velocity(rpm) / 2);
@@ -112,13 +115,6 @@ void runFlywheel(double flywheelSetRPM = 0, bool resetFlywheelEncoders = false) 
 
     FlyWheel1.spin(forward, fpower, volt);
     FlyWheel2.spin(forward, fpower, volt);
-    /*
-    if (flyWheelError < 5 && count > 4) {Controller1.rumble(rumbleLong); count = 1;}
-    else {
-      if (count > 4) {Controller1.rumble(" ");}
-      else {count++;}
-    }
-    */
   }
   else {
     FlyWheel1.stop(brakeType::coast);
@@ -132,21 +128,40 @@ void UpdateLocation() {
   currRightEncoder = (rMotor1.position(degrees) + rMotor2.position(degrees) + 
     rMotor3.position(degrees) + rMotor4.position(degrees)) / 4;
 
-  changeLeftEncoder = currLeftEncoder - prevLeftEncoder;
-  changeRightEncoder = currRightEncoder - prevRightEncoder;
+  changeLeftEncoder = ConvertDegreesToInches(currLeftEncoder - prevLeftEncoder);
+  changeRightEncoder = ConvertDegreesToInches(currRightEncoder - prevRightEncoder);
 
-  currAngle = prevAngle + ((((changeLeftEncoder - changeRightEncoder) * 0.017453) / (12.16)) * 57.2958);
+  if (changeLeftEncoder != prevLeftEncoder || changeRightEncoder != prevRightEncoder) {
 
-  changeAngle = currAngle - prevAngle;
-  changeX = ConvertDegreesToInches(currLeftEncoder + currRightEncoder / 2) * (sin(changeAngle) * 57.298);
-  changeY = ConvertDegreesToInches(currLeftEncoder + currRightEncoder / 2) * (cos(changeAngle) * 57.298);
+    currAngle = prevAngle + ((changeLeftEncoder - changeRightEncoder) / 12.16);
 
-  tSelf = currAngle;
-  xSelf += changeX;
-  ySelf += changeY;
+    changeAngle = currAngle - prevAngle;
+
+    if (fabs(changeAngle) < 0.03) {
+      changeX = ConvertDegreesToInches(currLeftEncoder + currRightEncoder / 2) * (cos(changeAngle * 57.298));
+      changeY = ConvertDegreesToInches(currLeftEncoder + currRightEncoder / 2) * (sin(changeAngle * 57.298));
+    }
+    else {
+      changeX = 2 * sin(changeAngle / 2);
+      changeY = (2 * sin(changeAngle / 2)) * ((changeRightEncoder / changeAngle) + 6.08);
+    }
+
+    averageAngle = prevAngle + (changeAngle / 2);
+
+    tempHyp = sqrt((changeX * changeX) + (changeY * changeY));
+    tempAngle = tSelf - averageAngle;
+
+    changeX = tempHyp * cos(tempAngle);
+    changeY = tempHyp * sin(tempAngle);
+
+    xSelf += changeX;
+    ySelf += changeY;
+    tSelf = tempAngle;
+    prevAngle = currAngle;
+  }
+
   prevLeftEncoder = currLeftEncoder;
   prevRightEncoder = currRightEncoder;
-  prevAngle = currAngle;
 
   if (displayCount == 100) {
     Brain.Screen.print(xSelf);
@@ -317,12 +332,11 @@ int userController() {
     //flywheel controller
     if(Controller1.ButtonR1.pressing()) {
       magLifter.set(false);
-      if (resetUserFlywheel == true) {
-        
+      if (flywheelNeedReset == true) {
+        flywheelNeedReset = false;
+        resetUserFlywheel = true;
       }
       ToggleFlywheelOn(543);
-      //FlyWheel1.spin(fwd,100,pct);
-      //FlyWheel2.spin(fwd,100,pct);
       if (Controller1.ButtonR2.pressing()) {
         indexer1.set(true);
       }
@@ -332,8 +346,7 @@ int userController() {
     }
     else {
       ToggleFlywheelOff();
-      //FlyWheel1.stop(brakeType::coast);
-      //FlyWheel2.stop(brakeType::coast);
+      flywheelNeedReset = true;
       indexer1.set(false);
     }
 
