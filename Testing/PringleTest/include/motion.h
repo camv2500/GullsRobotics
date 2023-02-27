@@ -135,14 +135,9 @@ void UpdateLocation() {
   changeLeftEncoder = ConvertDegreesToInches(currLeftEncoder - prevLeftEncoder, 7.975);
   changeRightEncoder = ConvertDegreesToInches(currRightEncoder - prevRightEncoder, 7.95);
 
-  ySelf += ((changeLeftEncoder + changeRightEncoder) / 2);
-  prevLeftEncoder = currLeftEncoder;
-  prevRightEncoder = currRightEncoder;
-  /*
-  Brain.Screen.print(changeLeftEncoder);
-  Brain.Screen.print(" ");
-  Brain.Screen.print(changeRightEncoder);
-  Brain.Screen.newLine();
+  //ySelf += ((changeLeftEncoder + changeRightEncoder) / 2);
+  //prevLeftEncoder = currLeftEncoder;
+  //prevRightEncoder = currRightEncoder;
 
   if (changeLeftEncoder != 0 || changeRightEncoder != 0) {
 
@@ -151,8 +146,8 @@ void UpdateLocation() {
     changeAngle = currAngle - prevAngle;
 
     if (fabs(changeAngle) < 0.03) {
-      changeX = ConvertDegreesToInches(currLeftEncoder + currRightEncoder / 2) * (cos(changeAngle * 57.298));
-      changeY = ConvertDegreesToInches(currLeftEncoder + currRightEncoder / 2) * (sin(changeAngle * 57.298));
+      changeX = ConvertDegreesToInches(currLeftEncoder + currRightEncoder / 2) * (cos(changeAngle * 57.298), 7.95);
+      changeY = ConvertDegreesToInches(currLeftEncoder + currRightEncoder / 2) * (sin(changeAngle * 57.298), 7.95);
     }
     else {
       changeX = 2 * sin(changeAngle / 2);
@@ -175,7 +170,6 @@ void UpdateLocation() {
 
   prevLeftEncoder = currLeftEncoder;
   prevRightEncoder = currRightEncoder;
-  */
 
   if (displayCount == 100) {
     Brain.Screen.print(xSelf);

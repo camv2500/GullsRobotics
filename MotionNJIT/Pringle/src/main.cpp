@@ -44,50 +44,12 @@ void autonomous(void) {
   */
   isAuton = true; resetPID = true; resetTurning = true; resetFlywheel = true; isUser = false;
   task StartAuton(autonController);
-  /*
-  setPID = 12;
-  resetPID = true;
-  isPID = true;
-  wait(5000,msec);
-  setPID = 0;
-  isPID = false;
-  SpinMotors(0);
-  */
 
-  setPID = -6;
-  resetPID = true;
-  isPID = true;
-  wait(600,msec);
-  isPID = false;
-
-  rollerMotor.spin(fwd,80,pct);
-  wait(280,msec); //replace with color sensor
-  rollerMotor.spin(fwd,0,pct);
-
-  setPID = 6;
-  resetPID = true;
-  isPID = true;
-  wait(600,msec);
-  isPID = false;
-
+  MoveBot(-6);
+  SpinRoller(280);
+  MoveBot(6);
   GoToPoint(-3,11.5);
-
-  //shooting
-  SpinMotors(0);
-  magLifter.set(false);
-  setFlywheel = 600;
-  resetFlywheel = true;
-  isFlywheel = true;
-  wait(2000,msec);
-  indexer1.set(true);
-  wait(500,msec);
-  indexer1.set(false);
-  wait(3500,msec);
-  indexer1.set(true);
-  wait(500,msec);
-  indexer1.set(false);
-  setFlywheel = 0;
-  isFlywheel = false;
+  ShootDiscs(2);
 
   Brain.Screen.print("isExited");
 }

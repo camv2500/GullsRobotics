@@ -1,6 +1,28 @@
 #include "robot-config.h"
 #include "vex.h"
 
+//variables for pid
+double kP = 0.480, kI = 0, kD = 0.05;
+double error = 0, prevError = 0, integral = 0, derivative = 0;
+double power = 0, sensorValue = 0, lSensor = 0, rSensor = 0;
+
+//variables for the flywheel
+double fkP = 0.008, fkI = 0, fkD = 0.008, fkF = 0.02;
+double flyWheelError = 0, fprevError = 0, fintegral = 0, fderivative = 0, fpower = 0;
+double kF, feedForward, count = 1;
+
+//variables for the auton task
+static bool isAuton = false, isPID = false, isTurning = false, isFlywheel = false, isUser = false; 
+static bool resetPID = true, resetTurning = true, resetFlywheel = true;
+static double setPID = 0, setTurning = 0, setFlywheel = 0;
+
+//auton variables
+double goalAngle, requiredAngle, currentAngle, requiredDistance, x_c, y_c, x_s = 0, y_s = 0;
+
+//user variables
+static bool isUserFlywheel = false, resetUserFlywheel = false;
+static double setUserFlywheel = 0, indexerCount = 0;
+
 //spin the motors for pid
 void SpinMotors(double power, bool isTurning = false) {
   if(isTurning) {
@@ -18,9 +40,8 @@ void SpinMotors(double power, bool isTurning = false) {
 }
 
 //convert degrees to inches
-double ConvertDegreesToInches(double setDegrees) {
-  double turnDiameter = 12.17;
-  double requiredInches = setDegrees / 360 * M_PI * turnDiameter;
+double ConvertDegreesToInches(double setDegrees, double turnDiameter = 12.17) {
+  double requiredInches = setDegrees / 360.0 * M_PI * turnDiameter;
   return requiredInches;
 }
 
@@ -32,10 +53,48 @@ double ConvertInchesToRevolutions(double requiredInches) {
   return requiredRevolutions;
 }
 
-//variables for pid
-double kP = 0.480, kI = 0, kD = 0.05;
-double error = 0, prevError = 0, integral = 0, derivative = 0;
-double power = 0, sensorValue = 0, lSensor = 0, rSensor = 0;
+//spins the rollers
+void SpinRoller(double t = 200) {
+  rollerMotor.spin(fwd,80,pct);
+  wait(t,msec); //replace with color sensor
+  rollerMotor.spin(fwd,0,pct);
+}
+
+//moves the bot straight
+void MoveBot(double d) {
+  setPID = d;
+  resetPID = true;
+  isPID = true;
+  wait(600,msec);
+  isPID = false;
+}
+
+//emptys the bot of all discs
+void ShootDiscs(double s = 600, double a = 1) {
+  SpinMotors(0);
+  magLifter.set(false);
+  setFlywheel = s;
+  resetFlywheel = true;
+  isFlywheel = true;
+  wait(2000,msec);
+  indexer1.set(true);
+  wait(500,msec);
+  indexer1.set(false);
+  if (a > 1) {
+    wait(2000,msec);
+    indexer1.set(true);
+    wait(500,msec);
+    indexer1.set(false);
+  }
+  if (a > 2) {
+    wait(2000,msec);
+    indexer1.set(true);
+    wait(500,msec);
+    indexer1.set(false);
+  }
+  setFlywheel = 0;
+  isFlywheel = false;
+}
 
 //the distance is in revolutions, the encoders should only be reset on first use
 void runPID(double pidSetDegrees, bool resetEncoders = false, bool isTurning = false) {
@@ -69,11 +128,6 @@ void runPID(double pidSetDegrees, bool resetEncoders = false, bool isTurning = f
   if (isTurning) {SpinMotors(power, true);}
   else {SpinMotors(power);}
 }
-
-//variables for the flywheel
-double fkP = 0.008, fkI = 0, fkD = 0.008, fkF = 0.02;
-double flyWheelError = 0, fprevError = 0, fintegral = 0, fderivative = 0, fpower = 0;
-double kF, feedForward, count = 1;
 
 //run the flywheel
 void runFlywheel(double flywheelSetRPM = 0, bool resetFlywheelEncoders = false) {
@@ -114,51 +168,6 @@ void runFlywheel(double flywheelSetRPM = 0, bool resetFlywheelEncoders = false) 
   }
 }
 
-//variables for the auton task
-static bool isAuton = false, isPID = false, isTurning = false, isFlywheel = false, isUser = false; 
-static bool resetPID = true, resetTurning = true, resetFlywheel = true;
-static double setPID = 0, setTurning = 0, setFlywheel = 0;
-
-//auton controller
-int autonController() {
-  while(isAuton) {
-    if (isPID) {
-      if (resetPID) {
-        setPID = ConvertInchesToRevolutions(setPID);
-        runPID(setPID, true);
-        resetPID = false;
-      }
-      else {runPID(setPID);}
-    }
-
-    if (isTurning) {
-      if (resetTurning) {
-        setTurning = ConvertDegreesToInches(setTurning);
-        setTurning = ConvertInchesToRevolutions(setTurning);
-        runPID(setTurning, true, true);
-        resetTurning = false;
-      }
-      else {runPID(setTurning, false, true);}
-    }
-
-    if (isFlywheel) {
-      if (resetFlywheel) {
-        runFlywheel(setFlywheel, true);
-        resetFlywheel = false;
-      }
-      else {
-        runFlywheel(setFlywheel);
-      }
-    }
-
-    wait(10, msec);
-  }
-  return 1;
-}
-
-//auton variables
-double goalAngle, requiredAngle, currentAngle, requiredDistance, x_c, y_c, x_s = 0, y_s = 0;
-
 //odometry function
 void GoToPoint(double x_g, double y_g) {
   //calculate distance  
@@ -198,8 +207,42 @@ void GoToPoint(double x_g, double y_g) {
   Brain.Screen.newLine();
 }
 
-static bool isUserFlywheel = false, resetUserFlywheel = false;
-static double setUserFlywheel = 0, indexerCount = 0;
+//auton controller
+int autonController() {
+  while(isAuton) {
+    if (isPID) {
+      if (resetPID) {
+        setPID = ConvertInchesToRevolutions(setPID);
+        runPID(setPID, true);
+        resetPID = false;
+      }
+      else {runPID(setPID);}
+    }
+
+    if (isTurning) {
+      if (resetTurning) {
+        setTurning = ConvertDegreesToInches(setTurning, 13.65);
+        setTurning = ConvertInchesToRevolutions(setTurning);
+        runPID(setTurning, true, true);
+        resetTurning = false;
+      }
+      else {runPID(setTurning, false, true);}
+    }
+
+    if (isFlywheel) {
+      if (resetFlywheel) {
+        runFlywheel(setFlywheel, true);
+        resetFlywheel = false;
+      }
+      else {
+        runFlywheel(setFlywheel);
+      }
+    }
+
+    wait(10, msec);
+  }
+  return 1;
+}
 
 void ToggleFlywheelOn(double speed = 450) {
   resetUserFlywheel = true;
