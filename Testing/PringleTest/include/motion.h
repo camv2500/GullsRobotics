@@ -2,12 +2,12 @@
 #include "vex.h"
 
 //variables for pid
-double kP = 0.48, kI = 0, kD = 0.05;
+double kP = 0.468, kI = 0.0000468, kD = 0.048;
 double error = 0, prevError = 0, integral = 0, derivative = 0;
 double power = 0, sensorValue = 0, lSensor = 0, rSensor = 0;
 
 //variables for the flywheel
-double fkP = 0.008, fkI = 0, fkD = 0.008, fkF = 0.02;
+double fkP = 0.008, fkI = 0, fkD = 0, fkF = 0.00;
 double flyWheelError = 0, fprevError = 0, fintegral = 0, fderivative = 0, fpower = 0;
 double kF, feedForward, count = 1;
 
@@ -43,15 +43,14 @@ void SpinMotors(double power, bool isTurning = false) {
 }
 
 //convert degrees to inches
-double ConvertDegreesToInches(double setDegrees) {
-  double turnDiameter = 12.17;
-  double requiredInches = setDegrees / 360 * M_PI * turnDiameter;
+double ConvertDegreesToInches(double setDegrees, double turnDiameter = 12.17) {
+  double requiredInches = setDegrees / 360.0 * M_PI * turnDiameter;
   return requiredInches;
 }
 
 //convert the inches to revolutions
 double ConvertInchesToRevolutions(double requiredInches) {
-  double circumferenceOfWheel = 3.865 * M_PI;
+  double circumferenceOfWheel = 3.86 * M_PI;
   double outputRat = 3.0/5.0;
   double requiredRevolutions = (requiredInches / circumferenceOfWheel) * outputRat * 360.0;
   return requiredRevolutions;
@@ -67,26 +66,31 @@ void runPID(double pidSetDegrees, bool resetEncoders = false, bool isTurning = f
     derivative = 0;
   }
 
-  lSensor = (lMotor1.position(degrees) + lMotor2.position(degrees) + 
-    lMotor3.position(degrees) + lMotor4.position(degrees)) / 4;
-  rSensor = (rMotor1.position(degrees) + rMotor2.position(degrees) + 
-    rMotor3.position(degrees) + rMotor4.position(degrees)) / 4;
-  if (isTurning) {sensorValue = rSensor;}
-  else {sensorValue = (lSensor + rSensor) / 2;}
-  error = pidSetDegrees - sensorValue;
+  if (pidSetDegrees != 0) {
+    lSensor = (lMotor1.position(degrees) + lMotor2.position(degrees) + 
+      lMotor3.position(degrees) + lMotor4.position(degrees)) / 4;
+    rSensor = (rMotor1.position(degrees) + rMotor2.position(degrees) + 
+      rMotor3.position(degrees) + rMotor4.position(degrees)) / 4;
+    if (isTurning) {sensorValue = rSensor;}
+    else {sensorValue = (lSensor + rSensor) / 2;}
+    error = pidSetDegrees - sensorValue;
 
-  integral = integral + error;
-  //if (fabs(integral) > 5000) {integral = 5000;}
+    integral = integral + error;
+    if (fabs(integral) > 5000) {integral = 5000;}
 
-  derivative = error - prevError;
-  prevError = error;
+    derivative = error - prevError;
+    prevError = error;
 
-  power = error * kP + integral * kI + derivative * kD;
-  if (power > 33.5) {power = 33.5;}
-  if (power < -33.5) {power = -33.5;}
+    power = error * kP + integral * kI + derivative * kD;
+    if (power > 33.5) {power = 33.5;}
+    if (power < -33.5) {power = -33.5;}
   
-  if (isTurning) {SpinMotors(power, true);}
-  else {SpinMotors(power);}
+    if (isTurning) {SpinMotors(power, true);}
+    else {SpinMotors(power);}
+  }
+  else {
+    SpinMotors(0);
+  }
 }
 
 //run the flywheel
@@ -109,9 +113,9 @@ void runFlywheel(double flywheelSetRPM = 0, bool resetFlywheelEncoders = false) 
     fprevError = flyWheelError;
 
     fpower = flyWheelError * fkP + fintegral * fkI + fderivative * fkD + feedForward * fkF;
-    if (fpower > (flywheelSetRPM / 600 * 12)) {
-      fpower = flywheelSetRPM / 600 * 12;
-    }
+    //if (fpower > (flywheelSetRPM / 600 * 12)) {
+      //fpower = flywheelSetRPM / 600 * 12;
+    //}
 
     FlyWheel1.spin(forward, fpower, volt);
     FlyWheel2.spin(forward, fpower, volt);
@@ -128,10 +132,19 @@ void UpdateLocation() {
   currRightEncoder = (rMotor1.position(degrees) + rMotor2.position(degrees) + 
     rMotor3.position(degrees) + rMotor4.position(degrees)) / 4;
 
-  changeLeftEncoder = ConvertDegreesToInches(currLeftEncoder - prevLeftEncoder);
-  changeRightEncoder = ConvertDegreesToInches(currRightEncoder - prevRightEncoder);
+  changeLeftEncoder = ConvertDegreesToInches(currLeftEncoder - prevLeftEncoder, 7.975);
+  changeRightEncoder = ConvertDegreesToInches(currRightEncoder - prevRightEncoder, 7.95);
 
-  if (changeLeftEncoder != prevLeftEncoder || changeRightEncoder != prevRightEncoder) {
+  ySelf += ((changeLeftEncoder + changeRightEncoder) / 2);
+  prevLeftEncoder = currLeftEncoder;
+  prevRightEncoder = currRightEncoder;
+  /*
+  Brain.Screen.print(changeLeftEncoder);
+  Brain.Screen.print(" ");
+  Brain.Screen.print(changeRightEncoder);
+  Brain.Screen.newLine();
+
+  if (changeLeftEncoder != 0 || changeRightEncoder != 0) {
 
     currAngle = prevAngle + ((changeLeftEncoder - changeRightEncoder) / 12.16);
 
@@ -162,6 +175,7 @@ void UpdateLocation() {
 
   prevLeftEncoder = currLeftEncoder;
   prevRightEncoder = currRightEncoder;
+  */
 
   if (displayCount == 100) {
     Brain.Screen.print(xSelf);
@@ -197,7 +211,8 @@ void GoToPoint(double xGoal, double yGoal) {
     setTurning = requiredAngle;
     resetTurning = true;
     isTurning = true;
-    wait(4000, msec);
+    wait(fabs(requiredAngle) * 120, msec);
+    setTurning = 0;
     isTurning = false;
   }
 
@@ -205,7 +220,8 @@ void GoToPoint(double xGoal, double yGoal) {
   setPID = requiredDistance;
   resetPID = true;
   isPID = true;
-  wait(4000,msec);
+  wait(fabs(requiredDistance) * 120,msec);
+  setPID = 0;
   isPID = false;
 
   /*update location
@@ -237,7 +253,7 @@ int autonController() {
 
     if (isTurning) {
       if (resetTurning) {
-        setTurning = ConvertDegreesToInches(setTurning);
+        setTurning = ConvertDegreesToInches(setTurning, 13.65);
         setTurning = ConvertInchesToRevolutions(setTurning);
         runPID(setTurning, true, true);
         resetTurning = false;
@@ -336,7 +352,7 @@ int userController() {
         flywheelNeedReset = false;
         resetUserFlywheel = true;
       }
-      ToggleFlywheelOn(543);
+      ToggleFlywheelOn(200);
       if (Controller1.ButtonR2.pressing()) {
         indexer1.set(true);
       }

@@ -45,6 +45,9 @@ void autonomous(void) {
   isAuton = true; resetPID = true; resetTurning = true; resetFlywheel = true; isUser = false;
   task StartAuton(autonController);
 
+  GoToPoint(0,36);
+
+  /*
   setPID = -8;
   resetPID = true;
   isPID = true;
@@ -79,7 +82,8 @@ void autonomous(void) {
   indexer1.set(false);
   setFlywheel = 0;
   isFlywheel = false;
-
+  */
+  SpinMotors(0);
   isAuton = false;
   Brain.Screen.print("isExited");
 }
