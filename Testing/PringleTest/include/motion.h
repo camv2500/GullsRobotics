@@ -56,6 +56,55 @@ double ConvertInchesToRevolutions(double requiredInches) {
   return requiredRevolutions;
 }
 
+//convert radians to degrees
+double ConvertRadiansToDegrees(double radian) {
+  radian = radian * (180.0 / M_PI);
+  return radian;
+}
+
+//spins the rollers
+void SpinRoller(double t = 200) {
+  rollerMotor.spin(fwd,80,pct);
+  wait(t,msec); //replace with color sensor
+  rollerMotor.spin(fwd,0,pct);
+}
+
+//moves the bot straight
+void MoveBot(double d) {
+  setPID = d;
+  resetPID = true;
+  isPID = true;
+  wait(600,msec);
+  isPID = false;
+}
+
+//emptys the bot of all discs
+void ShootDiscs(double s = 600, double a = 1) {
+  SpinMotors(0);
+  magLifter.set(false);
+  setFlywheel = s;
+  resetFlywheel = true;
+  isFlywheel = true;
+  wait(2000,msec);
+  indexer1.set(true);
+  wait(500,msec);
+  indexer1.set(false);
+  if (a > 1) {
+    wait(2000,msec);
+    indexer1.set(true);
+    wait(500,msec);
+    indexer1.set(false);
+  }
+  if (a > 2) {
+    wait(2000,msec);
+    indexer1.set(true);
+    wait(500,msec);
+    indexer1.set(false);
+  }
+  setFlywheel = 0;
+  isFlywheel = false;
+}
+
 //the distance is in revolutions, the encoders should only be reset on first use
 void runPID(double pidSetDegrees, bool resetEncoders = false, bool isTurning = false) {
   if (resetEncoders) {
@@ -146,25 +195,25 @@ void UpdateLocation() {
     changeAngle = currAngle - prevAngle;
 
     if (fabs(changeAngle) < 0.03) {
-      changeX = ConvertDegreesToInches(currLeftEncoder + currRightEncoder / 2) * (cos(changeAngle * 57.298), 7.95);
-      changeY = ConvertDegreesToInches(currLeftEncoder + currRightEncoder / 2) * (sin(changeAngle * 57.298), 7.95);
+      changeX = (currLeftEncoder + currRightEncoder / 2) * (cos(changeAngle));
+      changeY = (currLeftEncoder + currRightEncoder / 2) * (sin(changeAngle));
     }
     else {
       changeX = 2 * sin(changeAngle / 2);
       changeY = (2 * sin(changeAngle / 2)) * ((changeRightEncoder / changeAngle) + 6.08);
     }
 
-    averageAngle = prevAngle + (changeAngle / 2);
+    //averageAngle = prevAngle + (changeAngle / 2);
 
-    tempHyp = sqrt((changeX * changeX) + (changeY * changeY));
-    tempAngle = tSelf - averageAngle;
+    //tempHyp = sqrt((changeX * changeX) + (changeY * changeY));
+    //tempAngle = tSelf - averageAngle;
 
-    changeX = tempHyp * cos(tempAngle);
-    changeY = tempHyp * sin(tempAngle);
+    //changeX = tempHyp * cos(tempAngle);
+    //changeY = tempHyp * sin(tempAngle);
 
     xSelf += changeX;
     ySelf += changeY;
-    tSelf = tempAngle;
+    tSelf = currAngle;
     prevAngle = currAngle;
   }
 
