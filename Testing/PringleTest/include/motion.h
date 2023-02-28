@@ -190,7 +190,7 @@ void UpdateLocation() {
 
   if (changeLeftEncoder != 0 || changeRightEncoder != 0) {
 
-    currAngle = prevAngle + ((changeLeftEncoder - changeRightEncoder) / 12.16);
+    currAngle = prevAngle + ((changeLeftEncoder - changeRightEncoder) / 12.09);
 
     changeAngle = currAngle - prevAngle;
 
@@ -199,8 +199,8 @@ void UpdateLocation() {
       changeY = (currLeftEncoder + currRightEncoder / 2) * (sin(changeAngle));
     }
     else {
-      changeX = 2 * sin(changeAngle / 2);
-      changeY = (2 * sin(changeAngle / 2)) * ((changeRightEncoder / changeAngle) + 6.08);
+      //changeX = 2 * sin(changeAngle / 2);
+      //changeY = (2 * sin(changeAngle / 2)) * ((changeRightEncoder / changeAngle) + 6.08);
     }
 
     //averageAngle = prevAngle + (changeAngle / 2);
@@ -225,7 +225,7 @@ void UpdateLocation() {
     Brain.Screen.print(" , ");
     Brain.Screen.print(ySelf);
     Brain.Screen.print(" , ");
-    Brain.Screen.print(tSelf);
+    Brain.Screen.print(ConvertRadiansToDegrees(tSelf));
     Brain.Screen.newLine();
     displayCount = 0;
   }
