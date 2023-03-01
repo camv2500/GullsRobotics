@@ -2,14 +2,9 @@
 #include "vex.h"
 
 //variables for pid
-double kP = 0.480, kI = 0, kD = 0.05;
+double kP = 0.468, kI = 0, kD = 0.048;
 double error = 0, prevError = 0, integral = 0, derivative = 0;
 double power = 0, sensorValue = 0, lSensor = 0, rSensor = 0;
-
-//variables for the flywheel
-double fkP = 0.008, fkI = 0, fkD = 0.008, fkF = 0.02;
-double flyWheelError = 0, fprevError = 0, fintegral = 0, fderivative = 0, fpower = 0;
-double kF, feedForward, count = 1;
 
 //variables for the auton task
 static bool isAuton = false, isPID = false, isTurning = false, isFlywheel = false, isUser = false; 
@@ -18,10 +13,6 @@ static double setPID = 0, setTurning = 0, setFlywheel = 0;
 
 //auton variables
 double goalAngle, requiredAngle, currentAngle, requiredDistance, x_c, y_c, x_s = 0, y_s = 0;
-
-//user variables
-static bool isUserFlywheel = false, resetUserFlywheel = false;
-static double setUserFlywheel = 0, indexerCount = 0;
 
 //spin the motors for pid
 void SpinMotors(double power, bool isTurning = false) {
@@ -55,9 +46,9 @@ double ConvertInchesToRevolutions(double requiredInches) {
 
 //spins the rollers
 void SpinRoller(double t = 200) {
-  rollerMotor.spin(fwd,80,pct);
+  //rollerMotor.spin(fwd,80,pct);
   wait(t,msec); //replace with color sensor
-  rollerMotor.spin(fwd,0,pct);
+  //rollerMotor.spin(fwd,0,pct);
 }
 
 //moves the bot straight
@@ -69,31 +60,15 @@ void MoveBot(double d) {
   isPID = false;
 }
 
+//lets the bot intake discs
+void IntakeDiscs(bool turnOff = false) {
+  if(turnOff) {intakeRollerMotor.spin(fwd,0,pct);}
+  else {intakeRollerMotor.spin(fwd,100,pct);}
+}
+
 //emptys the bot of all discs
 void ShootDiscs(double s = 600, double a = 1) {
   SpinMotors(0);
-  magLifter.set(false);
-  setFlywheel = s;
-  resetFlywheel = true;
-  isFlywheel = true;
-  wait(2000,msec);
-  indexer1.set(true);
-  wait(500,msec);
-  indexer1.set(false);
-  if (a > 1) {
-    wait(2000,msec);
-    indexer1.set(true);
-    wait(500,msec);
-    indexer1.set(false);
-  }
-  if (a > 2) {
-    wait(2000,msec);
-    indexer1.set(true);
-    wait(500,msec);
-    indexer1.set(false);
-  }
-  setFlywheel = 0;
-  isFlywheel = false;
 }
 
 //the distance is in revolutions, the encoders should only be reset on first use
@@ -127,45 +102,6 @@ void runPID(double pidSetDegrees, bool resetEncoders = false, bool isTurning = f
 
   if (isTurning) {SpinMotors(power, true);}
   else {SpinMotors(power);}
-}
-
-//run the flywheel
-void runFlywheel(double flywheelSetRPM = 0, bool resetFlywheelEncoders = false) {
-  if (resetFlywheelEncoders) {
-    resetFlywheelEncoders = false;
-    fintegral = 0;
-    fderivative = 0;
-    feedForward = flywheelSetRPM; 
-  }
-
-  if (flywheelSetRPM != 0) {
-    flyWheelError = flywheelSetRPM - ((FlyWheel1.velocity(rpm) * -1) + FlyWheel2.velocity(rpm) / 2);
-
-    fintegral = fintegral + flyWheelError;
-    //if (fabs(fintegral) > 12000) {fintegral = 12000;}
-
-    fderivative = flyWheelError - fprevError;
-    fprevError = flyWheelError;
-
-    fpower = flyWheelError * fkP + fintegral * fkI + fderivative * fkD + feedForward * fkF;
-    if (fpower > (flywheelSetRPM / 600 * 12)) {
-      fpower = flywheelSetRPM / 600 * 12;
-    }
-
-    FlyWheel1.spin(forward, fpower, volt);
-    FlyWheel2.spin(forward, fpower, volt);
-    /*
-    if (flyWheelError < 5 && count > 4) {Controller1.rumble(rumbleLong); count = 1;}
-    else {
-      if (count > 4) {Controller1.rumble(" ");}
-      else {count++;}
-    }
-    */
-  }
-  else {
-    FlyWheel1.stop(brakeType::coast);
-    FlyWheel2.stop(brakeType::coast);
-  }
 }
 
 //odometry function
@@ -229,32 +165,9 @@ int autonController() {
       else {runPID(setTurning, false, true);}
     }
 
-    if (isFlywheel) {
-      if (resetFlywheel) {
-        runFlywheel(setFlywheel, true);
-        resetFlywheel = false;
-      }
-      else {
-        runFlywheel(setFlywheel);
-      }
-    }
-
     wait(10, msec);
   }
   return 1;
-}
-
-void ToggleFlywheelOn(double speed = 450) {
-  resetUserFlywheel = true;
-  setUserFlywheel = speed;
-  isUserFlywheel = true;
-}
-
-void ToggleFlywheelOff() {
-  isUserFlywheel = false;
-  resetUserFlywheel = true;
-  setUserFlywheel = 0;
-  isUserFlywheel = false;
 }
 
 double controlCurve(double controllerPos){
@@ -264,20 +177,6 @@ double controlCurve(double controllerPos){
 
 int userController() {
   while(isUser) {
-    if (isUserFlywheel) {
-      if (resetUserFlywheel) {
-        runFlywheel(setUserFlywheel, true);
-        resetUserFlywheel = false;
-        Brain.Screen.print(FlyWheel1.velocity(rpm));
-        Brain.Screen.newLine();
-      }
-      else {
-        runFlywheel(setUserFlywheel);
-        Brain.Screen.print(FlyWheel1.velocity(rpm));
-        Brain.Screen.newLine();
-      }
-    }
-    
     double leftDrive = (Controller1.Axis2.value() - Controller1.Axis1.value());
     double rightDrive = (Controller1.Axis2.value() + Controller1.Axis1.value());
 
@@ -292,55 +191,13 @@ int userController() {
 
     //intake control
     if(Controller1.ButtonL2.pressing()) {
-      magLifter.set(true);
-      indexer1.set(false);
-      intakeMotor.spin(fwd, 100, pct);
+      intakeRollerMotor.spin(fwd, 100, pct);
     }
     else if (Controller1.ButtonRight.pressing()) {
-      intakeMotor.spin(reverse, 100, pct);
+      intakeRollerMotor.spin(reverse, 100, pct);
     }
     else {
-      intakeMotor.stop(brakeType::coast);
-    }
-
-    //roller control
-    if(Controller1.ButtonL1.pressing()) {
-      rollerMotor.spin(reverse, 50, pct);
-    }
-    else if(Controller1.ButtonLeft.pressing()) {
-      rollerMotor.spin(fwd, 80, pct);
-    }
-    else {
-      rollerMotor.stop(brakeType::hold);
-    }
-
-    //flywheel controller
-    if(Controller1.ButtonR1.pressing()) {
-      magLifter.set(false);
-      ToggleFlywheelOn(543);
-      //FlyWheel1.spin(fwd,100,pct);
-      //FlyWheel2.spin(fwd,100,pct);
-      if (Controller1.ButtonR2.pressing()) {
-        indexer1.set(true);
-      }
-      else {
-        indexer1.set(false);
-      }
-    }
-    else {
-      ToggleFlywheelOff();
-      //FlyWheel1.stop(brakeType::coast);
-      //FlyWheel2.stop(brakeType::coast);
-      indexer1.set(false);
-    }
-
-    if (Controller1.ButtonX.pressing()) {
-      FlyWheel1.spin(fwd, 80, pct);
-      FlyWheel2.spin(fwd,80,pct);
-    }
-    else if (!Controller1.ButtonX.pressing() && !Controller1.ButtonR1.pressing()) {
-      FlyWheel1.stop(brakeType::coast);
-      FlyWheel2.stop(brakeType::coast);
+      intakeRollerMotor.stop(brakeType::coast);
     }
 
     //endgame deploy

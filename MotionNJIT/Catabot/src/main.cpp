@@ -1,3 +1,19 @@
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// lMotor1              motor         3               
+// lMotor2              motor         4               
+// Controller1          controller                    
+// rMotor1              motor         7               
+// rMotor2              motor         8               
+// rMotor3              motor         9               
+// rMotor4              motor         10              
+// lMotor3              motor         5               
+// lMotor4              motor         6               
+// cataMotor            motor         1               
+// endGame              digital_out   C               
+// intakeRollerMotor    motor         2               
+// ---- END VEXCODE CONFIGURED DEVICES ----
 #include "vex.h"
 #include "motion.h"
 #include "math.h"
@@ -39,7 +55,7 @@ void pre_auton(void) {
 void autonomous(void) {
   /*
   -------------------------
-  starts in front of roller
+  does start in front of roller
   -------------------------
   */
   isAuton = true; resetPID = true; resetTurning = true; resetFlywheel = true; isUser = false;
@@ -49,9 +65,26 @@ void autonomous(void) {
   SpinRoller(280);
   MoveBot(6);
   GoToPoint(-3,11.5);
-  ShootDiscs(2);
+  ShootDiscs(3);
+  GoToPoint(0,0);
+  GoToPoint(10,10);
+  IntakeDiscs();
+  GoToPoint(12,12);
+  GoToPoint(16,16);
+  GoToPoint(20,20);
+  IntakeDiscs(true);
+  GoToPoint(12,36);
+  ShootDiscs(3);
+  GoToPoint(30,36);
+  IntakeDiscs();
+  GoToPoint(30,32);
+  GoToPoint(30,28);
+  GoToPoint(30,24);
+  IntakeDiscs(true);
+  GoToPoint(12,36);
 
   Brain.Screen.print("isExited");
+  wait(200,msec);
 }
 
 

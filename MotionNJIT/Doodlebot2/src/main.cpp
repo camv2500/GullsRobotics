@@ -38,48 +38,36 @@ void pre_auton(void) {
 
 void autonomous(void) {
   /*
-  -----------------------
-  doesn't start at roller
-  -----------------------
+  -------------------------
+  does not start in front of roller
+  -------------------------
   */
   isAuton = true; resetPID = true; resetTurning = true; resetFlywheel = true; isUser = false;
   task StartAuton(autonController);
 
   GoToPoint(18,-1);
   GoToPoint(18,2);
-  setPID = -20;
-  resetPID = true;
-  isPID = true;
-  wait(3000,msec);
-  isPID = false;
-  rollerMotor.spin(fwd,80,pct);
-  wait(350,msec); //replace with color sensor
-  rollerMotor.spin(fwd,0,pct);
-  setPID = 5;
-  resetPID = true;
-  isPID = true;
-  wait(3000,msec);
-  isPID = false;
+  MoveBot(-5);
+  SpinRoller(280);
+  MoveBot(5);
   GoToPoint(20.3,9);
-  SpinMotors(0);
-
-  //shooting
-  magLifter.set(true);
-  setFlywheel = 595;
-  resetFlywheel = true;
-  isFlywheel = true;
-  wait(2000,msec);
-  indexer1.set(true);
-  wait(500,msec);
-  indexer1.set(false);
-  wait(1500,msec);
-  indexer1.set(true);
-  wait(500,msec);
-  indexer1.set(false);
-  setFlywheel = 0;
-  isFlywheel = false;
+  ShootDiscs(600,2);
+  GoToPoint(3,6);
+  IntakeDiscs();
+  GoToPoint(-5,12);
+  GoToPoint(-17,24);
+  IntakeDiscs(true);
+  GoToPoint(-29,36);
+  GoToPoint(-17,48);
+  ShootDiscs(600,2);
+  IntakeDiscs();
+  GoToPoint(-30,24);
+  GoToPoint(-30,18);
+  GoToPoint(-30,12);
+  IntakeDiscs(true);
 
   Brain.Screen.print("isExited");
+  wait(200,msec);
 }
 
 

@@ -6,19 +6,15 @@ extern brain Brain;
 extern motor lMotor1;
 extern motor lMotor2;
 extern controller Controller1;
-extern motor FlyWheel1;
-extern motor FlyWheel2;
 extern motor rMotor1;
 extern motor rMotor2;
 extern motor rMotor3;
 extern motor rMotor4;
 extern motor lMotor3;
 extern motor lMotor4;
-extern motor intakeMotor;
-extern digital_out magLifter;
-extern digital_out indexer1;
+extern motor cataMotor;
 extern digital_out endGame;
-extern motor rollerMotor;
+extern motor intakeRollerMotor;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
