@@ -45,7 +45,7 @@ void autonomous(void) {
   isAuton = true; resetPID = true; resetTurning = true; resetFlywheel = true; isUser = false;
   task StartAuton(autonController);
 
-  GoToPoint(0,36);
+  GoToPoint(0,12);
 
   /*
   setPID = -8;

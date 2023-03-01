@@ -70,11 +70,13 @@ void SpinRoller(double t = 200) {
 }
 
 //moves the bot straight
-void MoveBot(double d) {
+void MoveBot(double d, int mTime) {
   setPID = d;
   resetPID = true;
   isPID = true;
-  wait(600,msec);
+  wait(mTime,msec);
+  setPID = 0;
+  wait(20,msec);
   isPID = false;
 }
 
@@ -194,13 +196,13 @@ void UpdateLocation() {
 
     changeAngle = currAngle - prevAngle;
 
-    if (fabs(changeAngle) < 0.03) {
-      changeX = (currLeftEncoder + currRightEncoder / 2) * (cos(changeAngle));
-      changeY = (currLeftEncoder + currRightEncoder / 2) * (sin(changeAngle));
+    if (fabs(changeAngle) < 0.003) {
+      changeX = ((currLeftEncoder + currRightEncoder) / 2) * (cos(changeAngle));
+      changeY = ((currLeftEncoder + currRightEncoder) / 2) * (sin(changeAngle));
     }
     else {
-      //changeX = 2 * sin(changeAngle / 2);
-      //changeY = (2 * sin(changeAngle / 2)) * ((changeRightEncoder / changeAngle) + 6.08);
+      changeX = 2 * sin(changeAngle / 2);
+      changeY = (2 * sin(changeAngle / 2)) * ((changeRightEncoder / changeAngle) + 6.08);
     }
 
     //averageAngle = prevAngle + (changeAngle / 2);
@@ -219,6 +221,8 @@ void UpdateLocation() {
 
   prevLeftEncoder = currLeftEncoder;
   prevRightEncoder = currRightEncoder;
+  changeX = 0;
+  changeY = 0;
 
   if (displayCount == 100) {
     Brain.Screen.print(xSelf);

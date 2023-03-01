@@ -61,18 +61,34 @@ void SpinRoller(double t = 200) {
 }
 
 //moves the bot straight
-void MoveBot(double d) {
+void MoveBot(double d, int mTime = 1000) {
   setPID = d;
   resetPID = true;
   isPID = true;
-  wait(600,msec);
+  wait(mTime,msec);
   isPID = false;
+}
+
+//rotate the bot
+void RotateBot(double d, int tTime = 1000) {
+  setTurning = d;
+  resetTurning = true;
+  isTurning = true;
+  wait(tTime,msec);
+  isTurning = false;
+}
+
+//set the current position to allow use of GoToPoint (brute force, only temporary)
+void SetLocation(double x, double y, double t) {
+  x_s = x;
+  y_s = y;
+  currentAngle = t;
 }
 
 //lets the bot intake discs
 void IntakeDiscs(bool turnOff = false) {
   if(isAutonFlywheel) {
-    magLifter.set(true);
+    magLifter.set(false);
     isAutonFlywheel = false;
   }
   if(turnOff) {intakeMotor.spin(fwd,0,pct);}
@@ -83,7 +99,7 @@ void IntakeDiscs(bool turnOff = false) {
 void ShootDiscs(double s = 600, double a = 1) {
   SpinMotors(0);
   if (!isAutonFlywheel) {
-    magLifter.set(false);
+    magLifter.set(true);
     isAutonFlywheel = true;
   }
   setFlywheel = s;
@@ -106,6 +122,7 @@ void ShootDiscs(double s = 600, double a = 1) {
     indexer1.set(false);
   }
   setFlywheel = 0;
+  wait(20,msec);
   isFlywheel = false;
 }
 
@@ -182,7 +199,7 @@ void runFlywheel(double flywheelSetRPM = 0, bool resetFlywheelEncoders = false) 
 }
 
 //odometry function
-void GoToPoint(double x_g, double y_g) {
+void GoToPoint(double x_g, double y_g, int tTime = 1000, int mTime = 1000) {
   //calculate distance  
   x_c = x_g - x_s;
   y_c = y_g - y_s;
@@ -191,13 +208,13 @@ void GoToPoint(double x_g, double y_g) {
   //calculate required rotation if any
   goalAngle = asin(x_c / requiredDistance) * 57.2958;
   requiredAngle = goalAngle - currentAngle;
-
+  
   //if angle is more than 2 degrees, turns the robot
   if (fabs(requiredAngle) > 2) {
     setTurning = requiredAngle;
     resetTurning = true;
     isTurning = true;
-    wait(fabs(requiredAngle) * 100, msec);
+    wait(tTime, msec);
     isTurning = false;
     currentAngle = currentAngle + requiredAngle;
   }
@@ -206,7 +223,7 @@ void GoToPoint(double x_g, double y_g) {
   setPID = requiredDistance;
   resetPID = true;
   isPID = true;
-  wait(fabs(requiredDistance) * 100,msec);
+  wait(mTime,msec);
   isPID = false;
   x_s += x_c;
   y_s += y_c;
@@ -305,7 +322,7 @@ int userController() {
 
     //intake control
     if(Controller1.ButtonL2.pressing()) {
-      magLifter.set(true);
+      magLifter.set(false);
       indexer1.set(false);
       intakeMotor.spin(fwd, 100, pct);
     }
@@ -329,7 +346,7 @@ int userController() {
 
     //flywheel controller
     if(Controller1.ButtonR1.pressing()) {
-      magLifter.set(false);
+      magLifter.set(true);
       ToggleFlywheelOn(543);
       //FlyWheel1.spin(fwd,100,pct);
       //FlyWheel2.spin(fwd,100,pct);
