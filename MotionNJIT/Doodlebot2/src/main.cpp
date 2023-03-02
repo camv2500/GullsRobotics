@@ -59,6 +59,8 @@ void autonomous(void) {
   IntakeDiscs();
   MoveBot(3,2000);
   MoveBot(10,200);
+  SpinMotors(0);
+  wait(10000,msec);
   IntakeDiscs(true);
   
   SpinMotors(0);

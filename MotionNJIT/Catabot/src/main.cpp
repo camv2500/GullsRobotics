@@ -1,19 +1,3 @@
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// lMotor1              motor         3               
-// lMotor2              motor         4               
-// Controller1          controller                    
-// rMotor1              motor         7               
-// rMotor2              motor         8               
-// rMotor3              motor         9               
-// rMotor4              motor         10              
-// lMotor3              motor         5               
-// lMotor4              motor         6               
-// cataMotor            motor         1               
-// endGame              digital_out   C               
-// intakeRollerMotor    motor         2               
-// ---- END VEXCODE CONFIGURED DEVICES ----
 #include "vex.h"
 #include "motion.h"
 #include "math.h"
@@ -61,28 +45,31 @@ void autonomous(void) {
   isAuton = true; resetPID = true; resetTurning = true; resetFlywheel = true; isUser = false;
   task StartAuton(autonController);
 
-  MoveBot(-6);
-  SpinRoller(280);
-  MoveBot(6);
-  GoToPoint(-3,11.5);
-  ShootDiscs(3);
-  GoToPoint(0,0);
-  GoToPoint(10,10);
-  IntakeDiscs();
-  GoToPoint(12,12);
-  GoToPoint(16,16);
-  GoToPoint(20,20);
-  IntakeDiscs(true);
-  GoToPoint(12,36);
-  ShootDiscs(3);
-  GoToPoint(30,36);
-  IntakeDiscs();
-  GoToPoint(30,32);
-  GoToPoint(30,28);
-  GoToPoint(30,24);
-  IntakeDiscs(true);
-  GoToPoint(12,36);
 
+  RotateBot(-30,600);
+  ShootDiscs();
+  RotateBot(30,600);
+  MoveBot(8);
+  //SpinRoller(280);
+  wait(300,msec);
+  MoveBot(-8);
+  RotateBot(-135,2500);
+  MoveBot(18,3000);
+
+  /*
+  GOOD PROGRAM
+  MoveBot(8);
+  //SpinRoller(280);
+  wait(300,msec);
+  MoveBot(-8);
+  RotateBot(-14.2,1500);
+  MoveBot(-6);
+  ShootDiscs();
+  MoveBot(6);
+  RotateBot(-125,1500);
+  MoveBot(17.5,3000);
+  */
+  SpinMotors(0);
   Brain.Screen.print("isExited");
   wait(200,msec);
 }

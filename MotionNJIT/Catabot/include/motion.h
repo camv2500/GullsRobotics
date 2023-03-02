@@ -52,12 +52,23 @@ void SpinRoller(double t = 200) {
 }
 
 //moves the bot straight
-void MoveBot(double d) {
+void MoveBot(double d, int mTime = 1000) {
   setPID = d;
   resetPID = true;
   isPID = true;
-  wait(600,msec);
+  wait(mTime,msec);
   isPID = false;
+  wait(20,msec);
+}
+
+//rotate the bot
+void RotateBot(double d, int tTime = 1000) {
+  setTurning = d;
+  resetTurning = true;
+  isTurning = true;
+  wait(tTime,msec);
+  isTurning = false;
+  wait(20,msec);
 }
 
 //lets the bot intake discs
@@ -67,8 +78,11 @@ void IntakeDiscs(bool turnOff = false) {
 }
 
 //emptys the bot of all discs
-void ShootDiscs(double s = 600, double a = 1) {
+void ShootDiscs() {
   SpinMotors(0);
+  cataMotor.spin(fwd, 50, pct);
+  wait(6080,msec);
+  cataMotor.spin(fwd,0,pct);
 }
 
 //the distance is in revolutions, the encoders should only be reset on first use
@@ -105,7 +119,7 @@ void runPID(double pidSetDegrees, bool resetEncoders = false, bool isTurning = f
 }
 
 //odometry function
-void GoToPoint(double x_g, double y_g) {
+void GoToPoint(double x_g, double y_g, int tTime = 1000, int mTime = 1000) {
   //calculate distance  
   x_c = x_g - x_s;
   y_c = y_g - y_s;
@@ -120,7 +134,7 @@ void GoToPoint(double x_g, double y_g) {
     setTurning = requiredAngle;
     resetTurning = true;
     isTurning = true;
-    wait(fabs(requiredAngle) * 100, msec);
+    wait(tTime, msec);
     isTurning = false;
     currentAngle = currentAngle + requiredAngle;
   }
@@ -129,7 +143,7 @@ void GoToPoint(double x_g, double y_g) {
   setPID = requiredDistance;
   resetPID = true;
   isPID = true;
-  wait(fabs(requiredDistance) * 100,msec);
+  wait(mTime,msec);
   isPID = false;
   x_s += x_c;
   y_s += y_c;
