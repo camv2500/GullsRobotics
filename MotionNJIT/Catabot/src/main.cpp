@@ -46,15 +46,18 @@ void autonomous(void) {
   task StartAuton(autonController);
 
 
-  RotateBot(-30,600);
-  ShootDiscs();
-  RotateBot(30,600);
+  // RotateBot(-30,600);
+  // //ShootDiscs();
+  // RotateBot(30,600);
   MoveBot(8);
-  //SpinRoller(280);
-  wait(300,msec);
+  SpinRoller(180);
   MoveBot(-8);
-  RotateBot(-135,2500);
-  MoveBot(18,3000);
+  // RotateBot(-135,2500);
+  // MoveBot(18,3000);
+  // SpinMotors(0);
+  // IntakeDiscs();
+  // wait(10000, msec);
+  // IntakeDiscs(true);
 
   /*
   GOOD PROGRAM

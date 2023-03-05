@@ -14,6 +14,9 @@ static double setPID = 0, setTurning = 0, setFlywheel = 0;
 //auton variables
 double goalAngle, requiredAngle, currentAngle, requiredDistance, x_c, y_c, x_s = 0, y_s = 0;
 
+//user variable
+double shootingCounter = 6400;
+
 //spin the motors for pid
 void SpinMotors(double power, bool isTurning = false) {
   if(isTurning) {
@@ -46,9 +49,9 @@ double ConvertInchesToRevolutions(double requiredInches) {
 
 //spins the rollers
 void SpinRoller(double t = 200) {
-  //rollerMotor.spin(fwd,80,pct);
+  intakeRollerMotor.spin(reverse,100,pct);
   wait(t,msec); //replace with color sensor
-  //rollerMotor.spin(fwd,0,pct);
+  intakeRollerMotor.spin(reverse,0,pct);
 }
 
 //moves the bot straight
@@ -204,22 +207,36 @@ int userController() {
     rMotor4.spin(fwd, controlCurve(rightDrive), vex::velocityUnits::pct);
 
     //intake control
-    if(Controller1.ButtonL2.pressing()) {
+    if(Controller1.ButtonL1.pressing()) {
       intakeRollerMotor.spin(fwd, 100, pct);
     }
-    else if (Controller1.ButtonRight.pressing()) {
-      intakeRollerMotor.spin(reverse, 100, pct);
+    else if (Controller1.ButtonL2.pressing()) {
+      intakeRollerMotor.spin(fwd, 70, pct);
     }
     else {
       intakeRollerMotor.stop(brakeType::coast);
     }
 
-    //endgame deploy
+    // //endgame deploy
     if (Controller1.ButtonY.pressing()) {
       endGame.set(true);
     }
     else {
       endGame.set(false);
+    }
+
+    // if (Controller1.ButtonA.pressing()) {
+    //   endGame.set(false);
+    // }
+
+    if (Controller1.ButtonR1.pressing()) {
+      cataMotor.spin(fwd,100,pct);
+    }
+    else if (Controller1.ButtonR2.pressing()) {
+      cataMotor.spin(fwd,40,pct);
+    }
+    else {
+      cataMotor.spin(fwd,0,pct);
     }
 
     wait(10,msec);

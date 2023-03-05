@@ -13,8 +13,8 @@ extern motor rMotor4;
 extern motor lMotor3;
 extern motor lMotor4;
 extern motor cataMotor;
-extern digital_out endGame;
 extern motor intakeRollerMotor;
+extern digital_out endGame;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
