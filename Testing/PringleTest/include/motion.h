@@ -42,6 +42,14 @@ void SpinMotors(double power, bool isTurning = false) {
   }
 }
 
+//reset all the encoders
+void ResetEncoders() {
+  lMotor1.setPosition(0,degrees); lMotor2.setPosition(0,degrees);
+  lMotor3.setPosition(0,degrees); lMotor4.setPosition(0,degrees);
+  rMotor1.setPosition(0,degrees); rMotor2.setPosition(0,degrees);
+  rMotor3.setPosition(0,degrees); rMotor4.setPosition(0,degrees);
+}
+
 //convert degrees to inches
 double ConvertDegreesToInches(double setDegrees, double turnDiameter = 12.17) {
   double requiredInches = setDegrees / 360.0 * M_PI * turnDiameter;

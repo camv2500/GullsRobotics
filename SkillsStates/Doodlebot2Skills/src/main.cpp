@@ -45,23 +45,41 @@ void autonomous(void) {
   isAuton = true; resetPID = true; resetTurning = true; resetFlywheel = true; isUser = false;
   task StartAuton(autonController);
 
-  GoToPoint(18,0,1300,2200);
-  GoToPoint(18,0.1,1300,200);
-  MoveBot(-9,1900);
-  SpinRoller(250);
-  MoveBot(9,1900);
-  GoToPoint(20.3,9);
-  ShootDiscs(590,2);
-  RotateBot(-150,1750);
-  MoveBot(9,1750);
-  RotateBot(90,1750);
-  MoveBot(13,3000);
+  RotateBot(-10,500);
+  ShootDiscs(2);
+  wait(1000,msec);
+  RotateBot(10,500);
+  MoveBot(-15,2000);
+  RotateBot(-90,2500);
+  MoveBot(23,3000);
+  RotateBot(43,2000);
   IntakeDiscs();
-  MoveBot(3,2000);
-  MoveBot(10,200);
-  SpinMotors(0);
-  wait(10000,msec);
+  MoveBot(17,2000);
+  MoveBot(5,2000);
   IntakeDiscs(true);
+  RotateBot(85);
+  ShootDiscs(1);
+  RotateBot(-88);
+  IntakeDiscs();
+  MoveBot(12,2000);
+  MoveBot(3,2000);
+  IntakeDiscs(true);
+  RotateBot(105,2000);
+  ShootDiscs(1);
+  RotateBot(-110,2000);
+  IntakeDiscs();
+  MoveBot(12,2000);
+  MoveBot(3,2000);
+  IntakeDiscs(true);
+  RotateBot(125,2000);
+  ShootDiscs(1);
+  RotateBot(100,2000);
+  MoveBot(-40,4000);
+  MoveBot(4,1200);
+  RotateBot(90,1500);
+  MoveBot(25,3000);
+
+  
   
   SpinMotors(0);
   Brain.Screen.print("isExited");
