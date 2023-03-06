@@ -2,28 +2,25 @@
 #include "vex.h"
 
 //variables for pid
-double kP = 0.468, kI = 0.0000468, kD = 0.048;
+double kP = 0.468, kI = 0, kD = 0.048;
 double error = 0, prevError = 0, integral = 0, derivative = 0;
 double power = 0, sensorValue = 0, lSensor = 0, rSensor = 0;
 
 //variables for the flywheel
-double fkP = 0.008, fkI = 0, fkD = 0, fkF = 0.00;
+double fkP = 0.008, fkI = 0, fkD = 0.008, fkF = 0.02;
 double flyWheelError = 0, fprevError = 0, fintegral = 0, fderivative = 0, fpower = 0;
 double kF, feedForward, count = 1;
 
 //variables for the auton task
 static bool isAuton = false, isPID = false, isTurning = false, isFlywheel = false, isUser = false; 
-static bool resetPID = true, resetTurning = true, resetFlywheel = true;
+static bool resetPID = true, resetTurning = true, resetFlywheel = true, isAutonFlywheel = false;
 static double setPID = 0, setTurning = 0, setFlywheel = 0;
 
-//variables for the odometry
-double xSelf = 0, ySelf = 0, tSelf = 0, xCurrent = 0, yCurrent = 0, tCurrent = 0;
-double goalAngle, requiredAngle, requiredDistance, displayCount = 0;
-double prevLeftEncoder = 0, prevRightEncoder = 0, currLeftEncoder, currRightEncoder, changeLeftEncoder, changeRightEncoder;
-double changeAngle, changeX, changeY, tempHyp, currAngle, prevAngle, averageAngle, tempAngle;
+//auton variables
+double goalAngle, requiredAngle, currentAngle, requiredDistance, x_c, y_c, x_s = 0, y_s = 0;
 
-//variables for the user version of the flywheel
-static bool isUserFlywheel = false, resetUserFlywheel = false, flywheelNeedReset = false;
+//user variables
+static bool isUserFlywheel = false, resetUserFlywheel = false;
 static double setUserFlywheel = 0, indexerCount = 0;
 
 //spin the motors for pid
@@ -50,16 +47,10 @@ double ConvertDegreesToInches(double setDegrees, double turnDiameter = 12.17) {
 
 //convert the inches to revolutions
 double ConvertInchesToRevolutions(double requiredInches) {
-  double circumferenceOfWheel = 3.86 * M_PI;
+  double circumferenceOfWheel = 3.865 * M_PI;
   double outputRat = 3.0/5.0;
   double requiredRevolutions = (requiredInches / circumferenceOfWheel) * outputRat * 360.0;
   return requiredRevolutions;
-}
-
-//convert radians to degrees
-double ConvertRadiansToDegrees(double radian) {
-  radian = radian * (180.0 / M_PI);
-  return radian;
 }
 
 //spins the rollers
@@ -70,20 +61,47 @@ void SpinRoller(double t = 200) {
 }
 
 //moves the bot straight
-void MoveBot(double d, int mTime) {
+void MoveBot(double d, int mTime = 1000) {
   setPID = d;
   resetPID = true;
   isPID = true;
   wait(mTime,msec);
-  setPID = 0;
-  wait(20,msec);
   isPID = false;
+}
+
+//rotate the bot
+void RotateBot(double d, int tTime = 1000) {
+  setTurning = d;
+  resetTurning = true;
+  isTurning = true;
+  wait(tTime,msec);
+  isTurning = false;
+}
+
+//set the current position to allow use of GoToPoint (brute force, only temporary)
+void SetLocation(double x, double y, double t) {
+  x_s = x;
+  y_s = y;
+  currentAngle = t;
+}
+
+//lets the bot intake discs
+void IntakeDiscs(bool turnOff = false) {
+  if(isAutonFlywheel) {
+    magLifter.set(false);
+    isAutonFlywheel = false;
+  }
+  if(turnOff) {intakeMotor.spin(fwd,0,pct);}
+  else {intakeMotor.spin(fwd,100,pct);}
 }
 
 //emptys the bot of all discs
 void ShootDiscs(double s = 600, double a = 1) {
   SpinMotors(0);
-  magLifter.set(false);
+  if (!isAutonFlywheel) {
+    magLifter.set(true);
+    isAutonFlywheel = true;
+  }
   setFlywheel = s;
   resetFlywheel = true;
   isFlywheel = true;
@@ -104,6 +122,7 @@ void ShootDiscs(double s = 600, double a = 1) {
     indexer1.set(false);
   }
   setFlywheel = 0;
+  wait(20,msec);
   isFlywheel = false;
 }
 
@@ -115,33 +134,29 @@ void runPID(double pidSetDegrees, bool resetEncoders = false, bool isTurning = f
     rMotor1.setPosition(0, degrees); rMotor2.setPosition(0, degrees); rMotor3.setPosition(0, degrees); rMotor4.setPosition(0, degrees);
     integral = 0;
     derivative = 0;
+    Brain.Screen.print("reset");
   }
 
-  if (pidSetDegrees != 0) {
-    lSensor = (lMotor1.position(degrees) + lMotor2.position(degrees) + 
-      lMotor3.position(degrees) + lMotor4.position(degrees)) / 4;
-    rSensor = (rMotor1.position(degrees) + rMotor2.position(degrees) + 
-      rMotor3.position(degrees) + rMotor4.position(degrees)) / 4;
-    if (isTurning) {sensorValue = rSensor;}
-    else {sensorValue = (lSensor + rSensor) / 2;}
-    error = pidSetDegrees - sensorValue;
+  lSensor = (lMotor1.position(degrees) + lMotor2.position(degrees) + 
+    lMotor3.position(degrees) + lMotor4.position(degrees)) / 4;
+  rSensor = (rMotor1.position(degrees) + rMotor2.position(degrees) + 
+    rMotor3.position(degrees) + rMotor4.position(degrees)) / 4;
+  if (isTurning) {sensorValue = rSensor;}
+  else {sensorValue = (lSensor + rSensor) / 2;}
+  error = pidSetDegrees - sensorValue;
 
-    integral = integral + error;
-    if (fabs(integral) > 5000) {integral = 5000;}
+  integral = integral + error;
+  if (fabs(integral) > 5000) {integral = 500;}
 
-    derivative = error - prevError;
-    prevError = error;
+  derivative = error - prevError;
+  prevError = error;
 
-    power = error * kP + integral * kI + derivative * kD;
-    if (power > 33.5) {power = 33.5;}
-    if (power < -33.5) {power = -33.5;}
-  
-    if (isTurning) {SpinMotors(power, true);}
-    else {SpinMotors(power);}
-  }
-  else {
-    SpinMotors(0);
-  }
+  power = error * kP + integral * kI + derivative * kD;
+  if (power > 33.5) {power = 33.5;}
+  if (power < -33.5) {power = -33.5;}
+
+  if (isTurning) {SpinMotors(power, true);}
+  else {SpinMotors(power);}
 }
 
 //run the flywheel
@@ -149,10 +164,9 @@ void runFlywheel(double flywheelSetRPM = 0, bool resetFlywheelEncoders = false) 
   if (resetFlywheelEncoders) {
     resetFlywheelEncoders = false;
     fintegral = 0;
-    fderivative = 0; 
+    fderivative = 0;
+    feedForward = flywheelSetRPM; 
   }
-
-  feedForward = flywheelSetRPM;
 
   if (flywheelSetRPM != 0) {
     flyWheelError = flywheelSetRPM - ((FlyWheel1.velocity(rpm) * -1) + FlyWheel2.velocity(rpm) / 2);
@@ -164,12 +178,19 @@ void runFlywheel(double flywheelSetRPM = 0, bool resetFlywheelEncoders = false) 
     fprevError = flyWheelError;
 
     fpower = flyWheelError * fkP + fintegral * fkI + fderivative * fkD + feedForward * fkF;
-    //if (fpower > (flywheelSetRPM / 600 * 12)) {
-      //fpower = flywheelSetRPM / 600 * 12;
-    //}
+    if (fpower > (flywheelSetRPM / 600 * 12)) {
+      fpower = flywheelSetRPM / 600 * 12;
+    }
 
     FlyWheel1.spin(forward, fpower, volt);
     FlyWheel2.spin(forward, fpower, volt);
+    /*
+    if (flyWheelError < 5 && count > 4) {Controller1.rumble(rumbleLong); count = 1;}
+    else {
+      if (count > 4) {Controller1.rumble(" ");}
+      else {count++;}
+    }
+    */
   }
   else {
     FlyWheel1.stop(brakeType::coast);
@@ -177,118 +198,43 @@ void runFlywheel(double flywheelSetRPM = 0, bool resetFlywheelEncoders = false) 
   }
 }
 
-double localOffsetX = 0, localOffsetY = 0, changeLeftReset, changeRightReset;
-double globalOffsetX = 0, globalOffsetY = 0;
-void UpdateLocation() {
-  //step 1
-  currLeftEncoder = (lMotor1.position(degrees) + lMotor2.position(degrees) + 
-    lMotor3.position(degrees) + lMotor4.position(degrees)) / 4;
-  currRightEncoder = (rMotor1.position(degrees) + rMotor2.position(degrees) + 
-    rMotor3.position(degrees) + rMotor4.position(degrees)) / 4;
-
-  //step 2
-  changeLeftEncoder = ConvertDegreesToInches(currLeftEncoder - prevLeftEncoder, 7.975);
-  changeRightEncoder = ConvertDegreesToInches(currRightEncoder - prevRightEncoder, 7.95);
-
-  //step 3
-  prevLeftEncoder = currLeftEncoder;
-  prevRightEncoder = currRightEncoder;
-
-  //step 4
-  changeLeftReset += changeLeftEncoder;
-  changeRightReset += changeRightEncoder;
-
-  //step 5
-  currAngle = tSelf + ((changeLeftReset - changeRightReset) / 12.09);
-
-  //step 6
-  changeAngle = currAngle - prevAngle;
-
-  //step 7
-  if (changeAngle == 0) {
-    localOffsetX = 0;
-    localOffsetY = changeRightReset;
-  }
-  //step 8
-  else {
-    localOffsetX = 0;
-    localOffsetY = (2 * sin(changeAngle / 2)) * ((changeRightReset / changeAngle) + 6.045);
-  }
-
-  //step 9
-  averageAngle = prevAngle + (changeAngle / 2);
-
-  //step 10 - still confused about the "change the angle" part, could be causing issues
-  tempHyp = sqrt((localOffsetX * localOffsetX) + (localOffsetY * localOffsetY));
-  globalOffsetX = tempHyp * cos(averageAngle);
-  globalOffsetY = tempHyp * sin(averageAngle);
-
-  //step 11
-  xSelf += globalOffsetX;
-  ySelf += globalOffsetY;
-  tSelf = currAngle;
-  prevAngle = currAngle;
-
-  if (displayCount == 100) {
-    Brain.Screen.print(xSelf);
-    Brain.Screen.print(" , ");
-    Brain.Screen.print(ySelf);
-    Brain.Screen.print(" , ");
-    Brain.Screen.print(ConvertRadiansToDegrees(tSelf));
-    Brain.Screen.newLine();
-    displayCount = 0;
-  }
-  else if (displayCount == 95) {
-    Brain.Screen.clearScreen();
-    displayCount++;
-  }
-  else {
-    displayCount++;
-  }
-}
-
 //odometry function
-void GoToPoint(double xGoal, double yGoal) {
+void GoToPoint(double x_g, double y_g, int tTime = 1000, int mTime = 1000) {
   //calculate distance  
-  xCurrent = xGoal - xSelf;
-  yCurrent = yGoal - ySelf;
-  requiredDistance = sqrt((xCurrent * xCurrent) + (yCurrent * yCurrent));
+  x_c = x_g - x_s;
+  y_c = y_g - y_s;
+  requiredDistance = sqrt((x_c * x_c) + (y_c * y_c));
 
   //calculate required rotation if any
-  goalAngle = asin(xCurrent / requiredDistance) * 57.2958;
-  requiredAngle = goalAngle - tSelf;
-
+  goalAngle = asin(x_c / requiredDistance) * 57.2958;
+  requiredAngle = goalAngle - currentAngle;
+  
   //if angle is more than 2 degrees, turns the robot
   if (fabs(requiredAngle) > 2) {
     setTurning = requiredAngle;
     resetTurning = true;
     isTurning = true;
-    wait(fabs(requiredAngle) * 120, msec);
-    setTurning = 0;
+    wait(tTime, msec);
     isTurning = false;
+    currentAngle = currentAngle + requiredAngle;
   }
 
   //moves the required distance
   setPID = requiredDistance;
   resetPID = true;
   isPID = true;
-  wait(fabs(requiredDistance) * 120,msec);
-  setPID = 0;
+  wait(mTime,msec);
   isPID = false;
-
-  /*update location
-  xSelf += xCurrent;
-  ySelf += yCurrent;
-  tSelf = tSelf + requiredAngle;
+  x_s += x_c;
+  y_s += y_c;
 
   //show the current location and rotation based off starting rotation
-  Brain.Screen.print(xSelf);
+  Brain.Screen.print(x_s);
   Brain.Screen.print(" , ");
-  Brain.Screen.print(ySelf);
+  Brain.Screen.print(y_s);
   Brain.Screen.print(" , ");
-  Brain.Screen.print(tSelf);
+  Brain.Screen.print(currentAngle);
   Brain.Screen.newLine();
-  */
 }
 
 //auton controller
@@ -323,19 +269,20 @@ int autonController() {
       }
     }
 
-    UpdateLocation();
     wait(10, msec);
   }
   return 1;
 }
 
 void ToggleFlywheelOn(double speed = 450) {
+  resetUserFlywheel = true;
   setUserFlywheel = speed;
   isUserFlywheel = true;
 }
 
 void ToggleFlywheelOff() {
   isUserFlywheel = false;
+  resetUserFlywheel = true;
   setUserFlywheel = 0;
   isUserFlywheel = false;
 }
@@ -375,7 +322,7 @@ int userController() {
 
     //intake control
     if(Controller1.ButtonL2.pressing()) {
-      magLifter.set(true);
+      magLifter.set(false);
       indexer1.set(false);
       intakeMotor.spin(fwd, 100, pct);
     }
@@ -399,12 +346,10 @@ int userController() {
 
     //flywheel controller
     if(Controller1.ButtonR1.pressing()) {
-      magLifter.set(false);
-      if (flywheelNeedReset == true) {
-        flywheelNeedReset = false;
-        resetUserFlywheel = true;
-      }
-      ToggleFlywheelOn(200);
+      magLifter.set(true);
+      ToggleFlywheelOn(543);
+      //FlyWheel1.spin(fwd,100,pct);
+      //FlyWheel2.spin(fwd,100,pct);
       if (Controller1.ButtonR2.pressing()) {
         indexer1.set(true);
       }
@@ -414,7 +359,8 @@ int userController() {
     }
     else {
       ToggleFlywheelOff();
-      flywheelNeedReset = true;
+      //FlyWheel1.stop(brakeType::coast);
+      //FlyWheel2.stop(brakeType::coast);
       indexer1.set(false);
     }
 
@@ -435,7 +381,6 @@ int userController() {
       endGame.set(false);
     }
 
-    UpdateLocation();
     wait(10,msec);
   }
 
