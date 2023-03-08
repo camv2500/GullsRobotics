@@ -84,8 +84,16 @@ void IntakeDiscs(bool turnOff = false) {
 void ShootDiscs() {
   SpinMotors(0);
   cataMotor.spin(fwd, 50, pct);
-  wait(6080,msec);
+  wait(6100,msec);
   cataMotor.spin(fwd,0,pct);
+}
+
+//auton endgame deployment
+void EndgameDeploy() {
+  endGame.set(true); wait(500,msec);
+  endGame.set(false); wait(500,msec);
+  endGame.set(true); wait(500,msec);
+  endGame.set(false); wait(500,msec);
 }
 
 //the distance is in revolutions, the encoders should only be reset on first use

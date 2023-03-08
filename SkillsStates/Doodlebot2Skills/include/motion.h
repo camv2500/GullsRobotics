@@ -134,6 +134,14 @@ void ShootDiscs(double a = 1, double s = 600) {
   isFlywheel = false;
 }
 
+//auton endgame deployment
+void EndgameDeploy() {
+  endGame.set(true); wait(500,msec);
+  endGame.set(false); wait(500,msec);
+  endGame.set(true); wait(500,msec);
+  endGame.set(false); wait(500,msec);
+}
+
 //the distance is in revolutions, the encoders should only be reset on first use
 void runPID(double pidSetDegrees, bool resetEncoders = false, bool isTurning = false) {
   if (resetEncoders) {

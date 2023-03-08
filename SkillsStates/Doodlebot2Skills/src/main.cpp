@@ -45,41 +45,30 @@ void autonomous(void) {
   isAuton = true; resetPID = true; resetTurning = true; resetFlywheel = true; isUser = false;
   task StartAuton(autonController);
 
-  RotateBot(-10,500);
-  ShootDiscs(2);
-  wait(1000,msec);
-  RotateBot(10,500);
-  MoveBot(-15,2000);
-  RotateBot(-90,2500);
-  MoveBot(23,3000);
-  RotateBot(43,2000);
-  IntakeDiscs();
-  MoveBot(17,2000);
-  MoveBot(5,2000);
-  IntakeDiscs(true);
-  RotateBot(85);
-  ShootDiscs(1);
-  RotateBot(-88);
-  IntakeDiscs();
-  MoveBot(12,2000);
-  MoveBot(3,2000);
-  IntakeDiscs(true);
-  RotateBot(105,2000);
-  ShootDiscs(1);
-  RotateBot(-110,2000);
-  IntakeDiscs();
-  MoveBot(12,2000);
-  MoveBot(3,2000);
-  IntakeDiscs(true);
-  RotateBot(125,2000);
-  ShootDiscs(1);
-  RotateBot(100,2000);
-  MoveBot(-40,4000);
-  MoveBot(4,1200);
-  RotateBot(90,1500);
-  MoveBot(25,3000);
+  //move bot backwards to hit first roller, spin roller
+  RotateBot(-5);
+  SpinRoller(375);
 
-  
+  //move the bot forward, turn, then backwards to hit second roller, spin roller
+  RotateBot(5);
+  MoveBot(13,2000);
+  RotateBot(90,2000);
+  MoveBot(-25,2000);
+  RotateBot(-5);
+  SpinRoller(325);
+
+  //move bot close to goal, shoot
+  MoveBot(69,5000);
+  ShootDiscs(2);
+
+  //get into position to fire endgame
+  MoveBot(-7.5,2000);
+  RotateBot(-85,2000);
+  MoveBot(-3);
+
+  //deploy endgame. commented out for now
+  wait(20,sec);
+  EndgameDeploy();
   
   SpinMotors(0);
   Brain.Screen.print("isExited");

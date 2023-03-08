@@ -207,7 +207,7 @@ void UpdateLocation() {
   changeRightReset += changeRightEncoder;
 
   //step 5
-  currAngle = tSelf + ((changeLeftReset - changeRightReset) / 12.09);
+  currAngle = prevAngle + ((changeLeftReset - changeRightReset) / 12.09);
 
   //step 6
   changeAngle = currAngle - prevAngle;
