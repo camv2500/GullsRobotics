@@ -186,56 +186,90 @@ void runFlywheel(double flywheelSetRPM = 0, bool resetFlywheelEncoders = false) 
 }
 
 double localOffsetX = 0, localOffsetY = 0, changeLeftReset, changeRightReset;
-double globalOffsetX = 0, globalOffsetY = 0;
-void UpdateLocation() {
-  //step 1
+double globalOffsetX = 0, globalOffsetY = 0, length = 12.09;
+void UpdateLocation(double t = 1) {
   currLeftEncoder = (lMotor1.position(degrees) + lMotor2.position(degrees) + 
     lMotor3.position(degrees) + lMotor4.position(degrees)) / 4;
   currRightEncoder = (rMotor1.position(degrees) + rMotor2.position(degrees) + 
     rMotor3.position(degrees) + rMotor4.position(degrees)) / 4;
 
-  //step 2
-  changeLeftEncoder = ConvertDegreesToInches(currLeftEncoder - prevLeftEncoder, 7.975);
-  changeRightEncoder = ConvertDegreesToInches(currRightEncoder - prevRightEncoder, 7.95);
+  currLeftEncoder = ConvertDegreesToInches(currLeftEncoder,7.975);
+  currRightEncoder = ConvertDegreesToInches(currRightEncoder,7.975);
 
-  //step 3
+  changeLeftEncoder = currLeftEncoder - prevLeftEncoder;
+  changeRightEncoder = currRightEncoder - prevRightEncoder;
+
   prevLeftEncoder = currLeftEncoder;
   prevRightEncoder = currRightEncoder;
 
-  //step 4
-  changeLeftReset += changeLeftEncoder;
-  changeRightReset += changeRightEncoder;
-
-  //step 5
-  currAngle = prevAngle + ((changeLeftReset - changeRightReset) / 12.09);
-
-  //step 6
+  currAngle = prevAngle + (((changeLeftEncoder + changeRightEncoder) / length) * t);
   changeAngle = currAngle - prevAngle;
 
-  //step 7
-  if (changeAngle == 0) {
-    localOffsetX = 0;
-    localOffsetY = changeRightReset;
+  if (changeLeftEncoder == changeRightEncoder) {
+    changeX = changeLeftEncoder * cos(currAngle);
+    changeY = changeRightEncoder * sin(currAngle);
   }
-  //step 8
   else {
-    localOffsetX = 0;
-    localOffsetY = (2 * sin(changeAngle / 2)) * ((changeRightReset / changeAngle) + 6.045);
+    changeX = ((changeRightEncoder + changeLeftEncoder) / (changeRightEncoder - changeLeftEncoder)) * (length / 2) * sin(changeAngle);
+    changeY = (((changeRightEncoder + changeLeftEncoder) / (changeRightEncoder - changeLeftEncoder)) * (length / 2) * cos(changeAngle)) + 
+      (((changeRightEncoder + changeLeftEncoder) / (changeRightEncoder - changeLeftEncoder)) * (length / 2));
   }
 
-  //step 9
-  averageAngle = prevAngle + (changeAngle / 2);
-
-  //step 10 - still confused about the "change the angle" part, could be causing issues
-  tempHyp = sqrt((localOffsetX * localOffsetX) + (localOffsetY * localOffsetY));
-  globalOffsetX = tempHyp * cos(averageAngle);
-  globalOffsetY = tempHyp * sin(averageAngle);
-
-  //step 11
-  xSelf += globalOffsetX;
-  ySelf += globalOffsetY;
+  xSelf += changeX;
+  ySelf += changeY;
   tSelf = currAngle;
-  prevAngle = currAngle;
+  // tracking.pdf
+  // //step 1
+  // currLeftEncoder = (lMotor1.position(degrees) + lMotor2.position(degrees) + 
+  //   lMotor3.position(degrees) + lMotor4.position(degrees)) / 4;
+  // currRightEncoder = (rMotor1.position(degrees) + rMotor2.position(degrees) + 
+  //   rMotor3.position(degrees) + rMotor4.position(degrees)) / 4;
+
+  // currLeftEncoder = ConvertDegreesToInches(currLeftEncoder,7.975);
+  // currRightEncoder = ConvertDegreesToInches(currRightEncoder,7.975);
+
+  // //step 2
+  // changeLeftEncoder = currLeftEncoder - prevLeftEncoder;
+  // changeRightEncoder = currRightEncoder - prevRightEncoder;
+
+  // //step 3
+  // prevLeftEncoder = currLeftEncoder;
+  // prevRightEncoder = currRightEncoder;
+
+  // //step 4
+  // changeLeftReset += changeLeftEncoder;
+  // changeRightReset += changeRightEncoder;
+
+  // //step 5
+  // currAngle = prevAngle + ((changeLeftReset - changeRightReset) / 12.09);
+
+  // //step 6
+  // changeAngle = currAngle - prevAngle;
+
+  // //step 7
+  // if (changeAngle == 0) {
+  //   localOffsetX = 0;
+  //   localOffsetY = changeRightReset;
+  // }
+  // //step 8
+  // else {
+  //   localOffsetX = 0;
+  //   localOffsetY = (2 * sin(changeAngle / 2)) * ((changeRightReset / changeAngle) + 6.045);
+  // }
+
+  // //step 9
+  // averageAngle = prevAngle + (changeAngle / 2);
+
+  // //step 10 - still confused about the "change the angle" part, could be causing issues
+  // tempHyp = sqrt((localOffsetX * localOffsetX) + (localOffsetY * localOffsetY));
+  // globalOffsetX = tempHyp * cos(averageAngle);
+  // globalOffsetY = tempHyp * sin(averageAngle);
+
+  // //step 11
+  // xSelf += globalOffsetX;
+  // ySelf += globalOffsetY;
+  // tSelf = currAngle;
+  // prevAngle = currAngle;
 
   if (displayCount == 100) {
     Brain.Screen.print(xSelf);
