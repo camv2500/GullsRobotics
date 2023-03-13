@@ -218,6 +218,7 @@ void UpdateLocation(double t = 1) {
   xSelf += changeX;
   ySelf += changeY;
   tSelf = currAngle;
+
   // tracking.pdf
   // //step 1
   // currLeftEncoder = (lMotor1.position(degrees) + lMotor2.position(degrees) + 

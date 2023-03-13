@@ -37,46 +37,43 @@ void pre_auton(void) {
 /*---------------------------------------------------------------------------*/
 
 void autonomous(void) {
-  /*
-  -------------------------
-  does start in front of roller
-  -------------------------
-  */
   isAuton = true; resetPID = true; resetTurning = true; resetFlywheel = true; isUser = false;
   task StartAuton(autonController);
 
-  //shoot discs
-  MoveBot(-5,2000);
-  RotateBot(10,1200);
-  ShootDiscs();
+  MoveBot(12,5000);
 
-  //move robot to roller. spin
-  RotateBot(-10,1200);
-  MoveBot(74,4000);
-  RotateBot(-270,2000);
-  MoveBot(4.5,1500);
-  RotateBot(-7,1200);
-  SpinRoller(175);
+  // //shoot discs
+  // MoveBot(-5,2000);
+  // RotateBot(10,1200);
+  // ShootDiscs();
 
-  //move robot to other roller. spin
-  MoveBot(-27,3500);
-  RotateBot(270,2000);
-  MoveBot(20,3000);
-  RotateBot(-7,1200);
-  SpinRoller(175);
+  // //move robot to roller. spin
+  // RotateBot(-10,1200);
+  // MoveBot(74,4000);
+  // RotateBot(-270,2000);
+  // MoveBot(4.5,1500);
+  // RotateBot(-7,1200);
+  // SpinRoller(175);
 
-  //move to endgame position
-  MoveBot(-10,2000);
-  RotateBot(90,2000);
-  MoveBot(16,2000);
-  RotateBot(-45,2000);
+  // //move robot to other roller. spin
+  // MoveBot(-27,3500);
+  // RotateBot(270,2000);
+  // MoveBot(20,3000);
+  // RotateBot(-7,1200);
+  // SpinRoller(175);
 
-  //deploy endgame
-  EndgameDeploy();
+  // //move to endgame position
+  // MoveBot(-10,2000);
+  // RotateBot(90,2000);
+  // MoveBot(16,2000);
+  // RotateBot(-45,2000);
+
+  // //deploy endgame
+  // EndgameDeploy();
   
-  SpinMotors(0);
-  Brain.Screen.print("isExited");
-  wait(200,msec);
+  // SpinMotors(0);
+  // Brain.Screen.print("isExited");
+  // wait(200,msec);
 }
 
 

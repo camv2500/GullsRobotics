@@ -41,7 +41,7 @@ double ConvertDegreesToInches(double setDegrees, double turnDiameter = 12.17) {
 
 //convert the inches to revolutions
 double ConvertInchesToRevolutions(double requiredInches) {
-  double circumferenceOfWheel = 3.865 * M_PI;
+  double circumferenceOfWheel = 3.5 * M_PI;
   double outputRat = 3.0/5.0;
   double requiredRevolutions = (requiredInches / circumferenceOfWheel) * outputRat * 360.0;
   return requiredRevolutions;
