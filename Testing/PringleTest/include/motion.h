@@ -193,31 +193,64 @@ void UpdateLocation(double t = 1) {
   currRightEncoder = (rMotor1.position(degrees) + rMotor2.position(degrees) + 
     rMotor3.position(degrees) + rMotor4.position(degrees)) / 4;
 
-  currLeftEncoder = ConvertDegreesToInches(currLeftEncoder,7.975);
-  currRightEncoder = ConvertDegreesToInches(currRightEncoder,7.975);
+  
+  changeLeftEncoder = ConvertDegreesToInches(currLeftEncoder - prevLeftEncoder, 7.975);
+  changeRightEncoder = ConvertDegreesToInches(currRightEncoder - prevRightEncoder, 7.975);
 
-  changeLeftEncoder = currLeftEncoder - prevLeftEncoder;
-  changeRightEncoder = currRightEncoder - prevRightEncoder;
-
+  ySelf += ((changeLeftEncoder + changeRightEncoder) / 2);
   prevLeftEncoder = currLeftEncoder;
   prevRightEncoder = currRightEncoder;
 
-  currAngle = prevAngle + (((changeLeftEncoder + changeRightEncoder) / length) * t);
-  changeAngle = currAngle - prevAngle;
+  // if (changeLeftEncoder != 0 || changeRightEncoder != 0) {
+  //   currAngle = prevAngle + ((changeLeftEncoder - changeRightEncoder) / 12.09);
 
-  if (changeLeftEncoder == changeRightEncoder) {
-    changeX = changeLeftEncoder * cos(currAngle);
-    changeY = changeRightEncoder * sin(currAngle);
-  }
-  else {
-    changeX = ((changeRightEncoder + changeLeftEncoder) / (changeRightEncoder - changeLeftEncoder)) * (length / 2) * sin(changeAngle);
-    changeY = (((changeRightEncoder + changeLeftEncoder) / (changeRightEncoder - changeLeftEncoder)) * (length / 2) * cos(changeAngle)) + 
-      (((changeRightEncoder + changeLeftEncoder) / (changeRightEncoder - changeLeftEncoder)) * (length / 2));
-  }
+  //   changeAngle = currAngle - prevAngle;
 
-  xSelf += changeX;
-  ySelf += changeY;
-  tSelf = currAngle;
+  //   if (fabs(changeAngle) < 0.03) {
+  //     changeX = (currLeftEncoder + currRightEncoder / 2) * (cos(changeAngle));
+  //     changeY = (currLeftEncoder + currRightEncoder / 2) * (sin(changeAngle));
+  //   }
+  //   else {
+  //     changeX = 2 * sin(changeAngle / 2);
+  //     changeY = (2 * sin(changeAngle / 2)) * ((changeRightEncoder / changeAngle) + 6.08);
+  //   }
+
+  //   xSelf += changeX;
+  //   ySelf += changeY;
+  //   tSelf = currAngle;
+  //   prevAngle = currAngle;
+  // }
+
+  // prevLeftEncoder = currLeftEncoder;
+  // prevRightEncoder = currRightEncoder;
+
+
+  
+  // currLeftEncoder = ConvertDegreesToInches(currLeftEncoder,7.975);
+  // currRightEncoder = ConvertDegreesToInches(currRightEncoder,7.975);
+
+  // changeLeftEncoder = currLeftEncoder - prevLeftEncoder;
+  // changeRightEncoder = currRightEncoder - prevRightEncoder;
+
+  // prevLeftEncoder = currLeftEncoder;
+  // prevRightEncoder = currRightEncoder;
+
+  // currAngle = prevAngle + (((changeLeftEncoder + changeRightEncoder) / length) * t);
+  // changeAngle = currAngle - prevAngle;
+
+  // if (changeLeftEncoder == changeRightEncoder) {
+  //   changeX = changeLeftEncoder * cos(currAngle);
+  //   changeY = changeRightEncoder * sin(currAngle);
+  // }
+  // else {
+  //   changeX = ((changeRightEncoder + changeLeftEncoder) / (changeRightEncoder - changeLeftEncoder)) * (length / 2) * sin(changeAngle);
+  //   changeY = (((changeRightEncoder + changeLeftEncoder) / (changeRightEncoder - changeLeftEncoder)) * (length / 2) * cos(changeAngle)) + 
+  //     (((changeRightEncoder + changeLeftEncoder) / (changeRightEncoder - changeLeftEncoder)) * (length / 2));
+  // }
+
+  // xSelf += changeX;
+  // ySelf += changeY;
+  // tSelf = currAngle;
 
   // tracking.pdf
   // //step 1
