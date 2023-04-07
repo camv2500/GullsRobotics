@@ -37,44 +37,10 @@ void pre_auton(void) {
 /*---------------------------------------------------------------------------*/
 
 void autonomous(void) {
-  /*
-  -------------------------
-  does start in front of roller
-  -------------------------
-  */
   isAuton = true; resetPID = true; resetTurning = true; resetFlywheel = true; isUser = false;
   task StartAuton(autonController);
 
-
-  // RotateBot(-30,600);
-  // //ShootDiscs();
-  // RotateBot(30,600);
-  MoveBot(8);
-  SpinRoller(180);
-  MoveBot(-8);
-  // RotateBot(-135,2500);
-  // MoveBot(18,3000);
-  // SpinMotors(0);
-  // IntakeDiscs();
-  // wait(10000, msec);
-  // IntakeDiscs(true);
-
-  /*
-  GOOD PROGRAM
-  MoveBot(8);
-  //SpinRoller(280);
-  wait(300,msec);
-  MoveBot(-8);
-  RotateBot(-14.2,1500);
-  MoveBot(-6);
-  ShootDiscs();
-  MoveBot(6);
-  RotateBot(-125,1500);
-  MoveBot(17.5,3000);
-  */
-  SpinMotors(0);
-  Brain.Screen.print("isExited");
-  wait(200,msec);
+  MoveBot(12,5000);
 }
 
 
