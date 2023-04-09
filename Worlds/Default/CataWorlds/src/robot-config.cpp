@@ -8,18 +8,22 @@ using code = vision::code;
 brain  Brain;
 
 // VEXcode device constructors
-motor lMotor1 = motor(PORT1, ratio18_1, false);
-motor lMotor2 = motor(PORT2, ratio18_1, false);
-motor lMotor3 = motor(PORT3, ratio18_1, false);
-motor lMotor4 = motor(PORT4, ratio18_1, false);
-motor rMotor1 = motor(PORT5, ratio18_1, false);
-motor rMotor2 = motor(PORT6, ratio18_1, false);
-motor rMotor3 = motor(PORT7, ratio18_1, false);
-motor rMotor4 = motor(PORT8, ratio18_1, false);
+motor lMotor1 = motor(PORT10, ratio6_1, false);
+motor lMotor2 = motor(PORT9, ratio6_1, false);
+motor lMotor3 = motor(PORT8, ratio6_1, false);
+motor lMotor4 = motor(PORT7, ratio6_1, false);
+motor rMotor1 = motor(PORT6, ratio6_1, true);
+motor rMotor2 = motor(PORT4, ratio6_1, true);
+motor rMotor3 = motor(PORT3, ratio6_1, true);
+motor rMotor4 = motor(PORT2, ratio6_1, true);
+motor cataMotor = motor(PORT1, ratio36_1, false);
+motor intakeRollerMotor = motor(PORT19, ratio6_1, false);
+digital_out endGame = digital_out(Brain.ThreeWirePort.A);
+controller Controller1 = controller(primary);
 
 // VEXcode generated functions
-
-
+// define variable for remote controller enable/disable
+bool RemoteControlCodeEnabled = true;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
