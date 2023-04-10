@@ -57,40 +57,14 @@ void autonomous(void) {
   isAuton = true; resetPID = true; resetTurning = true; resetFlywheel = true; isUser = false;
   task StartAuton(autonController);
 
-  MoveBot(12,5000);
-
-  // //shoot discs
-  // MoveBot(-5,2000);
-  // RotateBot(10,1200);
+  RotateBot(90);
+  MoveBot(23.95);
+  RotateBot(-84);
+  MoveBot(-5.5);
+  wait(1000,msec);
+  MoveBot(8);
+  RotateBot(9);
   // ShootDiscs();
-
-  // //move robot to roller. spin
-  // RotateBot(-10,1200);
-  // MoveBot(74,4000);
-  // RotateBot(-270,2000);
-  // MoveBot(4.5,1500);
-  // RotateBot(-7,1200);
-  // SpinRoller(175);
-
-  // //move robot to other roller. spin
-  // MoveBot(-27,3500);
-  // RotateBot(270,2000);
-  // MoveBot(20,3000);
-  // RotateBot(-7,1200);
-  // SpinRoller(175);
-
-  // //move to endgame position
-  // MoveBot(-10,2000);
-  // RotateBot(90,2000);
-  // MoveBot(16,2000);
-  // RotateBot(-45,2000);
-
-  // //deploy endgame
-  // EndgameDeploy();
-  
-  // SpinMotors(0);
-  // Brain.Screen.print("isExited");
-  // wait(200,msec);
 }
 
 

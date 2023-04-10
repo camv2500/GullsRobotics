@@ -3,7 +3,7 @@
 #include <math.h>
 
 //variables for pid
-double kP = 0.468, kI = 0.0000468, kD = 0.048;
+double kP = 0.1775, kI = 0, kD = 0.01775;
 double error = 0, prevError = 0, integral = 0, derivative = 0;
 double power = 0, sensorValue = 0, lSensor = 0, rSensor = 0;
 
@@ -15,8 +15,8 @@ double changeAngle, changeX, changeY;
 //variables for the auton task
 static bool isAuton = false, isPID = false, isTurning = false, isFlywheel = false, isUser = false; 
 static bool resetPID = true, resetTurning = true, resetFlywheel = true;
-static bool isPIDLeft = false, isPIDRight = false, resetPIDSplit = false;
-static double setPID = 0, setTurning = 0, setPIDLeft = 0, setPIDRight = 0;
+static bool isReloading = false;
+static double setPID = 0, setTurning = 0, setPIDLeft = 0, setPIDRight = 0, reloadTime = 0;
 
 //convert degrees to inches
 double ConvertDegreesToInches(double setDegrees, double turnDiameter = 12.17) {
@@ -25,8 +25,8 @@ double ConvertDegreesToInches(double setDegrees, double turnDiameter = 12.17) {
 }
 
 //convert the inches to revolutions
-double ConvertInchesToRevolutions(double requiredInches) {
-  double circumferenceOfWheel = 3.86 * M_PI;
+double ConvertInchesToRevolutions(double requiredInches, double circum = 3.86) {
+  double circumferenceOfWheel = circum * M_PI;
   double outputRat = 3.0/5.0;
   double requiredRevolutions = (requiredInches / circumferenceOfWheel) * outputRat * 360.0;
   return requiredRevolutions;
@@ -36,6 +36,14 @@ double ConvertInchesToRevolutions(double requiredInches) {
 double ConvertRadiansToDegrees(double radian) {
   radian = radian * (180.0 / M_PI);
   return radian;
+}
+
+double CalculateWaitTimeMove(double n) {
+  n = 0.05 * n; n += 0.75; return n;
+}
+
+double CalculateWaitTimeRotate(double n) {
+  n = 0.005 * n; n += 0.75; return n;
 }
 
 //reset all the encoders
@@ -74,7 +82,8 @@ void MoveBot(double d, int mTime = 1000) {
   setPID = d;
   resetPID = true;
   isPID = true;
-  wait(mTime,msec);
+  if (d < 0) { d*= -1; }
+  wait(CalculateWaitTimeMove(d),sec);
   setPID = 0;
   wait(20,msec);
   isPID = false;
@@ -85,7 +94,8 @@ void RotateBot(double d, int tTime = 1000) {
   setTurning = d;
   resetTurning = true;
   isTurning = true;
-  wait(tTime,msec);
+  if (d < 0) { d*= -1; }
+  wait(CalculateWaitTimeRotate(d), sec);
   isTurning = false;
   wait(20,msec);
 }
@@ -99,9 +109,9 @@ void IntakeDiscs(bool turnOff = false) {
 //emptys the bot of all discs
 void ShootDiscs() {
   SpinMotors(0);
-  cataMotor.spin(fwd, 50, pct);
-  wait(6110,msec);
-  cataMotor.spin(fwd,0,pct);
+  reloadTime = 0;
+  isReloading = true;
+  wait(1000,msec);
 }
 
 //auton endgame deployment
@@ -195,7 +205,7 @@ int autonController() {
   while(isAuton) {
     if (isPID) {
       if (resetPID) {
-        setPID = ConvertInchesToRevolutions(setPID);
+        setPID = ConvertInchesToRevolutions(setPID, 1.13);
         runPID(setPID, true);
         resetPID = false;
       }
@@ -204,12 +214,23 @@ int autonController() {
 
     if (isTurning) {
       if (resetTurning) {
-        setTurning = ConvertDegreesToInches(setTurning, 13.65);
-        setTurning = ConvertInchesToRevolutions(setTurning);
+        setTurning = ConvertDegreesToInches(setTurning, 13);
+        setTurning = ConvertInchesToRevolutions(setTurning, 1.13);
         runPID(setTurning, true, true);
         resetTurning = false;
       }
       else {runPID(setTurning, false, true);}
+    }
+
+    if (isReloading) {
+      if (reloadTime > 3120) {
+        cataMotor.spin(forward, 0, pct);
+        isReloading = false;
+      }
+      else {
+        reloadTime += 10;
+        cataMotor.spin(forward, 100, pct);
+      }
     }
 
     wait(10, msec);
