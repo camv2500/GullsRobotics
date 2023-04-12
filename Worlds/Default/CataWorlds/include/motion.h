@@ -72,9 +72,9 @@ void SpinMotors(double power, bool isTurning = false) {
 
 //spins the rollers
 void SpinRoller(double t = 200) {
-  intakeRollerMotor.spin(fwd,80,pct);
+  intakeRollerMotor.spin(reverse,80,pct);
   wait(t,msec); //replace with color sensor
-  intakeRollerMotor.spin(fwd,0,pct);
+  intakeRollerMotor.spin(reverse,0,pct);
 }
 
 //moves the bot straight

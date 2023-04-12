@@ -61,9 +61,10 @@ void autonomous(void) {
   MoveBot(23.95);
   RotateBot(-84);
   MoveBot(-5.5);
-  wait(1000,msec);
+  SpinRoller(300);
   MoveBot(8);
-  RotateBot(9);
+  RotateBot(6);
+  SpinMotors(0);
   // ShootDiscs();
 }
 
