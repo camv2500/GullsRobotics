@@ -10,7 +10,7 @@ brain  Brain;
 // VEXcode device constructors
 motor Motor1 = motor(PORT1, ratio18_1, false);
 controller Controller1 = controller(primary);
-motor Flywheel = motor(PORT2, ratio18_1, false);
+motor Flywheel = motor(PORT4, ratio18_1, false);
 motor Intake = motor(PORT3, ratio18_1, false);
 
 // VEXcode generated functions
