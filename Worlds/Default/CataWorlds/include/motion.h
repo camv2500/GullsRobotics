@@ -276,9 +276,12 @@ int userController() {
       endGame.set(false);
     }
 
-    // if (Controller1.ButtonA.pressing()) {
-    //   endGame.set(false);
-    // }
+    if (Controller1.ButtonX.pressing()) {
+      autonPiston.set(true);
+    }
+    else {
+      autonPiston.set(false);
+    }
 
     if (Controller1.ButtonR1.pressing()) {
       cataMotor.spin(fwd,100,pct);

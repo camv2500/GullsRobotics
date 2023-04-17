@@ -15,6 +15,7 @@
 // intakeRollerMotor    motor         19              
 // endGame              digital_out   A               
 // Controller1          controller                    
+// autonPiston          digital_out   B               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 #include "motion.h"
 #include "math.h"

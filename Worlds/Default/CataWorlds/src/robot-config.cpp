@@ -20,6 +20,7 @@ motor cataMotor = motor(PORT1, ratio36_1, false);
 motor intakeRollerMotor = motor(PORT19, ratio6_1, false);
 digital_out endGame = digital_out(Brain.ThreeWirePort.A);
 controller Controller1 = controller(primary);
+digital_out autonPiston = digital_out(Brain.ThreeWirePort.B);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable
