@@ -49,9 +49,9 @@ double ConvertRadiansToDegrees(double radian) {
 //reset all the encoders
 void ResetEncoders() {
   lMotor1.setPosition(0,degrees); lMotor2.setPosition(0,degrees);
-  lMotor3.setPosition(0,degrees); lMotor4.setPosition(0,degrees);
+  lMotor3.setPosition(0,degrees);
   rMotor1.setPosition(0,degrees); rMotor2.setPosition(0,degrees);
-  rMotor3.setPosition(0,degrees); rMotor4.setPosition(0,degrees);
+  rMotor3.setPosition(0,degrees);
 }
 
 //spin the motors for pid
@@ -60,13 +60,11 @@ void SpinMotors(double power, bool isTurning = false) {
     lMotor1.spin(reverse, power, pct); rMotor1.spin(forward, power, pct);
     lMotor2.spin(reverse, power, pct); rMotor2.spin(forward, power, pct);
     lMotor3.spin(reverse, power, pct); rMotor3.spin(forward, power, pct);
-    lMotor4.spin(reverse, power, pct); rMotor4.spin(forward, power, pct);
   }
   else {
     lMotor1.spin(forward, power, pct); rMotor1.spin(forward, power, pct);
     lMotor2.spin(forward, power, pct); rMotor2.spin(forward, power, pct);
     lMotor3.spin(forward, power, pct); rMotor3.spin(forward, power, pct);
-    lMotor4.spin(forward, power, pct); rMotor4.spin(forward, power, pct);
   }
 }
 
@@ -101,7 +99,6 @@ void RotateBot(double d, int tTime = 1000) {
 //lets the bot intake discs
 void IntakeDiscs(bool turnOff = false) {
   if(isAutonFlywheel) {
-    magLifter.set(false);
     isAutonFlywheel = false;
   }
   if(turnOff) {intakeMotor.spin(fwd,0,pct);}
@@ -112,7 +109,6 @@ void IntakeDiscs(bool turnOff = false) {
 void ShootDiscs(double a = 1, double s = 600) {
   SpinMotors(0);
   if (!isAutonFlywheel) {
-    magLifter.set(true);
     isAutonFlywheel = true;
   }
   setFlywheel = s;
@@ -158,9 +154,9 @@ void runPID(double pidSetDegrees, bool resetEncoders = false, bool isTurning = f
 
   if (pidSetDegrees != 0) {
     lSensor = (lMotor1.position(degrees) + lMotor2.position(degrees) + 
-      lMotor3.position(degrees) + lMotor4.position(degrees)) / 4;
+      lMotor3.position(degrees)) / 3;
     rSensor = (rMotor1.position(degrees) + rMotor2.position(degrees) + 
-      rMotor3.position(degrees) + rMotor4.position(degrees)) / 4;
+      rMotor3.position(degrees)) / 3;
     if (isTurning) {sensorValue = rSensor;}
     else {sensorValue = (lSensor + rSensor) / 2;}
     error = pidSetDegrees - sensorValue;
@@ -193,7 +189,7 @@ void runFlywheel(double flywheelSetRPM = 0, bool resetFlywheelEncoders = false) 
   }
 
   if (flywheelSetRPM != 0) {
-    flyWheelError = flywheelSetRPM - ((FlyWheel1.velocity(rpm) * -1) + FlyWheel2.velocity(rpm) / 2);
+    flyWheelError = flywheelSetRPM - FlywheelMotor.velocity(rpm);
 
     fintegral = fintegral + flyWheelError;
     //if (fabs(fintegral) > 12000) {fintegral = 12000;}
@@ -206,8 +202,7 @@ void runFlywheel(double flywheelSetRPM = 0, bool resetFlywheelEncoders = false) 
       fpower = flywheelSetRPM / 600 * 12;
     }
 
-    FlyWheel1.spin(forward, fpower, volt);
-    FlyWheel2.spin(forward, fpower, volt);
+    FlywheelMotor.spin(forward, fpower, volt);
     /*
     if (flyWheelError < 5 && count > 4) {Controller1.rumble(rumbleLong); count = 1;}
     else {
@@ -217,8 +212,7 @@ void runFlywheel(double flywheelSetRPM = 0, bool resetFlywheelEncoders = false) 
     */
   }
   else {
-    FlyWheel1.stop(brakeType::coast);
-    FlyWheel2.stop(brakeType::coast);
+    FlywheelMotor.stop(brakeType::coast);
   }
 }
 
@@ -325,13 +319,9 @@ int userController() {
       if (resetUserFlywheel) {
         runFlywheel(setUserFlywheel, true);
         resetUserFlywheel = false;
-        Brain.Screen.print(FlyWheel1.velocity(rpm));
-        Brain.Screen.newLine();
       }
       else {
         runFlywheel(setUserFlywheel);
-        Brain.Screen.print(FlyWheel1.velocity(rpm));
-        Brain.Screen.newLine();
       }
     }
     
@@ -341,15 +331,12 @@ int userController() {
     lMotor1.spin(fwd, controlCurve(leftDrive), vex::velocityUnits::pct);
     lMotor2.spin(fwd, controlCurve(leftDrive), vex::velocityUnits::pct);
     lMotor3.spin(fwd, controlCurve(leftDrive), vex::velocityUnits::pct);
-    lMotor4.spin(fwd, controlCurve(leftDrive), vex::velocityUnits::pct);
     rMotor1.spin(fwd, controlCurve(rightDrive), vex::velocityUnits::pct);
     rMotor2.spin(fwd, controlCurve(rightDrive), vex::velocityUnits::pct);
     rMotor3.spin(fwd, controlCurve(rightDrive), vex::velocityUnits::pct);
-    rMotor4.spin(fwd, controlCurve(rightDrive), vex::velocityUnits::pct);
 
     //intake control
     if(Controller1.ButtonL2.pressing()) {
-      magLifter.set(false);
       indexer1.set(false);
       intakeMotor.spin(fwd, 100, pct);
     }
@@ -373,8 +360,7 @@ int userController() {
 
     //flywheel controller
     if(Controller1.ButtonR1.pressing()) {
-      magLifter.set(true);
-      ToggleFlywheelOn(543);
+      ToggleFlywheelOn(600);
       //FlyWheel1.spin(fwd,100,pct);
       //FlyWheel2.spin(fwd,100,pct);
       if (Controller1.ButtonR2.pressing()) {
@@ -392,12 +378,10 @@ int userController() {
     }
 
     if (Controller1.ButtonX.pressing()) {
-      FlyWheel1.spin(fwd, 80, pct);
-      FlyWheel2.spin(fwd,80,pct);
+      FlywheelMotor.spin(fwd, 80, pct);
     }
     else if (!Controller1.ButtonX.pressing() && !Controller1.ButtonR1.pressing()) {
-      FlyWheel1.stop(brakeType::coast);
-      FlyWheel2.stop(brakeType::coast);
+      FlywheelMotor.stop(brakeType::coast);
     }
 
     //endgame deploy

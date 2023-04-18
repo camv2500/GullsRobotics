@@ -1,4 +1,22 @@
 #include "vex.h"
+
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// lMotor1              motor         8               
+// lMotor2              motor         9               
+// lMotor3              motor         10              
+// rMotor1              motor         11              
+// rMotor2              motor         6               
+// rMotor3              motor         13              
+// Controller1          controller                    
+// intakeMotor          motor         7               
+// intakeMotor2         motor         16              
+// FlywheelMotor        motor         20              
+// rollerMotor          motor         1               
+// indexer1             digital_out   A               
+// endGame              digital_out   B               
+// ---- END VEXCODE CONFIGURED DEVICES ----
 #include "motion.h"
 #include "math.h"
 
