@@ -262,7 +262,7 @@ int userController() {
       intakeRollerMotor.spin(fwd, 100, pct);
     }
     else if (Controller1.ButtonL2.pressing()) {
-      intakeRollerMotor.spin(fwd, 70, pct);
+      intakeRollerMotor.spin(reverse, 70, pct);
     }
     else {
       intakeRollerMotor.stop(brakeType::coast);
@@ -283,14 +283,14 @@ int userController() {
       autonPiston.set(false);
     }
 
-    if (Controller1.ButtonR1.pressing()) {
+    if (Controller1.ButtonR1.pressing() & cataLimit.pressing()) {
       cataMotor.spin(fwd,100,pct);
     }
-    else if (Controller1.ButtonR2.pressing()) {
-      cataMotor.spin(fwd,40,pct);
+    else if (cataLimit.pressing()) {
+      cataMotor.stop(brakeType::hold);
     }
     else {
-      cataMotor.spin(fwd,0,pct);
+      cataMotor.spin(fwd,100,pct);
     }
 
     wait(10,msec);

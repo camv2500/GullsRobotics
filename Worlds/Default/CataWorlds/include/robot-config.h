@@ -16,6 +16,7 @@ extern motor intakeRollerMotor;
 extern digital_out endGame;
 extern controller Controller1;
 extern digital_out autonPiston;
+extern limit cataLimit;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.
