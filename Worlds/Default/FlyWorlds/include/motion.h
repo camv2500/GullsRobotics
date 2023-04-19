@@ -23,7 +23,7 @@ static bool resetPID = true, resetTurning = true, resetFlywheel = true, isAutonF
 static double setPID = 0, setTurning = 0, setFlywheel = 0;
 
 //user variables
-static bool isUserFlywheel = false, resetUserFlywheel = false;
+static bool isUserFlywheel = false, resetUserFlywheel = false, isForwardForward = true;
 static double setUserFlywheel = 0, indexerCount = 0;
 
 //convert degrees to inches
@@ -308,6 +308,11 @@ void ToggleFlywheelOff() {
   isUserFlywheel = false;
 }
 
+void ToggleForward() {
+  if (isForwardForward) { isForwardForward = false; }
+  else { isForwardForward = true; }
+}
+
 double controlCurve(double controllerPos){
   //Slow curve
   return (exp(-14.6/10)+exp((fabs(controllerPos)-100)/10)*(1-exp(-14.6/10)))*controllerPos;
@@ -325,34 +330,50 @@ int userController() {
       }
     }
     
-    double leftDrive = (Controller1.Axis2.value() - Controller1.Axis1.value());
-    double rightDrive = (Controller1.Axis2.value() + Controller1.Axis1.value());
+    if (isForwardForward) {
+      double leftDrive = (Controller1.Axis2.value() + Controller1.Axis1.value());
+      double rightDrive = (Controller1.Axis2.value() - Controller1.Axis1.value());
 
-    lMotor1.spin(fwd, controlCurve(leftDrive), vex::velocityUnits::pct);
-    lMotor2.spin(fwd, controlCurve(leftDrive), vex::velocityUnits::pct);
-    lMotor3.spin(fwd, controlCurve(leftDrive), vex::velocityUnits::pct);
-    rMotor1.spin(fwd, controlCurve(rightDrive), vex::velocityUnits::pct);
-    rMotor2.spin(fwd, controlCurve(rightDrive), vex::velocityUnits::pct);
-    rMotor3.spin(fwd, controlCurve(rightDrive), vex::velocityUnits::pct);
+      lMotor1.spin(fwd, controlCurve(leftDrive), vex::velocityUnits::pct);
+      lMotor2.spin(fwd, controlCurve(leftDrive), vex::velocityUnits::pct);
+      lMotor3.spin(fwd, controlCurve(leftDrive), vex::velocityUnits::pct);
+      rMotor1.spin(fwd, controlCurve(rightDrive), vex::velocityUnits::pct);
+      rMotor2.spin(fwd, controlCurve(rightDrive), vex::velocityUnits::pct);
+      rMotor3.spin(fwd, controlCurve(rightDrive), vex::velocityUnits::pct);
+    }
+    else {
+      double leftDrive = (Controller1.Axis2.value() - Controller1.Axis1.value());
+      double rightDrive = (Controller1.Axis2.value() + Controller1.Axis1.value());
+
+      lMotor1.spin(reverse, controlCurve(leftDrive), vex::velocityUnits::pct);
+      lMotor2.spin(reverse, controlCurve(leftDrive), vex::velocityUnits::pct);
+      lMotor3.spin(reverse, controlCurve(leftDrive), vex::velocityUnits::pct);
+      rMotor1.spin(reverse, controlCurve(rightDrive), vex::velocityUnits::pct);
+      rMotor2.spin(reverse, controlCurve(rightDrive), vex::velocityUnits::pct);
+      rMotor3.spin(reverse, controlCurve(rightDrive), vex::velocityUnits::pct);
+    }
 
     //intake control
     if(Controller1.ButtonL2.pressing()) {
       indexer1.set(false);
       intakeMotor.spin(fwd, 100, pct);
+      intakeMotor2.spin(fwd,100,pct);
     }
     else if (Controller1.ButtonRight.pressing()) {
       intakeMotor.spin(reverse, 100, pct);
+      intakeMotor2.spin(reverse,100,pct);
     }
     else {
       intakeMotor.stop(brakeType::coast);
+      intakeMotor2.stop(brakeType::coast);
     }
 
     //roller control
     if(Controller1.ButtonL1.pressing()) {
-      rollerMotor.spin(reverse, 50, pct);
+      rollerMotor.spin(reverse, 100, pct);
     }
     else if(Controller1.ButtonLeft.pressing()) {
-      rollerMotor.spin(fwd, 80, pct);
+      rollerMotor.spin(fwd, 100, pct);
     }
     else {
       rollerMotor.stop(brakeType::hold);

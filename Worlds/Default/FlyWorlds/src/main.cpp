@@ -10,8 +10,8 @@
 // rMotor2              motor         6               
 // rMotor3              motor         13              
 // Controller1          controller                    
-// intakeMotor          motor         7               
-// intakeMotor2         motor         16              
+// intakeMotor          motor         15              
+// intakeMotor2         motor         7               
 // FlywheelMotor        motor         20              
 // rollerMotor          motor         1               
 // indexer1             digital_out   A               
@@ -73,6 +73,7 @@ void autonomous(void) {
 /*---------------------------------------------------------------------------*/
 
 void usercontrol(void) {
+  Controller1.ButtonUp.pressed(ToggleForward);
   isAuton = false; resetPID = true; resetTurning = true; resetFlywheel = true; isUser = true;
   task StartUser(userController);
 }
