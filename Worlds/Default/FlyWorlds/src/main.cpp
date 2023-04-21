@@ -58,7 +58,17 @@ void autonomous(void) {
   isAuton = true; resetPID = true; resetTurning = true; resetFlywheel = true; isUser = false;
   task StartAuton(autonController);
 
-  MoveBot(12,5000);
+  MoveBot(-6);
+  SpinMotors(-10);
+  SpinRoller(350);
+  SpinMotors(0);
+  MoveBot(5);
+  RotateBot(12);
+  MoveBot(12.3);
+  ShootDiscs(2);
+  RotateBot(75);
+  IntakeDiscs();
+  MoveBot(-50);
 }
 
 

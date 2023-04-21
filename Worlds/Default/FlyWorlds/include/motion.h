@@ -34,7 +34,7 @@ double ConvertDegreesToInches(double setDegrees, double turnDiameter = 12.17) {
 
 //convert the inches to revolutions
 double ConvertInchesToRevolutions(double requiredInches) {
-  double circumferenceOfWheel = 3.86 * M_PI;
+  double circumferenceOfWheel = 3.5 * M_PI;
   double outputRat = 3.0/5.0;
   double requiredRevolutions = (requiredInches / circumferenceOfWheel) * outputRat * 360.0;
   return requiredRevolutions;
@@ -44,6 +44,14 @@ double ConvertInchesToRevolutions(double requiredInches) {
 double ConvertRadiansToDegrees(double radian) {
   radian = radian * (180.0 / M_PI);
   return radian;
+}
+
+double CalculateWaitTimeMove(double n) {
+  n = 0.05 * n; n += 1.25; return n;
+}
+
+double CalculateWaitTimeRotate(double n) {
+  n = 0.005 * n; n += 1.25; return n;
 }
 
 //reset all the encoders
@@ -70,28 +78,28 @@ void SpinMotors(double power, bool isTurning = false) {
 
 //spins the rollers
 void SpinRoller(double t = 200) {
-  rollerMotor.spin(fwd,80,pct);
+  rollerMotor.spin(reverse,80,pct);
   wait(t,msec); //replace with color sensor
   rollerMotor.spin(fwd,0,pct);
 }
 
 //moves the bot straight
-void MoveBot(double d, int mTime = 1000) {
+void MoveBot(double d) {
   setPID = d;
   resetPID = true;
   isPID = true;
-  wait(mTime,msec);
+  wait(CalculateWaitTimeMove(d),sec);
   setPID = 0;
   wait(20,msec);
   isPID = false;
 }
 
 //rotate the bot
-void RotateBot(double d, int tTime = 1000) {
+void RotateBot(double d) {
   setTurning = d;
   resetTurning = true;
   isTurning = true;
-  wait(tTime,msec);
+  wait(CalculateWaitTimeRotate(d),sec);
   isTurning = false;
   wait(20,msec);
 }
@@ -116,18 +124,18 @@ void ShootDiscs(double a = 1, double s = 600) {
   isFlywheel = true;
   wait(2000,msec);
   indexer1.set(true);
-  wait(500,msec);
+  wait(600,msec);
   indexer1.set(false);
   if (a > 1) {
     wait(2000,msec);
     indexer1.set(true);
-    wait(500,msec);
+    wait(600,msec);
     indexer1.set(false);
   }
   if (a > 2) {
     wait(2000,msec);
     indexer1.set(true);
-    wait(500,msec);
+    wait(600,msec);
     indexer1.set(false);
   }
   setFlywheel = 0;
@@ -216,7 +224,7 @@ void runFlywheel(double flywheelSetRPM = 0, bool resetFlywheelEncoders = false) 
   }
 }
 
-void GoToPoint2(double x, double y, double tTime = 1000, double mTime = 1000) {
+void GoToPoint2(double x, double y) {
   //calculate the distance the bot will have to travel
   changeX = x - xSelf;
   changeY = y - ySelf;
@@ -241,8 +249,8 @@ void GoToPoint2(double x, double y, double tTime = 1000, double mTime = 1000) {
   if (requiredAngle > 180) { requiredAngle = (360 - requiredAngle) * -1; }
 
   //rotate the bot then move the bot
-  RotateBot(ConvertRadiansToDegrees(requiredAngle),tTime);
-  MoveBot(requiredDistance,mTime);
+  RotateBot(ConvertRadiansToDegrees(requiredAngle));
+  MoveBot(requiredDistance);
 
   //update where the bot is
   xSelf = x;
@@ -381,7 +389,7 @@ int userController() {
 
     //flywheel controller
     if(Controller1.ButtonR1.pressing()) {
-      ToggleFlywheelOn(600);
+      ToggleFlywheelOn(540);
       //FlyWheel1.spin(fwd,100,pct);
       //FlyWheel2.spin(fwd,100,pct);
       if (Controller1.ButtonR2.pressing()) {
