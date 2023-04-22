@@ -283,7 +283,7 @@ int userController() {
       autonPiston.set(false);
     }
 
-    if (Controller1.ButtonR1.pressing() & cataLimit.pressing()) {
+    if (Controller1.ButtonR1.pressing() && cataLimit.pressing()) {
       cataMotor.spin(fwd,100,pct);
     }
     else if (cataLimit.pressing()) {

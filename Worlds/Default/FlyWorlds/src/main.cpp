@@ -66,9 +66,11 @@ void autonomous(void) {
   RotateBot(12);
   MoveBot(12.3);
   ShootDiscs(2);
+  MoveBot(-2);
   RotateBot(75);
   IntakeDiscs();
-  MoveBot(-50);
+  MoveBot(-48);
+  wait(20, sec);
 }
 
 

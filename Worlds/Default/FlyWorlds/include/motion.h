@@ -86,6 +86,7 @@ void SpinRoller(double t = 200) {
 //moves the bot straight
 void MoveBot(double d) {
   setPID = d;
+  if (d < 0) { d = d * -1;}
   resetPID = true;
   isPID = true;
   wait(CalculateWaitTimeMove(d),sec);
@@ -109,8 +110,14 @@ void IntakeDiscs(bool turnOff = false) {
   if(isAutonFlywheel) {
     isAutonFlywheel = false;
   }
-  if(turnOff) {intakeMotor.spin(fwd,0,pct);}
-  else {intakeMotor.spin(fwd,100,pct);}
+  if(turnOff) {
+    intakeMotor.spin(fwd,0,pct);
+    intakeMotor2.spin(fwd,0,pct);
+  }
+  else {
+    intakeMotor.spin(fwd,100,pct);
+    intakeMotor2.spin(fwd,100,pct);
+  }
 }
 
 //emptys the bot of all discs
