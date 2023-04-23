@@ -1,4 +1,5 @@
 #include "vex.h"
+#include <iostream>
 
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
@@ -58,19 +59,48 @@ void autonomous(void) {
   isAuton = true; resetPID = true; resetTurning = true; resetFlywheel = true; isUser = false;
   task StartAuton(autonController);
 
-  MoveBot(-6);
+  RotateBot(-20);
+  IntakeDiscs();
+  MoveBot(-10);
+  MoveBot(5.5);
+  RotateBot(100);
+
+  IntakeDiscs(true);
+  MoveBot(-10);
   SpinMotors(-10);
-  SpinRoller(350);
+  SpinRoller(250);
   SpinMotors(0);
   MoveBot(5);
-  RotateBot(12);
-  MoveBot(12.3);
-  ShootDiscs(2);
-  MoveBot(-2);
-  RotateBot(75);
+
+  FlywheelMotor.spin(fwd, 15, volt);
+  RotateBot(11);
+  MoveBot(9);
+  ShootDiscs(3);
+  MoveBot(-6);
+  FlywheelMotor.spin(fwd,0,volt);
+
+  RotateBot(110);
+  SpinMotors(-80);
+  wait(410, msec);
+  SpinMotors(0);
+
   IntakeDiscs();
-  MoveBot(-48);
-  wait(20, sec);
+  wait(2000,msec);
+  MoveBot(2);
+  MoveBot(-10);
+  IntakeDiscs(true);
+  wait(300,msec);
+  FlywheelMotor.spin(fwd, 11.6, volt);
+  RotateBot(-87);
+  wait(500,msec);
+  ShootDiscs(3);
+  FlywheelMotor.spin(fwd,0,volt);
+
+  RotateBot(100);
+  IntakeDiscs();
+  MoveBot(-50);
+  wait(1000,msec);
+  IntakeDiscs(true);
 }
 
 

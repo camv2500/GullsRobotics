@@ -100,6 +100,7 @@ void RotateBot(double d) {
   setTurning = d;
   resetTurning = true;
   isTurning = true;
+  if (d < 0) { d = d *-1;}
   wait(CalculateWaitTimeRotate(d),sec);
   isTurning = false;
   wait(20,msec);
@@ -123,31 +124,31 @@ void IntakeDiscs(bool turnOff = false) {
 //emptys the bot of all discs
 void ShootDiscs(double a = 1, double s = 600) {
   SpinMotors(0);
-  if (!isAutonFlywheel) {
-    isAutonFlywheel = true;
-  }
-  setFlywheel = s;
-  resetFlywheel = true;
-  isFlywheel = true;
-  wait(2000,msec);
+  // if (!isAutonFlywheel) {
+  //   isAutonFlywheel = true;
+  // }
+  // setFlywheel = s;
+  // resetFlywheel = true;
+  // isFlywheel = true;
+  // wait(2000,msec);
   indexer1.set(true);
-  wait(600,msec);
+  wait(500,msec);
   indexer1.set(false);
   if (a > 1) {
     wait(2000,msec);
     indexer1.set(true);
-    wait(600,msec);
+    wait(500,msec);
     indexer1.set(false);
   }
   if (a > 2) {
     wait(2000,msec);
     indexer1.set(true);
-    wait(600,msec);
+    wait(500,msec);
     indexer1.set(false);
   }
-  setFlywheel = 0;
-  wait(20,msec);
-  isFlywheel = false;
+  // setFlywheel = 0;
+  // wait(20,msec);
+  // isFlywheel = false;
 }
 
 //auton endgame deployment
