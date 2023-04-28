@@ -15,6 +15,65 @@
 // Controller1          controller                    
 // autonPiston          digital_out   B               
 // cataLimit            limit         C               
+// OpticalRight         optical       21              
+// OpticalLeft          optical       18              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// lMotor1              motor         10              
+// lMotor2              motor         9               
+// lMotor3              motor         8               
+// lMotor4              motor         7               
+// rMotor1              motor         6               
+// rMotor2              motor         4               
+// rMotor3              motor         3               
+// rMotor4              motor         2               
+// cataMotor            motor         1               
+// intakeRollerMotor    motor         19              
+// endGame              digital_out   A               
+// Controller1          controller                    
+// autonPiston          digital_out   B               
+// cataLimit            limit         C               
+// OpticalRight         optical       21              
+// OpticalLeft          optical       18              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// lMotor1              motor         10              
+// lMotor2              motor         9               
+// lMotor3              motor         8               
+// lMotor4              motor         7               
+// rMotor1              motor         6               
+// rMotor2              motor         4               
+// rMotor3              motor         3               
+// rMotor4              motor         2               
+// cataMotor            motor         1               
+// intakeRollerMotor    motor         19              
+// endGame              digital_out   A               
+// Controller1          controller                    
+// autonPiston          digital_out   B               
+// cataLimit            limit         C               
+// OpticalRight         optical       21              
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// lMotor1              motor         10              
+// lMotor2              motor         9               
+// lMotor3              motor         8               
+// lMotor4              motor         7               
+// rMotor1              motor         6               
+// rMotor2              motor         4               
+// rMotor3              motor         3               
+// rMotor4              motor         2               
+// cataMotor            motor         1               
+// intakeRollerMotor    motor         19              
+// endGame              digital_out   A               
+// Controller1          controller                    
+// autonPiston          digital_out   B               
+// cataLimit            limit         C               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 #include "vex.h"
 
@@ -57,6 +116,8 @@ competition Competition;
 
 void pre_auton(void) {
   // Initializing Robot Configuration. DO NOT REMOVE!
+  OpticalRight.setLightPower(10, percent);
+  OpticalLeft.setLightPower(10, percent);
   vexcodeInit();
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
@@ -75,15 +136,32 @@ void pre_auton(void) {
 void autonomous(void) {
   isAuton = true; resetPID = true; resetTurning = true; resetFlywheel = true; isUser = false;
   task StartAuton(autonController);
+  double timer = 0;
 
+  MoveBot(-21);
+  RotateBot(84);
+  MoveBot(-6.5);
+  while(OpticalRight.hue() > 5 && OpticalRight.hue() < 25){
+    if(timer >= 200) {
+      SpinMotors(-10);
+    }
+    SpinRoller(300);
+    timer+=10;
+  }
+  MoveBot(6);
   RotateBot(90);
-  MoveBot(23.95);
-  RotateBot(-84);
-  MoveBot(-5.5);
-  SpinRoller(300);
-  MoveBot(8);
-  RotateBot(6);
   SpinMotors(0);
+  MoveBot(-42);
+  RotateBot(45);
+  IntakeDiscs();
+  MoveBot(-10);
+  vex::task::sleep(2000);
+  IntakeDiscs(true);
+  MoveBot(10);
+  RotateBot(-45);
+  MoveBot(42);
+
+  
   // ShootDiscs();
 }
 

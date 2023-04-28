@@ -22,6 +22,8 @@ digital_out endGame = digital_out(Brain.ThreeWirePort.A);
 controller Controller1 = controller(primary);
 digital_out autonPiston = digital_out(Brain.ThreeWirePort.B);
 limit cataLimit = limit(Brain.ThreeWirePort.C);
+optical OpticalRight = optical(PORT21);
+optical OpticalLeft = optical(PORT18);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable

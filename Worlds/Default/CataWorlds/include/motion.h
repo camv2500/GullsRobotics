@@ -72,7 +72,7 @@ void SpinMotors(double power, bool isTurning = false) {
 
 //spins the rollers
 void SpinRoller(double t = 200) {
-  intakeRollerMotor.spin(reverse,80,pct);
+  intakeRollerMotor.spin(reverse,15,pct);
   wait(t,msec); //replace with color sensor
   intakeRollerMotor.spin(reverse,0,pct);
 }
@@ -96,6 +96,7 @@ void RotateBot(double d, int tTime = 1000) {
   isTurning = true;
   if (d < 0) { d*= -1; }
   wait(CalculateWaitTimeRotate(d), sec);
+  setTurning = 0;
   isTurning = false;
   wait(20,msec);
 }
