@@ -16,6 +16,7 @@ extern motor FlywheelMotor;
 extern motor rollerMotor;
 extern digital_out indexer1;
 extern digital_out endGame;
+extern controller Controller2;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.

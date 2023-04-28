@@ -83,11 +83,13 @@ void SpinRoller(double t = 200) {
   rollerMotor.spin(fwd,0,pct);
 }
 
+double powerCap = 33.5;
 //moves the bot straight
-void MoveBot(double d) {
+void MoveBot(double d, double powerCapT = 33.5) {
   setPID = d;
   if (d < 0) { d = d * -1;}
   resetPID = true;
+  powerCap = powerCapT;
   isPID = true;
   wait(CalculateWaitTimeMove(d),sec);
   setPID = 0;
@@ -100,19 +102,24 @@ void RotateBot(double d) {
   setTurning = d;
   resetTurning = true;
   isTurning = true;
+  if (d < 0) { d = d *-1;}
   wait(CalculateWaitTimeRotate(d),sec);
   isTurning = false;
   wait(20,msec);
 }
 
 //lets the bot intake discs
-void IntakeDiscs(bool turnOff = false) {
+void IntakeDiscs(bool turnOff = false, bool outTake = false) {
   if(isAutonFlywheel) {
     isAutonFlywheel = false;
   }
   if(turnOff) {
     intakeMotor.spin(fwd,0,pct);
     intakeMotor2.spin(fwd,0,pct);
+  }
+  else if (outTake) {
+    intakeMotor.spin(reverse,100,pct);
+    intakeMotor2.spin(reverse,100,pct);
   }
   else {
     intakeMotor.spin(fwd,100,pct);
@@ -123,31 +130,31 @@ void IntakeDiscs(bool turnOff = false) {
 //emptys the bot of all discs
 void ShootDiscs(double a = 1, double s = 600) {
   SpinMotors(0);
-  if (!isAutonFlywheel) {
-    isAutonFlywheel = true;
-  }
-  setFlywheel = s;
-  resetFlywheel = true;
-  isFlywheel = true;
-  wait(2000,msec);
+  // if (!isAutonFlywheel) {
+  //   isAutonFlywheel = true;
+  // }
+  // setFlywheel = s;
+  // resetFlywheel = true;
+  // isFlywheel = true;
+  // wait(2000,msec);
   indexer1.set(true);
-  wait(600,msec);
+  wait(200,msec);
   indexer1.set(false);
   if (a > 1) {
-    wait(2000,msec);
+    wait(800,msec);
     indexer1.set(true);
-    wait(600,msec);
+    wait(200,msec);
     indexer1.set(false);
   }
   if (a > 2) {
-    wait(2000,msec);
+    wait(800,msec);
     indexer1.set(true);
-    wait(600,msec);
+    wait(200,msec);
     indexer1.set(false);
   }
-  setFlywheel = 0;
-  wait(20,msec);
-  isFlywheel = false;
+  // setFlywheel = 0;
+  // wait(20,msec);
+  // isFlywheel = false;
 }
 
 //auton endgame deployment
@@ -159,7 +166,7 @@ void EndgameDeploy() {
 }
 
 //the distance is in revolutions, the encoders should only be reset on first use
-void runPID(double pidSetDegrees, bool resetEncoders = false, bool isTurning = false) {
+void runPID(double pidSetDegrees, bool resetEncoders = false, bool isTurning = false, double powerCap = 33.5) {
   if (resetEncoders) {
     resetEncoders = false;
     ResetEncoders();
@@ -183,8 +190,8 @@ void runPID(double pidSetDegrees, bool resetEncoders = false, bool isTurning = f
     prevError = error;
 
     power = error * kP + integral * kI + derivative * kD;
-    if (power > 33.5) {power = 33.5;}
-    if (power < -33.5) {power = -33.5;}
+    if (power > powerCap) {power = powerCap;}
+    if (power < (powerCap * -1)) {power = (powerCap * -1);}
   
     if (isTurning) {SpinMotors(power, true);}
     else {SpinMotors(power);}
@@ -279,10 +286,10 @@ int autonController() {
     if (isPID) {
       if (resetPID) {
         setPID = ConvertInchesToRevolutions(setPID);
-        runPID(setPID, true);
+        runPID(setPID, true, false, powerCap);
         resetPID = false;
       }
-      else {runPID(setPID);}
+      else {runPID(setPID, false, false, powerCap);}
     }
 
     if (isTurning) {
@@ -421,7 +428,7 @@ int userController() {
     }
 
     //endgame deploy
-    if (Controller1.ButtonY.pressing()) {
+    if (Controller2.ButtonY.pressing()) {
       endGame.set(true);
     }
     else {

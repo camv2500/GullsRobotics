@@ -1,4 +1,5 @@
 #include "vex.h"
+#include <iostream>
 
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
@@ -16,6 +17,7 @@
 // rollerMotor          motor         1               
 // indexer1             digital_out   A               
 // endGame              digital_out   B               
+// Controller2          controller                    
 // ---- END VEXCODE CONFIGURED DEVICES ----
 #include "motion.h"
 #include "math.h"
@@ -58,19 +60,60 @@ void autonomous(void) {
   isAuton = true; resetPID = true; resetTurning = true; resetFlywheel = true; isUser = false;
   task StartAuton(autonController);
 
-  MoveBot(-6);
+  RotateBot(-20);
+  IntakeDiscs();
+  MoveBot(-10);
+  MoveBot(5.5);
+  RotateBot(100);
+  IntakeDiscs(true);
+
+  MoveBot(-10);
   SpinMotors(-10);
-  SpinRoller(350);
+  SpinRoller(250);
   SpinMotors(0);
   MoveBot(5);
+
+  FlywheelMotor.spin(fwd, 11.96, volt);
   RotateBot(12);
-  MoveBot(12.3);
-  ShootDiscs(2);
-  MoveBot(-2);
-  RotateBot(75);
+  MoveBot(7);
+  ShootDiscs(3);
+  FlywheelMotor.spin(fwd,0,volt);
+  MoveBot(-6);
+
+  RotateBot(115);
+  MoveBot(-26, 65);
   IntakeDiscs();
-  MoveBot(-48);
-  wait(20, sec);
+  MoveBot(-21);
+  IntakeDiscs(true);
+
+  FlywheelMotor.spin(fwd, 11.4, volt);
+  RotateBot(-97);
+  ShootDiscs(3);
+  FlywheelMotor.spin(fwd, 0, volt);
+
+  RotateBot(97);
+  IntakeDiscs();
+  MoveBot(-54);
+  IntakeDiscs(true);
+  IntakeDiscs(false,true);
+
+  FlywheelMotor.spin(fwd,12,volt);
+  RotateBot(-62);
+  MoveBot(5);
+  ShootDiscs(3);
+  FlywheelMotor.spin(fwd,0,volt);
+
+
+  // RotateBot(-101);
+  // wait(500,msec);
+  // ShootDiscs(3);
+  // FlywheelMotor.spin(fwd,0,volt);
+
+  // RotateBot(101);
+  // IntakeDiscs();
+  // MoveBot(-54);
+  // wait(1000,msec);
+  // IntakeDiscs(true);
 }
 
 

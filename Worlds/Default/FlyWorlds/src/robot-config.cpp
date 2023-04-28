@@ -21,6 +21,7 @@ motor FlywheelMotor = motor(PORT20, ratio18_1, true);
 motor rollerMotor = motor(PORT1, ratio18_1, false);
 digital_out indexer1 = digital_out(Brain.ThreeWirePort.A);
 digital_out endGame = digital_out(Brain.ThreeWirePort.B);
+controller Controller2 = controller(partner);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable
