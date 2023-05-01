@@ -140,7 +140,7 @@ void autonomous(void) {
 
   MoveBot(-21);
   RotateBot(84);
-  MoveBot(-7.5);
+  MoveBot(-6.5);
   while(OpticalRight.hue() > 5 && OpticalRight.hue() < 25){
     if(timer >= 200) {
       SpinMotors(-10);

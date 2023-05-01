@@ -116,8 +116,8 @@ competition Competition;
 
 void pre_auton(void) {
   // Initializing Robot Configuration. DO NOT REMOVE!
-  OpticalRight.setLightPower(10, percent);
-  OpticalLeft.setLightPower(10, percent);
+  OpticalRight.setLightPower(50, percent);
+  OpticalLeft.setLightPower(50, percent);
   vexcodeInit();
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
@@ -141,9 +141,9 @@ void autonomous(void) {
   MoveBot(-21);
   RotateBot(84);
   MoveBot(-7.5);
-  while(OpticalRight.hue() > 5 && OpticalRight.hue() < 25){
+  while(OpticalRight.hue() > 150 && OpticalRight.hue() < 250){
     if(timer >= 200) {
-      SpinMotors(-10);
+      SpinMotors(-15);
     }
     SpinRoller(300);
     timer+=10;
@@ -152,14 +152,12 @@ void autonomous(void) {
   RotateBot(90);
   SpinMotors(0);
   MoveBot(-42);
-  RotateBot(45);
+  RotateBot(40);
   IntakeDiscs();
   MoveBot(-10);
   vex::task::sleep(2000);
   IntakeDiscs(true);
-  MoveBot(10);
-  RotateBot(-45);
-  MoveBot(42);
+
 
   
   // ShootDiscs();
