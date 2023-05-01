@@ -75,33 +75,38 @@ void autonomous(void) {
 
   FlywheelMotor.spin(fwd, 12, volt);
   RotateBot(12);
-  MoveBot(8.6);
+  MoveBot(7.2);
   ShootDiscs(3);
   FlywheelMotor.spin(fwd,0,volt);
-  MoveBot(-7.6);
+  MoveBot(-6.2);
 
-  RotateBot(120);
-  MoveBot(-26, 60);
+  RotateBot(115);
+  MoveBot(-26, 65);
   IntakeDiscs();
-  MoveBot(-30);
+  MoveBot(-21);
   IntakeDiscs(true);
 
-  FlywheelMotor.spin(fwd, 11.70, volt);
-  RotateBot(-87);
+  FlywheelMotor.spin(fwd, 11.96, volt);
+  RotateBot(-90);
   ShootDiscs(3);
   FlywheelMotor.spin(fwd, 0, volt);
 
-  RotateBot(93);
+  RotateBot(90);
   IntakeDiscs();
-  MoveBot(-52);
+  MoveBot(-54);
   IntakeDiscs(true);
   IntakeDiscs(false,true);
 
   FlywheelMotor.spin(fwd,12,volt);
-  RotateBot(-64);
-  MoveBot(3);
+  RotateBot(-55);
+  MoveBot(5);
   ShootDiscs(3);
   FlywheelMotor.spin(fwd,0,volt);
+
+  //SKILLS
+  RotateBot(55);
+  MoveBot(25);
+  EndgameDeploy();
 
 
   // RotateBot(-101);
