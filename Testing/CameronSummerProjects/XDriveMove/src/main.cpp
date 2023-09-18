@@ -3,14 +3,15 @@
 #include "DriverControl.h"
 #include "AutonFunctions.h"
 #include "Autonomous.h"
-#include "selection.h"
+// #include "selection.h"
 
 using namespace pros;
 
 // selector configuration
-#define HUE 360 // color of theme from 0-360
-#define AUTONS "Do Nothing", "Front", "Back" // names of the autonomous programs
-#define DEFAULT 1 // default auton
+// TODO Implement UI and PID.
+// #define HUE 360 // color of theme from 0-360
+// #define AUTONS "Do Nothing", "Front", "Back" // names of the autonomous programs
+// #define DEFAULT 1 // default auton
 
 int SelectedAuton;
 
@@ -21,7 +22,7 @@ int SelectedAuton;
  */
 void disabled() {
 	// SelectedAuton = PreAutonomous(); // RED = 1-4, BLUE = 5-8, ORANGE = 9-12, PURPLE = 13-16;
-	selector::init();
+	// selector::init();
 }
 
 /**
@@ -36,7 +37,8 @@ void disabled() {
  * from where it left off.
  */
 void autonomous() {
-	SelectedAuton = selector::auton;
+	// SelectedAuton = selector::auton;
+	SelectedAuton = 1;
 	Autonomous(SelectedAuton); // Runs auton based on menu
 }
 
