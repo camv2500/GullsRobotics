@@ -91,8 +91,8 @@ void opcontrol() {
 	while (true) {
 		double leftDrive = (Controller1.get_analog(ANALOG_RIGHT_Y) - Controller1.get_analog(ANALOG_RIGHT_X));
     	double rightDrive = (Controller1.get_analog(ANALOG_RIGHT_Y) + Controller1.get_analog(ANALOG_RIGHT_X));
-		leftMotorGroup.move(controlCurve(leftDrive));
-		rightMotorGroup.move(controlCurve(rightDrive));
+		leftMotorGroup.move(leftDrive);
+		rightMotorGroup.move(rightDrive);
 
 		pros::delay(10);
 	}
