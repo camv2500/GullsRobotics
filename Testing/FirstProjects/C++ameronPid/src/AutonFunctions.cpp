@@ -4,12 +4,12 @@
 
 using namespace pros;
 
-const double M_PI(3.14159265358979);
+const double Pi(3.14159265358979);
 
 //convert the inches to revolutions
-double ConvertInchesToRevolutions(double requiredInches, double circum = 3.86) {
+double ConvertInchesToRevolutions(double requiredInches, double circum) {
 	//the circumference of the wheel fluxuates slightly due to the rubber nature which is why it is a value that needs to be tuned
-  double circumferenceOfWheel = circum * M_PI;
+  double circumferenceOfWheel = circum * Pi;
 	//the output ratio is due to the gear ratio on the bot being 3 to 5. not sure if this will be needed on a new bot
   double outputRat = 3.0/5.0;
 	//the forumal of converting inches to revolutions based on the info we have gathered / tuned
@@ -18,7 +18,7 @@ double ConvertInchesToRevolutions(double requiredInches, double circum = 3.86) {
 }
 
 //spin the motors for pid. enough said
-void SpinMotors(double power, bool isTurning = false) {
+void SpinMotors(double power, bool isTurning) {
   leftMotorGroup.move(power);
   rightMotorGroup.move(power);
 }
@@ -30,7 +30,7 @@ double kP = 0.1775, kI = 0, kD = 0.01775;
 double integral = 0, derivative = 0, error = 0, power = 0, prevError = 0;
 
 //the distance is in revolutions, the encoders should only be reset on first use
-void runPID(double pidSetDegrees, bool resetEncoders = false) {
+void runPID(double pidSetDegrees, bool resetEncoders) {
   /*//reset the encoders when a new pid call occurs
   //commented out for right now due to being unnecessary for the beginning tests
   if (resetEncoders) {
