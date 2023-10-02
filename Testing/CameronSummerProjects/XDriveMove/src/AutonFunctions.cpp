@@ -178,15 +178,15 @@ void LateralPID(double x, double y) { // Use motor rotations and encoders to mov
         integral2 += error2;
 
         // Limit the integral term to prevent windup
-        if (integral > 100) {
-            integral = 100;
-        } else if (integral < -100) {
-            integral = -100;
+        if (integral > 5000) {
+            integral = 5000;
+        } else if (integral < -5000) {
+            integral = -5000;
         }
-        if (integral2 > 100) {
-            integral2 = 100;
-        } else if (integral2 < -100) {
-            integral2 = -100;
+        if (integral2 > 5000) {
+            integral2 = 5000;
+        } else if (integral2 < -5000) {
+            integral2 = -5000;
         }
 
         // Calculate the derivative term (rate of change of the error)

@@ -12,10 +12,10 @@ using namespace pros;
 // Motor left_wheels (LEFT_WHEELS_PORT);
 // Motor right_wheels (RIGHT_WHEELS_PORT, true); // This reverses the motor
 Controller master (CONTROLLER_MASTER);
-Motor FrontL (11, E_MOTOR_GEARSET_18, false);
-Motor FrontR (1, E_MOTOR_GEARSET_18, true);
-Motor RearL (20, E_MOTOR_GEARSET_18, false);
-Motor RearR (10, E_MOTOR_GEARSET_18, true);
+Motor FrontL (11, E_MOTOR_GEARSET_18, false, E_MOTOR_ENCODER_DEGREES);
+Motor FrontR (1, E_MOTOR_GEARSET_18, true, E_MOTOR_ENCODER_DEGREES);
+Motor RearL (20, E_MOTOR_GEARSET_18, false, E_MOTOR_ENCODER_DEGREES);
+Motor RearR (10, E_MOTOR_GEARSET_18, true, E_MOTOR_ENCODER_DEGREES);
 // Motor FrontL (9,  false);
 // Motor FrontR (12, true);
 // Motor RearL (10, false);
