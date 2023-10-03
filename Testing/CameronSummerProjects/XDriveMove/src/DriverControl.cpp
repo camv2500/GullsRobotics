@@ -98,29 +98,76 @@ void driver() {
 
     while (true) {
         
-        if (!BrakeButton) {
+        // if (!BrakeButton) {
             
-            // Calculate the raw sums of appropriate joystick axes
-            double front_left = (double)(master.get_analog(ANALOG_LEFT_Y) + master.get_analog(ANALOG_LEFT_X) + master.get_analog(ANALOG_RIGHT_X));
-            double rear_left = (double)(master.get_analog(ANALOG_LEFT_Y) - master.get_analog(ANALOG_LEFT_X) + master.get_analog(ANALOG_RIGHT_X));
-            double front_right = (double)(master.get_analog(ANALOG_LEFT_Y) - master.get_analog(ANALOG_LEFT_X) - master.get_analog(ANALOG_RIGHT_X));
-            double rear_right = (double)(master.get_analog(ANALOG_LEFT_Y) + master.get_analog(ANALOG_LEFT_X) - master.get_analog(ANALOG_RIGHT_X));
+        //     // Calculate the raw sums of appropriate joystick axes
+        //     double front_left = (double)(master.get_analog(ANALOG_LEFT_Y) + master.get_analog(ANALOG_LEFT_X) + master.get_analog(ANALOG_RIGHT_X));
+        //     double rear_left = (double)(master.get_analog(ANALOG_LEFT_Y) - master.get_analog(ANALOG_LEFT_X) + master.get_analog(ANALOG_RIGHT_X));
+        //     double front_right = (double)(master.get_analog(ANALOG_LEFT_Y) - master.get_analog(ANALOG_LEFT_X) - master.get_analog(ANALOG_RIGHT_X));
+        //     double rear_right = (double)(master.get_analog(ANALOG_LEFT_Y) + master.get_analog(ANALOG_LEFT_X) - master.get_analog(ANALOG_RIGHT_X));
 
-            // Find the largest raw sum or 100
-            double max_raw_value = std::max(front_left,std::max(rear_left,std::max(front_right,std::max(rear_right,100.0))));
+        //     // Find the largest raw sum or 100
+        //     double max_raw_value = std::max(front_left,std::max(rear_left,std::max(front_right,std::max(rear_right,100.0))));
 
-            // Scale down each value if there was one larger than 100, otherwise leave them alone
-            // The largest value will be scaled down to 100, and the others will be reduced by the same factor
-            front_left = front_left / max_raw_value * 100;
-            rear_left = rear_left / max_raw_value * 100;
-            front_right = front_right / max_raw_value * 100;
-            rear_right = rear_right / max_raw_value * 100;
+        //     // Scale down each value if there was one larger than 100, otherwise leave them alone
+        //     // The largest value will be scaled down to 100, and the others will be reduced by the same factor
+        //     front_left = front_left / max_raw_value * 100;
+        //     rear_left = rear_left / max_raw_value * 100;
+        //     front_right = front_right / max_raw_value * 100;
+        //     rear_right = rear_right / max_raw_value * 100;
 
-            // Write the scaled sums out to the various motors
-            FrontL.move(front_left/3);
-            RearL.move(rear_left/3);
-            FrontR.move(front_right/3);
-            RearR.move(rear_right/3);
+        //     // Write the scaled sums out to the various motors
+        //     FrontL.move(front_left/3);
+        //     RearL.move(rear_left/3);
+        //     FrontR.move(front_right/3);
+        //     RearR.move(rear_right/3);
+
+        // }
+
+        if (!BrakeButton) {
+
+          //Get the raw sums of the X and Y joystick axes
+          double front_left  = (double)(master.get_analog(ANALOG_LEFT_Y) + master.get_analog(ANALOG_LEFT_X));
+          double back_left   = (double)(master.get_analog(ANALOG_LEFT_Y) - master.get_analog(ANALOG_LEFT_X));
+          double front_right = (double)(master.get_analog(ANALOG_LEFT_Y) - master.get_analog(ANALOG_LEFT_X));
+          double back_right  = (double)(master.get_analog(ANALOG_LEFT_Y) + master.get_analog(ANALOG_LEFT_X));
+          
+          //Find the largest possible sum of X and Y
+          double max_raw_sum = (double)(abs(master.get_analog(ANALOG_LEFT_Y)) + abs(master.get_analog(ANALOG_LEFT_X)));
+          
+          //Find the largest joystick value
+          double max_XYstick_value = (double)(std::max(abs(master.get_analog(ANALOG_LEFT_Y)),abs(master.get_analog(ANALOG_LEFT_X))));
+          
+          //The largest sum will be scaled down to the largest joystick value, and the others will be
+          //scaled by the same amount to preserve directionality
+          if (max_raw_sum != 0) {
+              front_left  = front_left / max_raw_sum * max_XYstick_value;
+              back_left   = back_left / max_raw_sum * max_XYstick_value;
+              front_right = front_right / max_raw_sum * max_XYstick_value;
+              back_right  = back_right / max_raw_sum * max_XYstick_value;
+          }
+          
+          //Now to consider rotation
+          //Naively add the rotational axis
+          front_left  = front_left  + master.get_analog(ANALOG_RIGHT_X);
+          back_left   = back_left   + master.get_analog(ANALOG_RIGHT_X);
+          front_right = front_right - master.get_analog(ANALOG_RIGHT_X);
+          back_right  = back_right  - master.get_analog(ANALOG_RIGHT_X);
+          
+          //What is the largest sum, or is 100 larger?
+          max_raw_sum = std::max(std::abs(front_left),std::max(std::abs(back_left),std::max(std::abs(front_right),std::max(std::abs(back_right),100.0))));
+          
+          //Scale everything down by the factor that makes the largest only 100, if it was over
+          front_left  = front_left  / max_raw_sum * 100.0;
+          back_left   = back_left   / max_raw_sum * 100.0;
+          front_right = front_right / max_raw_sum * 100.0;
+          back_right  = back_right  / max_raw_sum * 100.0;
+          
+          //Write the manipulated values out to the motors
+            FrontL.move(front_left);
+            RearL.move(back_left);
+            FrontR.move(front_right);
+            RearR.move(back_right);
 
         }
 
