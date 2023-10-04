@@ -180,9 +180,10 @@ void driver() {
 
         }
 
+    delay(20);
+    
     }
 
-    delay(20);
 }
 
 void intake(void) {
