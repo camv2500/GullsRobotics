@@ -67,7 +67,7 @@ extern "C" {
 /////////////////////////////////////////////////////////////////////////////////////
 // Put autonomous functions here
 void chatGPTPID(double target);
-void LateralPID(double x, double y);
+void LateralPID(double x = 0, double y = 0);
 
 // Autonomous period functions
 void set_master_auton_enable();
