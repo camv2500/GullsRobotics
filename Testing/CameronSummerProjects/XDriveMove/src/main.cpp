@@ -58,6 +58,7 @@ void autonomous() {
  */
 void opcontrol() {
 	lcd::print(1, "Driver");
+	master.print(0, 0, "Driver");
 	// Controller master(pros::E_CONTROLLER_MASTER);
 	// Motor left_mtr(1);
 	// Motor right_mtr(2);

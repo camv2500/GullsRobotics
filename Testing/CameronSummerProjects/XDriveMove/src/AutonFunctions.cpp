@@ -46,8 +46,13 @@ void resetEncoders() {
 }
 
 // Function to get the average encoder value of the X-Drive
-double getAverageEncoderValue() {
+double getAverageEncoderValue(bool ab = false) {
+  if (ab) {
     return (fabs(FrontL.get_position()) + fabs(RearL.get_position()) + fabs(FrontR.get_position()) + fabs(RearR.get_position())) / 4.0;
+  }
+  else {
+    return (FrontL.get_position() + RearL.get_position() + FrontR.get_position() + RearR.get_position()) / 4.0;
+  }
 }
 
 // Function to move the X-Drive laterally using PID
@@ -139,6 +144,7 @@ void LateralPID(double x, double y) { // Use motor rotations and encoders to mov
 
   if (x == 0 && y == 0) {
     lcd::print(2, "You are an idiot!!!");
+    master.print(1, 0, "You are an idiot!!!");
     return;
   }
 
@@ -175,7 +181,11 @@ void LateralPID(double x, double y) { // Use motor rotations and encoders to mov
         // lateralMotorSpeed2 = (double)((y - x) - dist)*(127/100)*kp;
 
         // dist = ((FrontL.get_position()*3.14*wheelDiameter) + (FrontR.get_position()*3.14*wheelDiameter)) / 2; // pi * diameter // Distance = total rotations * circumference of 1 rotation
-        dist = getAverageEncoderValue() / 360.0; // pi * diameter // Distance = total rotations * circumference of 1 rotation
+        if (x < 0)
+          dist = -(getAverageEncoderValue(true)) / 360.0; // pi * diameter // Distance = total rotations * circumference of 1 rotation
+        else
+          dist = getAverageEncoderValue(true) / 360.0; // pi * diameter // Distance = total rotations * circumference of 1 rotation
+        
         error = (double)(x / wheelCircumference) - dist;
         // error2 = (double)((y - x) / wheelCircumference) - dist;
 
@@ -245,13 +255,17 @@ void LateralPID(double x, double y) { // Use motor rotations and encoders to mov
           FrontR.move(-lateralMotorSpeed);
           RearR.move(lateralMotorSpeed);
 
-          lcd::print(2, "%lf", lateralMotorSpeed);
+          // lcd::print(2, "%lf", lateralMotorSpeed);
+          lcd::print(2, "%lf", fabs(fabs(x) - dist));
+          // master.print(1, 0, "%lf", fabs(fabs(x) - dist));
+          lcd::print(3, "%lf", dist);
+          master.print(1, 0, "%lf", lateralMotorSpeed);
 
         delay(20);
 
         // dist = FrontL.get_actual_velocity()*3.14*wheelDiameter;
         
-        if (fabs(fabs(x) - dist) <= (fabs(0.5))) {  
+        if (fabs(fabs(x) - dist) <= (fabs(0.5)) || fabs(lateralMotorSpeed) <= (fabs(9.5))) {  
 
           break; 
 
@@ -272,6 +286,9 @@ void LateralPID(double x, double y) { // Use motor rotations and encoders to mov
     RearL.tare_position();
     RearR.tare_position();
 
+    lcd::print(2, "Exited X loop");
+    master.print(1, 0, "Exited X loop");
+
     }
 
     if (y != 0) {
@@ -282,7 +299,11 @@ void LateralPID(double x, double y) { // Use motor rotations and encoders to mov
         // lateralMotorSpeed2 = (double)((y - x) - dist)*(127/100)*kp;
 
         // dist = ((FrontL.get_position()*3.14*wheelDiameter) + (FrontR.get_position()*3.14*wheelDiameter)) / 2; // pi * diameter // Distance = total rotations * circumference of 1 rotation
-        dist = getAverageEncoderValue() / 360.0; // pi * diameter // Distance = total rotations * circumference of 1 rotation
+        if (y < 0)
+          dist = -(getAverageEncoderValue(true)) / 360.0; // pi * diameter // Distance = total rotations * circumference of 1 rotation
+        else
+          dist = getAverageEncoderValue(true) / 360.0; // pi * diameter // Distance = total rotations * circumference of 1 rotation
+        
         error = (double)(y / wheelCircumference) - dist;
         // error2 = (double)((y - x) / wheelCircumference) - dist;
 
@@ -356,7 +377,7 @@ void LateralPID(double x, double y) { // Use motor rotations and encoders to mov
 
         // dist = FrontL.get_actual_velocity()*3.14*wheelDiameter;
         
-        if (fabs(fabs(y) - dist) <= (fabs(0.5))) {  
+        if (fabs(fabs(y) - dist) <= (fabs(0.5)) || fabs(lateralMotorSpeed) <= (fabs(9.5))) {  
 
           break; 
 
@@ -364,6 +385,9 @@ void LateralPID(double x, double y) { // Use motor rotations and encoders to mov
 
 
       }
+
+      lcd::print(2, "Exited Y loop");
+      master.print(1, 0, "Exited Y loop");
 
     }
   

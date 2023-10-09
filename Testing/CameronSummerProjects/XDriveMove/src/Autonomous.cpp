@@ -33,12 +33,15 @@ void competition_initialize() {}
 void RedRedAuton() { // Auton 1: Goes for stack of three using SENSORS (RED SIDE)
 
     lcd::print(1, "Auton 1 (RED) Selected");
+    master.print(0, 0, "Auton 1 (RED) Selected");
     // start_timer(44.5);
 
     // routine
 
     // chatGPTPID(-12);
     LateralPID(12, -12);
+    LateralPID(-12, 12);
+    LateralPID();
     
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   

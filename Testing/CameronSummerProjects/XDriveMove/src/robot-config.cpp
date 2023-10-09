@@ -62,6 +62,7 @@ void on_center_button() {
 void initialize() {
 	lcd::initialize();
 	lcd::set_text(1, "Hello PROS User!");
+	master.clear();
 
 	lcd::register_btn1_cb(on_center_button);
 }
