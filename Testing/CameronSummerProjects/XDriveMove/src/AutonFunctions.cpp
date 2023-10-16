@@ -2,7 +2,8 @@
 #include "AutonFunctions.h"
 #include "DriverControl.h"
 
-using namespace pros;
+// using namespace pros;
+using namespace okapi;
 
 /////////////////////////////////////////////////////////////////////////////////////
 //////                              GLOBAL CONSTANTS                           //////
@@ -506,6 +507,10 @@ void LateralPID(double x, double y) { // Use motor rotations and encoders to mov
 
   delay(50);
 
+}
+
+void TrackerPID(double x, double y) {
+    
 }
 
 // Gains are predetermined
