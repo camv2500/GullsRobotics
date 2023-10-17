@@ -2,8 +2,7 @@
 #include "AutonFunctions.h"
 #include "DriverControl.h"
 
-// using namespace pros;
-using namespace okapi;
+using namespace pros;
 
 /////////////////////////////////////////////////////////////////////////////////////
 //////                              GLOBAL CONSTANTS                           //////
@@ -11,10 +10,11 @@ using namespace okapi;
 
 const int countsPerRev = 360;
 // const double wheelDiameter(4.125); // Inches
-const double wheelDiameter(3.75); // Inches
+const double wheelDiameter(2.75); // Inches
+// const double wheelDiameter(3.75); // Inches
 const double Pi(3.14159265358979);
 const double driveRatio(1);
-const double wheelCircumference = wheelDiameter*Pi;
+const double wheelCircumference = wheelDiameter*Pi; // 8.33
 const double inchesPerDegree = wheelCircumference/countsPerRev;
 const double TURNING_DIAMETER = 10.75;
 
@@ -114,6 +114,16 @@ void chatGPTPID(double target) {
   
 }
 // End AI
+
+// Function to get the average encoder value of the X-Drive
+double getAverageTrackerValue(bool ab = false) {
+  if (ab) {
+    return (fabs(TrackL.get_position()) + fabs(TrackR.get_position())) / 2.0;
+  }
+  else {
+    return (TrackL.get_position() + TrackR.get_position()) / 2.0;
+  }
+}
 
 /*
 
@@ -509,8 +519,235 @@ void LateralPID(double x, double y) { // Use motor rotations and encoders to mov
 
 }
 
-void TrackerPID(double x, double y) {
-    
+void TrackerPID(double x, double y, double wp) {
+  // @param wp - waypoint
+
+  if (x == 0 && y == 0) {
+    lcd::print(2, "You are an idiot!!!");
+    master.print(1, 0, "You are an idiot!!!");
+    return;
+  }
+
+  if (master_auton_enable) {
+
+    kp = 30.50; // 3.50
+    ki = 0.0005; // 10.00
+    // kd = 0.0495; // 0.00
+
+    double error, lastError = 0, integral = 0; //, derivative;
+    // double error2, lastError2 = 0, integral2 = 0, derivative2;
+
+    // double travelInches = (x*x) + (y*y);
+    // travelInches = sqrt(travelInches);
+    // double Rotations = travelInches / wheelCircumference;
+    double dist = 0; // Variable that will be current distance
+    double lateralMotorSpeed;
+    double lateralMotorSpeed2;
+
+    // FrontL.resetRotation();
+    // rightDrive.resetRotation();
+
+    // FrontL.tare_position();
+    // FrontR.tare_position();
+    // RearL.tare_position();
+    // RearR.tare_position();
+
+    TrackL.reset_position();
+    TrackR.reset_position();
+
+    if (x != 0) {
+    // if (/*y >= 0*/ true) {
+
+      while (dist <= fabs(x)) { // Proportional control feedback loop for error
+
+        // dist = ((FrontL.get_position()*3.14*wheelDiameter) + (FrontR.get_position()*3.14*wheelDiameter)) / 2; // pi * diameter // Distance = total rotations * circumference of 1 rotation
+        if (x < 0)
+          dist = -(getAverageTrackerValue(true)) / 360.0; // pi * diameter // Distance = total rotations * circumference of 1 rotation
+        else
+          dist = getAverageTrackerValue(true) / 360.0; // pi * diameter // Distance = total rotations * circumference of 1 rotation
+        
+        error = (double)(x / wheelCircumference) - dist;
+
+        // Calculate the integral term (sum of past errors)
+        integral += error;
+        // integral2 += error2;
+
+        // Limit the integral term to prevent windup
+        if (integral > 5000) {
+            integral = 5000;
+        } else if (integral < -5000) {
+            integral = -5000;
+        }
+        // if (integral2 > 5000) {
+        //     integral2 = 5000;
+        // } else if (integral2 < -5000) {
+        //     integral2 = -5000;
+        // }
+
+        // Calculate the derivative term (rate of change of the error)
+        // derivative = error - lastError;
+        // lastError = error;
+
+        lateralMotorSpeed = (kp * error) + (ki * integral); // + (kd * derivative);
+
+          FrontL.move(lateralMotorSpeed);
+          RearL.move(-lateralMotorSpeed);
+          FrontR.move(-lateralMotorSpeed);
+          RearR.move(lateralMotorSpeed);
+
+          // lcd::print(2, "%lf", lateralMotorSpeed);
+          lcd::print(2, "%lf", fabs(fabs(x) - dist));
+          // master.print(1, 0, "%lf", fabs(fabs(x) - dist));
+          lcd::print(3, "%lf", dist);
+          master.print(1, 0, "%lf", lateralMotorSpeed);
+
+        delay(20);
+
+        // dist = FrontL.get_actual_velocity()*3.14*wheelDiameter;
+        
+        if (fabs(fabs(x) - dist) <= (fabs(0.5)) /*|| fabs(lateralMotorSpeed) <= (fabs(9.5))*/) {  
+
+          break; 
+
+        }
+
+
+      }
+
+    FrontL.move(0);
+    RearL.move(0);
+    FrontR.move(0);
+    RearR.move(0);
+
+    dist = 0;
+
+    // FrontL.tare_position();
+    // FrontR.tare_position();
+    // RearL.tare_position();
+    // RearR.tare_position();
+
+    TrackL.reset_position();
+    TrackR.reset_position();
+
+    lcd::print(2, "Exited X loop");
+    master.print(1, 0, "Exited X loop");
+
+    }
+
+    if (y != 0) {
+      while (dist <= fabs(y)) { // Proportional control feedback loop for error
+
+        // lateralMotorSpeed = (travelInches - dist)*(127/100)*kp;
+        // lateralMotorSpeed = (double)((y + x) - dist)*(127/100)*kp;
+        // lateralMotorSpeed2 = (double)((y - x) - dist)*(127/100)*kp;
+
+        // dist = ((FrontL.get_position()*3.14*wheelDiameter) + (FrontR.get_position()*3.14*wheelDiameter)) / 2; // pi * diameter // Distance = total rotations * circumference of 1 rotation
+        if (y < 0)
+          dist = -(getAverageTrackerValue(true)) / 360.0; // pi * diameter // Distance = total rotations * circumference of 1 rotation
+        else
+          dist = getAverageTrackerValue(true) / 360.0; // pi * diameter // Distance = total rotations * circumference of 1 rotation
+        
+        error = (double)(y / wheelCircumference) - dist;
+        // error2 = (double)((y - x) / wheelCircumference) - dist;
+
+        // Calculate the integral term (sum of past errors)
+        integral += error;
+        // integral2 += error2;
+
+        // Limit the integral term to prevent windup
+        if (integral > 5000) {
+            integral = 5000;
+        } else if (integral < -5000) {
+            integral = -5000;
+        }
+        // if (integral2 > 5000) {
+        //     integral2 = 5000;
+        // } else if (integral2 < -5000) {
+        //     integral2 = -5000;
+        // }
+
+        // Calculate the derivative term (rate of change of the error)
+        // derivative = error - lastError;
+        // lastError = error;
+        // derivative2 = error2 - lastError2;
+        // lastError2 = error2;
+
+        lateralMotorSpeed = (kp * error) + (ki * integral); // + (kd * derivative);
+        // lateralMotorSpeed2 = (kp * error2) + (ki * integral2) + (kd * derivative2);
+        
+        // leftDrive.spin(forward, lateralMotorSpeed, pct);
+        // rightDrive.spin(forward, lateralMotorSpeed, pct);
+        // double front_left = (double)(y + x);
+        // double rear_left = (double)(y - x);
+        // double front_right = (double)(y - x);
+        // double rear_right = (double)(y + x);
+
+        // // Find the largest raw sum or 100
+        // double max_raw_value = std::max(front_left,std::max(rear_left,std::max(front_right,std::max(rear_right,100.0))));
+
+        // // Scale down each value if there was one larger than 100, otherwise leave them alone
+        // // The largest value will be scaled down to 100, and the others will be reduced by the same factor
+        // front_left = front_left / max_raw_value * 100;
+        // rear_left = rear_left / max_raw_value * 100;
+        // front_right = front_right / max_raw_value * 100;
+        // rear_right = rear_right / max_raw_value * 100;
+
+        // // Write the scaled sums out to the various motors
+        // FrontL.move(front_left/3);
+        // RearL.move(rear_left/3);
+        // FrontR.move(front_right/3);
+        // RearR.move(rear_right/3);
+
+        // if (x >= 0) {
+        //   FrontL.move(lateralMotorSpeed);
+        //   RearL.move(-lateralMotorSpeed);
+        //   FrontR.move(-lateralMotorSpeed);
+        //   RearR.move(lateralMotorSpeed);
+        // }
+        // else if (x < 0) {
+        //   FrontL.move(-lateralMotorSpeed);
+        //   RearL.move(lateralMotorSpeed);
+        //   FrontR.move(lateralMotorSpeed);
+        //   RearR.move(-lateralMotorSpeed);
+        // }
+
+          FrontL.move(lateralMotorSpeed);
+          RearL.move(lateralMotorSpeed);
+          FrontR.move(lateralMotorSpeed);
+          RearR.move(lateralMotorSpeed);
+
+        delay(20);
+
+        // dist = FrontL.get_actual_velocity()*3.14*wheelDiameter;
+        
+        if (fabs(fabs(y) - dist) <= (fabs(0.5)) /*|| fabs(lateralMotorSpeed) <= (fabs(9.5))*/) {  
+
+          break; 
+
+        }
+
+
+      }
+
+      lcd::print(2, "Exited Y loop");
+      master.print(1, 0, "Exited Y loop");
+
+    }
+
+    // Stops motors once target is reached and loop finishes
+    // Optional braking, will make motion more fluid
+    // FrontL.brake();
+    // RearL.brake();
+    // FrontR.brake();
+    // RearR.brake();
+    FrontL.move(0);
+    RearL.move(0);
+    FrontR.move(0);
+    RearR.move(0);
+
+  }
+
+  delay(50);
 }
 
 // Gains are predetermined

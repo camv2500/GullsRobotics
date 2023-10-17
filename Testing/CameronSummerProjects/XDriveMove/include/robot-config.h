@@ -73,20 +73,23 @@ extern Motor FrontR;
 extern Motor RearL;
 extern Motor RearR;
 
-extern Motor intakeL;
-extern Motor intakeR;
+extern Rotation TrackL;
+extern Rotation TrackR;
 
-extern Motor liftL;
-extern Motor liftR;
+// extern Motor intakeL;
+// extern Motor intakeR;
+
+// extern Motor liftL;
+// extern Motor liftR;
 
 extern Motor_Group leftDrive;
 extern Motor_Group rightDrive;
 extern Motor_Group leftRotate;
 extern Motor_Group rightRotate;
 
-extern Motor_Group Intake;
+// extern Motor_Group Intake;
 
-extern Motor_Group Lift;
+// extern Motor_Group Lift;
 
 void initialize(void);
 void competition_initialize(void);

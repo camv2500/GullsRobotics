@@ -79,7 +79,7 @@ void opcontrol() {
 	// autonomous();
 	Task t1(control);
 	Task t2(driver);
-	Task t3(intake);
-	Task t4(lift);
+	// Task t3(intake);
+	// Task t4(lift);
 	
 }

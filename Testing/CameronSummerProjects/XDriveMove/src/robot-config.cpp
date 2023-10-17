@@ -12,30 +12,34 @@ using namespace pros;
 // Motor left_wheels (LEFT_WHEELS_PORT);
 // Motor right_wheels (RIGHT_WHEELS_PORT, true); // This reverses the motor
 Controller master (CONTROLLER_MASTER);
-Motor FrontL (11, E_MOTOR_GEARSET_18, false, E_MOTOR_ENCODER_DEGREES);
-Motor FrontR (1, E_MOTOR_GEARSET_18, true, E_MOTOR_ENCODER_DEGREES);
-Motor RearL (20, E_MOTOR_GEARSET_18, false, E_MOTOR_ENCODER_DEGREES);
-Motor RearR (10, E_MOTOR_GEARSET_18, true, E_MOTOR_ENCODER_DEGREES);
+Motor FrontL (1, E_MOTOR_GEARSET_18, false, E_MOTOR_ENCODER_DEGREES); // 11
+Motor FrontR (10, E_MOTOR_GEARSET_18, true, E_MOTOR_ENCODER_DEGREES); // 1
+Motor RearL (11, E_MOTOR_GEARSET_18, false, E_MOTOR_ENCODER_DEGREES); // 20
+Motor RearR (20, E_MOTOR_GEARSET_18, true, E_MOTOR_ENCODER_DEGREES); // 10
+
+Rotation TrackL (2);
+Rotation TrackR (9);
+
 // Motor FrontL (9,  false);
 // Motor FrontR (12, true);
 // Motor RearL (10, false);
 // Motor RearR (11, true);
 // Motor RollerMotor (1, false);
 
-Motor intakeL (12, E_MOTOR_GEARSET_18, false);
-Motor intakeR (2, E_MOTOR_GEARSET_18, true);
+// Motor intakeL (12, E_MOTOR_GEARSET_18, false);
+// Motor intakeR (2, E_MOTOR_GEARSET_18, true);
 
-Motor liftL (13, E_MOTOR_GEARSET_36, true);
-Motor liftR (3, E_MOTOR_GEARSET_36, false);
+// Motor liftL (13, E_MOTOR_GEARSET_36, true);
+// Motor liftR (3, E_MOTOR_GEARSET_36, false);
 
 Motor_Group leftDrive ({FrontL, RearR});
 Motor_Group rightDrive ({FrontR, RearL});
 Motor_Group leftRotate ({FrontL, RearL});
 Motor_Group rightRotate ({FrontR, RearR});
 
-Motor_Group Intake ({intakeL, intakeR});
+// Motor_Group Intake ({intakeL, intakeR});
 
-Motor_Group Lift ({liftL, liftR});
+// Motor_Group Lift ({liftL, liftR});
 
 /**
  * A callback function for LLEMU's center button.

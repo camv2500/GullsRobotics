@@ -64,8 +64,8 @@ extern "C" {
 #endif
 void control(void);
 void driver(void);
-void intake(void);
-void lift(void);
+// void intake(void);
+// void lift(void);
 #ifdef __cplusplus
 }
 #endif

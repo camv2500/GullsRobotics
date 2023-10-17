@@ -39,9 +39,10 @@ void RedRedAuton() { // Auton 1: Goes for stack of three using SENSORS (RED SIDE
     // routine
 
     // chatGPTPID(-12);
-    LateralPID(12, -12);
-    LateralPID(-12, 12);
-    LateralPID();
+    // LateralPID(12, -12);
+    // LateralPID(-12, 12);
+    // LateralPID();
+    TrackerPID(0, -12);
     
   //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   

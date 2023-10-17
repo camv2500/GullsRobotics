@@ -6,61 +6,61 @@ using namespace pros;
 
 // Constants
 
-const int Intake_Speed = 100; // Percentage intake motor speed
-const int Lift_Speed = 100; // Percentage Lift motor speed
+// const int Intake_Speed = 100; // Percentage intake motor speed
+// const int Lift_Speed = 100; // Percentage Lift motor speed
 
 // Variables
 
 int BrakeButton; // Variable defined for brake button
 
-// Variables defined for intake direction
-int Intake_in;  // Takes in the discs
-int Intake_out; // Releases discs
+// // Variables defined for intake direction
+// int Intake_in;  // Takes in the discs
+// int Intake_out; // Releases discs
 
-// Boolean logic for double tap intake ability
-bool continuous_in = false;
-bool continuous_out = false;
+// // Boolean logic for double tap intake ability
+// bool continuous_in = false;
+// bool continuous_out = false;
 
-bool lift_press_up = false;
-bool lift_press_down = false;
+// bool lift_press_up = false;
+// bool lift_press_down = false;
 
 // Functions
 
-// Function for intake double tap, keeps track of interval between presses, called as interupt
-int lastPressIN = 0;
-int timeThresholdIN = 250;
-void ContinuousIntakeDoubleTap() {
+// // Function for intake double tap, keeps track of interval between presses, called as interupt
+// int lastPressIN = 0;
+// int timeThresholdIN = 250;
+// void ContinuousIntakeDoubleTap() {
 
-  int time = millis(); 
-  int interval = time - lastPressIN;
-  if (interval < timeThresholdIN) {
+//   int time = millis(); 
+//   int interval = time - lastPressIN;
+//   if (interval < timeThresholdIN) {
 
-    continuous_in = !continuous_in;
+//     continuous_in = !continuous_in;
 
-  }
+//   }
 
-  lastPressIN = time;
-  delay(20);
+//   lastPressIN = time;
+//   delay(20);
 
-}
+// }
 
-// Function for outtake double tap, keeps track of interval between presses, called as interupt
-int lastPressOUT = 0;
-int timeThresholdOUT = 250; 
-void ContinuousOuttakeDoubleTap() {
+// // Function for outtake double tap, keeps track of interval between presses, called as interupt
+// int lastPressOUT = 0;
+// int timeThresholdOUT = 250; 
+// void ContinuousOuttakeDoubleTap() {
 
-  int time = millis();
-  int interval = time - lastPressOUT;
-  if (interval < timeThresholdOUT) {
+//   int time = millis();
+//   int interval = time - lastPressOUT;
+//   if (interval < timeThresholdOUT) {
 
-    continuous_out = !continuous_out;
+//     continuous_out = !continuous_out;
 
-  } 
+//   } 
 
-  lastPressOUT = time;
-  delay(20);
+//   lastPressOUT = time;
+//   delay(20);
 
-}
+// }
 
 void control() {
 
@@ -68,27 +68,27 @@ void control() {
         
         BrakeButton = master.get_digital(E_CONTROLLER_DIGITAL_B);
 
-        if (master.get_digital(E_CONTROLLER_DIGITAL_L1)) {
-            ContinuousIntakeDoubleTap();
-        }
+        // if (master.get_digital(E_CONTROLLER_DIGITAL_L1)) {
+        //     ContinuousIntakeDoubleTap();
+        // }
 
-        if (master.get_digital(E_CONTROLLER_DIGITAL_L2)) {
-            ContinuousOuttakeDoubleTap();
-        }
+        // if (master.get_digital(E_CONTROLLER_DIGITAL_L2)) {
+        //     ContinuousOuttakeDoubleTap();
+        // }
 
-        if (master.get_digital(E_CONTROLLER_DIGITAL_R1)) {
-            lift_press_up = true;
-        }
-        else {
-            lift_press_up = false;
-        }
+        // if (master.get_digital(E_CONTROLLER_DIGITAL_R1)) {
+        //     lift_press_up = true;
+        // }
+        // else {
+        //     lift_press_up = false;
+        // }
 
-        if (master.get_digital(E_CONTROLLER_DIGITAL_R2)) {
-            lift_press_down = true;
-        }
-        else {
-            lift_press_down = false;
-        }
+        // if (master.get_digital(E_CONTROLLER_DIGITAL_R2)) {
+        //     lift_press_down = true;
+        // }
+        // else {
+        //     lift_press_down = false;
+        // }
 
         delay(10);
     }
@@ -186,88 +186,88 @@ void driver() {
 
 }
 
-void intake(void) {
+// void intake(void) {
 
-  while(true) {
+//   while(true) {
 
-    if (continuous_in) {
+//     if (continuous_in) {
 
-      Intake.move(Intake_Speed);
+//       Intake.move(Intake_Speed);
 
-      if (Intake_out) {
+//       if (Intake_out) {
 
-        continuous_in = false;
+//         continuous_in = false;
 
-      }
+//       }
 
-    }
+//     }
 
-    else if (continuous_out) {
+//     else if (continuous_out) {
 
-      if (continuous_out) {
+//       if (continuous_out) {
 
-        Intake.move(Intake_Speed/-1);
+//         Intake.move(Intake_Speed/-1);
 
-        if (Intake_in) {
+//         if (Intake_in) {
 
-          continuous_out = false;
+//           continuous_out = false;
 
-        }
+//         }
 
-      }
+//       }
 
-    }
+//     }
 
-    else {
+//     else {
 
-      if (Intake_in && Intake_out) {
+//       if (Intake_in && Intake_out) {
 
-        Intake.brake();
+//         Intake.brake();
 
-      }
+//       }
       
-      else if (Intake_in && !Intake_out) {
+//       else if (Intake_in && !Intake_out) {
 
-        Intake.move(Intake_Speed);
+//         Intake.move(Intake_Speed);
         
-      }
+//       }
 
-      else if (Intake_out && !Intake_in) {
+//       else if (Intake_out && !Intake_in) {
 
-        Intake.move(Intake_Speed/-1);
+//         Intake.move(Intake_Speed/-1);
 
-      }
+//       }
 
-      else {
+//       else {
 
-        Intake.brake();
+//         Intake.brake();
 
-      }
+//       }
 
-    }
+//     }
 
-    delay(20);
+//     delay(20);
 
-  }
+//   }
   
-}
+// }
 
-void lift(void) {
+// void lift(void) {
 
-    while (true) {
-        if (lift_press_up) {
-            Lift.move(Lift_Speed);
-        }
+//     while (true) {
+//         if (lift_press_up) {
+//             Lift.move(Lift_Speed);
+//         }
         
-        else if (lift_press_down) {
-            Lift.move(Lift_Speed/-1);
-        }
-        else {
-            Lift.brake();
-        }
+//         else if (lift_press_down) {
+//             Lift.move(Lift_Speed/-1);
+//         }
+//         else {
+//             Lift.brake();
+//         }
 
-        delay(20);
+//         delay(20);
 
-    }
+//     }
 
-}
+// }

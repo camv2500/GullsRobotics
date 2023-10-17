@@ -39,7 +39,7 @@
 /**
  * You should add more #includes here
  */
-#include "okapi/api.hpp"
+// #include "okapi/api.hpp"
 //#include "pros/api_legacy.h"
 
 /**
@@ -68,6 +68,7 @@ extern "C" {
 // Put autonomous functions here
 void chatGPTPID(double target);
 void LateralPID(double x = 0, double y = 0);
+void TrackerPID(double x = 0, double y = 0, double wp = 0);
 
 // Autonomous period functions
 void set_master_auton_enable();
