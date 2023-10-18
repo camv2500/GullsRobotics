@@ -711,10 +711,10 @@ void TrackerPID(double x, double y, double wp) {
         //   RearR.move(-lateralMotorSpeed);
         // }
 
-          FrontL.move(lateralMotorSpeed);
-          RearL.move(lateralMotorSpeed);
-          FrontR.move(lateralMotorSpeed);
-          RearR.move(lateralMotorSpeed);
+          FrontL.move(-lateralMotorSpeed);
+          RearL.move(-lateralMotorSpeed);
+          FrontR.move(-lateralMotorSpeed);
+          RearR.move(-lateralMotorSpeed);
 
         delay(20);
 
