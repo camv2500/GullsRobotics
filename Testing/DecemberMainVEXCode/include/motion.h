@@ -15,37 +15,38 @@ static bool resetPID = true, resetTurning = true, resetFlywheel = true;
 static bool isReloading = false;
 static double setPID = 0, setTurning = 0, setPIDLeft = 0, setPIDRight = 0, reloadTime = 0;
 
-//moves the bot straight
-void MoveBot(double d, int mTime = 1000) {
-  setPID = d;
-  resetPID = true;
-  isPID = true;
-  if (d < 0) { d*= -1; }
-  wait(CalculateWaitTimeMove(d),sec);
-  setPID = 0;
-  wait(20,msec);
-  isPID = false;
+//moves the bot straight, d is the distance in inches, this program runs on the main thread
+void MoveBot(double d) {
+  setPID = d; //tell the pid loop the new destination
+  resetPID = true; //tell the pid to reset
+  isPID = true; //tell the thread to turn on the pid
+  if (d < 0) { d*= -1; } //now d is used to cacluate the wait time, so we make sure it is positive
+  wait(CalculateWaitTimeMove(d),sec); //the main thread now waits while the other runs the pid until the pid should be done
+  setPID = 0; //set the movement to turn off in the pid
+  wait(20,msec); //wait for good measure
+  isPID = false; //turn off the pid loop on the other thread
 }
 
-//rotate the bot
-void RotateBot(double d, int tTime = 1000) {
-  setTurning = d;
-  resetTurning = true;
-  isTurning = true;
-  if (d < 0) { d*= -1; }
-  wait(CalculateWaitTimeRotate(d), sec);
-  setTurning = 0;
-  isTurning = false;
-  wait(20,msec);
+//rotate the bot, d is the degrees of the rotation
+void RotateBot(double d) {
+  setTurning = d; //tell the pid loop the new destination
+  resetTurning = true; //tell the pid to reset
+  isTurning = true; //tell the turning pid loop to turn on on the other thread
+  if (d < 0) { d*= -1; } //calculate wait time using d
+  wait(CalculateWaitTimeRotate(d), sec); //and then wait that much time
+  setTurning = 0; //after waiting, turn movement off
+  wait(20,msec); //wait a sec
+  isTurning = false; //turn off the turning movement
 }
 
 //emptys the bot of all discs
+/* this function is commented out for now as the logic may be usable for throwing triballs across the field
 void ShootDiscs() {
   SpinMotors(0);
   reloadTime = 0;
   isReloading = true;
   wait(1000,msec);
-}
+} */
 
 //the distance is in revolutions, the encoders should only be reset on first use
 void runPID(double pidSetDegrees, bool resetEncoders = false, bool isTurning = false) {
@@ -85,8 +86,11 @@ void runPID(double pidSetDegrees, bool resetEncoders = false, bool isTurning = f
 
 //auton controller
 int autonController() {
+  //this will run for the entirety of the auton, being the secondary thread that runs in parallel with the main on
   while(isAuton) {
+    //checks if the PID routine should be running using variables set in the main thread
     if (isPID) {
+      //if the program is just now setting PID, it will run a first time setup, otherwise just keeps looping the same thing
       if (resetPID) {
         setPID = ConvertInchesToRevolutions(setPID, 1.13);
         runPID(setPID, true);
@@ -95,7 +99,9 @@ int autonController() {
       else {runPID(setPID);}
     }
 
+    //checks if the PID Turning routine should be running using variables set in the main thread
     if (isTurning) {
+      //if the program is just now setting PID, it will run a first time setup, otherwise just keeps looping the same thing
       if (resetTurning) {
         setTurning = ConvertDegreesToInches(setTurning, 13);
         setTurning = ConvertInchesToRevolutions(setTurning, 1.13);
@@ -105,6 +111,8 @@ int autonController() {
       else {runPID(setTurning, false, true);}
     }
 
+    /* this section is commented out for now but is the logic of how the catapult gets back down to the "ready to load" position
+    // without the use of a limit switch. a little bit buggy without it, hoping we get a working limit switch and can use that
     if (isReloading) {
       if (reloadTime > 3120) {
         cataMotor.spin(forward, 0, pct);
@@ -114,7 +122,7 @@ int autonController() {
         reloadTime += 10;
         cataMotor.spin(forward, 100, pct);
       }
-    }
+    }*/
 
     wait(10, msec);
   }
@@ -146,6 +154,7 @@ int userController() {
       intakeRollerMotor.stop(brakeType::coast);
     }
 
+    //catapult control with limit switch
     if (Controller1.ButtonR1.pressing() && cataLimit.pressing()) {
       cataMotor.spin(fwd,100,pct);
     }

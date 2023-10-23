@@ -59,18 +59,17 @@ void pre_auton(void) {
 void autonomous(void) {
   isAuton = true; resetPID = true; resetTurning = true; resetFlywheel = true; isUser = false;
   task StartAuton(autonController);
-  double timer = 0;
+  //double timer = 0;
 
   MoveBot(-21);
   RotateBot(84);
   MoveBot(-7.5);
-  while(OpticalRight.hue() > 5 && OpticalRight.hue() < 25){
+  /*while(OpticalRight.hue() > 5 && OpticalRight.hue() < 25){
     if(timer >= 200) {
       SpinMotors(-10);
     }
-    SpinRoller(300);
     timer+=10;
-  }
+  }*/
   MoveBot(6);
   RotateBot(90);
   SpinMotors(0);
