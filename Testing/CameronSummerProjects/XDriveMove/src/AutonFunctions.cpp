@@ -522,6 +522,7 @@ void LateralPID(double x, double y) { // Use motor rotations and encoders to mov
 void TrackerPID(double x, double y, double wp) {
   // @param wp - waypoint
 
+  // This is if the programers call this function without inputting any parameters.
   if (x == 0 && y == 0) {
     lcd::print(2, "You are an idiot!!!");
     master.print(1, 0, "You are an idiot!!!");
