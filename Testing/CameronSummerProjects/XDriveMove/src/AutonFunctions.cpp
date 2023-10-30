@@ -533,7 +533,7 @@ void TrackerPID(double x, double y, double wp) {
 
     kp = 30.50; // 3.50
     ki = 0.0005; // 10.00
-    // kd = 0.0495; // 0.00
+    kd = 0.0495; // 0.00
 
     double error, lastError = 0, integral = 0; //, derivative;
     // double error2, lastError2 = 0, integral2 = 0, derivative2;
@@ -586,10 +586,10 @@ void TrackerPID(double x, double y, double wp) {
         // }
 
         // Calculate the derivative term (rate of change of the error)
-        // derivative = error - lastError;
+        derivative = error - lastError;
         // lastError = error;
 
-        lateralMotorSpeed = (kp * error) + (ki * integral); // + (kd * derivative);
+        lateralMotorSpeed = (kp * error) + (ki * integral)  + (kd * derivative);
 
           FrontL.move(lateralMotorSpeed);
           RearL.move(-lateralMotorSpeed);
