@@ -13,12 +13,8 @@ extern motor rMotor3;
 extern motor rMotor4;
 extern motor cataMotor;
 extern motor intakeRollerMotor;
-extern digital_out endGame;
 extern controller Controller1;
-extern digital_out autonPiston;
 extern limit cataLimit;
-extern optical OpticalRight;
-extern optical OpticalLeft;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.

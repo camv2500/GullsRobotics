@@ -39,8 +39,6 @@ competition Competition;
 
 void pre_auton(void) {
   // Initializing Robot Configuration. DO NOT REMOVE!
-  OpticalRight.setLightPower(10, percent);
-  OpticalLeft.setLightPower(10, percent);
   vexcodeInit();
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
@@ -59,34 +57,33 @@ void pre_auton(void) {
 void autonomous(void) {
   isAuton = true; resetPID = true; resetTurning = true; resetFlywheel = true; isUser = false;
   task StartAuton(autonController);
-  //double timer = 0;
 
-  MoveBot(12);
-  RotateBot(90);
   /*
-  MoveBot(-7.5);
-  while(OpticalRight.hue() > 5 && OpticalRight.hue() < 25){
-    if(timer >= 200) {
-      SpinMotors(-10);
-    }
-    timer+=10;
-  }
-  MoveBot(6);
-  RotateBot(90);
-  SpinMotors(0);
-  MoveBot(-42);
-  RotateBot(45);
-  IntakeDiscs();
-  MoveBot(-10);
-  vex::task::sleep(2000);
-  IntakeDiscs(true);
-  MoveBot(10);
-  RotateBot(-45);
-  MoveBot(42);
-  */
+  //example of how to use functions
 
+  //moves the bot the provided amount of inches (roughly)
+  //i wouldnt use a tape measurer to get the distance for these but rather tune each one
+  //until it moves the way you want
+  MoveBot(12);
+
+  //rotates the bot clockwise? the amout of degrees provided (even more roughly)
+  //this function needs to be tuned to how you want even more than movebot
+  RotateBot(90);
+
+  //send true to turn the intake motor on, false to turn it off
+  //can also use second parameter to tell a specific power, default 100
+  IntakeBalls(true, 40);
+
+  //spins the intake backwards to outake any balls
+  //not sure if will be used in auton but will be used in user
+  //second paramter tells power to send motor if desired, default 100
+  OuttakeBalls(true, 70);
+
+  //shoots the current ball and gets the program ready to reload the catapult
+  //if given a parameter, the program will wait that long in milliseconds after shooting to continue. default 0
+  ShootBall(100);
+  */
   
-  // ShootDiscs();
 }
 
 

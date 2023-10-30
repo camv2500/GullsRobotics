@@ -39,14 +39,13 @@ void RotateBot(double d) {
   isTurning = false; //turn off the turning movement
 }
 
-//emptys the bot of all discs
-/* this function is commented out for now as the logic may be usable for throwing triballs across the field
-void ShootDiscs() {
+//emptys the bot of the current ball
+void ShootDiscs(double waitTime = 0) {
   SpinMotors(0);
   reloadTime = 0;
   isReloading = true;
-  wait(1000,msec);
-} */
+  wait(waitTime, msec);
+} 
 
 //the distance is in revolutions, the encoders should only be reset on first use
 void runPID(double pidSetDegrees, bool resetEncoders = false, bool isTurning = false) {
@@ -111,7 +110,7 @@ int autonController() {
       else {runPID(setTurning, false, true);}
     }
 
-    /* this section is commented out for now but is the logic of how the catapult gets back down to the "ready to load" position
+    /* commented out until catapult is confirmed to be working
     // without the use of a limit switch. a little bit buggy without it, hoping we get a working limit switch and can use that
     if (isReloading) {
       if (reloadTime > 3120) {
@@ -122,7 +121,7 @@ int autonController() {
         reloadTime += 10;
         cataMotor.spin(forward, 100, pct);
       }
-    }*/
+    } */
 
     wait(10, msec);
   }
@@ -131,8 +130,13 @@ int autonController() {
 
 int userController() {
   while(isUser) {
-    double leftDrive = (Controller1.Axis2.value() - Controller1.Axis1.value());
-    double rightDrive = (Controller1.Axis2.value() + Controller1.Axis1.value());
+    //calculate the power for the left and right side independently using two joysticks (tank control)
+    double leftDrive = (Controller1.Axis3.value());
+    double rightDrive = (Controller1.Axis2.value());
+
+    //calculate the power for the left and right side independently using one joystick (arcade control)
+    //double leftDrive = (Controller1.Axis2.value() - Controller1.Axis1.value());
+    //double rightDrive = (Controller1.Axis2.value() + Controller1.Axis1.value());
 
     lMotor1.spin(fwd, controlCurve(leftDrive), vex::velocityUnits::pct);
     lMotor2.spin(fwd, controlCurve(leftDrive), vex::velocityUnits::pct);
@@ -145,15 +149,27 @@ int userController() {
 
     //intake control
     if(Controller1.ButtonL1.pressing()) {
-      intakeRollerMotor.spin(fwd, 100, pct);
+      IntakeBalls(true, 100);
     }
     else if (Controller1.ButtonL2.pressing()) {
-      intakeRollerMotor.spin(reverse, 70, pct);
+      OuttakeBalls(true, 100);
     }
     else {
-      intakeRollerMotor.stop(brakeType::coast);
+      IntakeBalls(false);
     }
 
+    //Maunal Catapult Control
+    if(Controller1.ButtonR1.pressing()) {
+      LowerCatapult(true, 100);
+    }
+    else if (Controller1.ButtonR2.pressing()) {
+      RaiseCatapult(true, 100);
+    }
+    else {
+      LowerCatapult(false);
+    }
+
+    /* commented out bc no limit switch
     //catapult control with limit switch
     if (Controller1.ButtonR1.pressing() && cataLimit.pressing()) {
       cataMotor.spin(fwd,100,pct);
@@ -164,6 +180,7 @@ int userController() {
     else {
       cataMotor.spin(fwd,100,pct);
     }
+    */
 
     wait(10,msec);
   }

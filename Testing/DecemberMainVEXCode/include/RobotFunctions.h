@@ -25,8 +25,27 @@ void SpinMotors(double power, bool isTurning = false) {
   }
 }
 
-//lets the bot intake discs
-void IntakeDiscs(bool intakeState = false) {
-  if(intakeState) {intakeRollerMotor.spin(fwd,100,pct);}
+//lets the bot intake balls
+void IntakeBalls(bool intakeState = false, double intakePower = 100) {
+  if(intakeState) {intakeRollerMotor.spin(fwd,intakePower,pct);}
   else {intakeRollerMotor.spin(fwd,0,pct);}
 }
+
+//lets the bot outtake balls
+void OuttakeBalls(bool outtakeState = false, double outtakePower = 100) {
+  if(outtakeState) {intakeRollerMotor.spin(reverse,outtakePower,pct);}
+  else {intakeRollerMotor.spin(fwd,0,pct);}
+}
+
+//manual catapult control, lowers it down to accept balls
+void LowerCatapult(bool catapultState = false, double catapultPower = 100) {
+  if (catapultState) {cataMotor.spin(fwd, catapultPower, pct);}
+  else {cataMotor.spin(fwd, 0, pct);}
+}
+
+//manual catapult control, raises the catapult until it reaches max raised. dont abuse
+void RaiseCatapult(bool catapultState = false, double catapultPower = 100) {
+  if (catapultState) {cataMotor.spin(reverse, catapultPower, pct);}
+  else {cataMotor.spin(fwd, 0, pct);}
+}
+
