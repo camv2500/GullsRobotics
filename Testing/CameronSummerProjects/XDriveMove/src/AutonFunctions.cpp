@@ -532,10 +532,11 @@ void TrackerPID(double x, double y, double wp) {
   if (master_auton_enable) {
 
     kp = 30.50; // 3.50
+    // kp = 10.00; // 3.50
     ki = 0.0005; // 10.00
     kd = 0.0495; // 0.00
 
-    double error, lastError = 0, integral = 0; //, derivative;
+    double error, lastError = 0, integral = 0, derivative;
     // double error2, lastError2 = 0, integral2 = 0, derivative2;
 
     // double travelInches = (x*x) + (y*y);
@@ -559,13 +560,13 @@ void TrackerPID(double x, double y, double wp) {
     if (x != 0) {
     // if (/*y >= 0*/ true) {
 
-      while (dist <= fabs(x)) { // Proportional control feedback loop for error
+      while (fabs(dist) <= fabs(x)) { // Proportional control feedback loop for error
 
         // dist = ((FrontL.get_position()*3.14*wheelDiameter) + (FrontR.get_position()*3.14*wheelDiameter)) / 2; // pi * diameter // Distance = total rotations * circumference of 1 rotation
         if (x < 0)
-          dist = -(getAverageTrackerValue(true)) / 360.0; // pi * diameter // Distance = total rotations * circumference of 1 rotation
+          dist = (getAverageTrackerValue(true)) / 360.0; // pi * diameter // Distance = total rotations * circumference of 1 rotation
         else
-          dist = getAverageTrackerValue(true) / 360.0; // pi * diameter // Distance = total rotations * circumference of 1 rotation
+          dist = -getAverageTrackerValue(true) / 360.0; // pi * diameter // Distance = total rotations * circumference of 1 rotation
         
         error = (double)(x / wheelCircumference) - dist;
 
@@ -587,9 +588,11 @@ void TrackerPID(double x, double y, double wp) {
 
         // Calculate the derivative term (rate of change of the error)
         derivative = error - lastError;
-        // lastError = error;
+        lastError = error;
 
         lateralMotorSpeed = (kp * error) + (ki * integral)  + (kd * derivative);
+
+        // lateralMotorSpeed = -1 * lateralMotorSpeed;
 
           FrontL.move(lateralMotorSpeed);
           RearL.move(-lateralMotorSpeed);
@@ -632,11 +635,12 @@ void TrackerPID(double x, double y, double wp) {
 
     lcd::print(2, "Exited X loop");
     master.print(1, 0, "Exited X loop");
+    delay(1000);
 
     }
 
     if (y != 0) {
-      while (dist <= fabs(y)) { // Proportional control feedback loop for error
+      while (fabs(dist) <= fabs(y)) { // Proportional control feedback loop for error
 
         // lateralMotorSpeed = (travelInches - dist)*(127/100)*kp;
         // lateralMotorSpeed = (double)((y + x) - dist)*(127/100)*kp;
@@ -644,9 +648,9 @@ void TrackerPID(double x, double y, double wp) {
 
         // dist = ((FrontL.get_position()*3.14*wheelDiameter) + (FrontR.get_position()*3.14*wheelDiameter)) / 2; // pi * diameter // Distance = total rotations * circumference of 1 rotation
         if (y < 0)
-          dist = -(getAverageTrackerValue(true)) / 360.0; // pi * diameter // Distance = total rotations * circumference of 1 rotation
+          dist = (getAverageTrackerValue(true)) / 360.0; // pi * diameter // Distance = total rotations * circumference of 1 rotation
         else
-          dist = getAverageTrackerValue(true) / 360.0; // pi * diameter // Distance = total rotations * circumference of 1 rotation
+          dist = -getAverageTrackerValue(true) / 360.0; // pi * diameter // Distance = total rotations * circumference of 1 rotation
         
         error = (double)(y / wheelCircumference) - dist;
         // error2 = (double)((y - x) / wheelCircumference) - dist;
@@ -668,12 +672,12 @@ void TrackerPID(double x, double y, double wp) {
         // }
 
         // Calculate the derivative term (rate of change of the error)
-        // derivative = error - lastError;
-        // lastError = error;
+        derivative = error - lastError;
+        lastError = error;
         // derivative2 = error2 - lastError2;
         // lastError2 = error2;
 
-        lateralMotorSpeed = (kp * error) + (ki * integral); // + (kd * derivative);
+        lateralMotorSpeed = (kp * error) + (ki * integral)  + (kd * derivative);
         // lateralMotorSpeed2 = (kp * error2) + (ki * integral2) + (kd * derivative2);
         
         // leftDrive.spin(forward, lateralMotorSpeed, pct);
@@ -712,10 +716,10 @@ void TrackerPID(double x, double y, double wp) {
         //   RearR.move(-lateralMotorSpeed);
         // }
 
-          FrontL.move(-lateralMotorSpeed);
-          RearL.move(-lateralMotorSpeed);
-          FrontR.move(-lateralMotorSpeed);
-          RearR.move(-lateralMotorSpeed);
+          FrontL.move(lateralMotorSpeed);
+          RearL.move(lateralMotorSpeed);
+          FrontR.move(lateralMotorSpeed);
+          RearR.move(lateralMotorSpeed);
 
         delay(20);
 
@@ -748,7 +752,7 @@ void TrackerPID(double x, double y, double wp) {
 
   }
 
-  delay(50);
+  delay(1000); // 50
 }
 
 // Gains are predetermined
