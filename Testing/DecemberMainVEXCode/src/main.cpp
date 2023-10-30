@@ -61,15 +61,16 @@ void autonomous(void) {
   task StartAuton(autonController);
   //double timer = 0;
 
-  MoveBot(-21);
-  RotateBot(84);
+  MoveBot(12);
+  RotateBot(90);
+  /*
   MoveBot(-7.5);
-  /*while(OpticalRight.hue() > 5 && OpticalRight.hue() < 25){
+  while(OpticalRight.hue() > 5 && OpticalRight.hue() < 25){
     if(timer >= 200) {
       SpinMotors(-10);
     }
     timer+=10;
-  }*/
+  }
   MoveBot(6);
   RotateBot(90);
   SpinMotors(0);
@@ -82,6 +83,7 @@ void autonomous(void) {
   MoveBot(10);
   RotateBot(-45);
   MoveBot(42);
+  */
 
   
   // ShootDiscs();
