@@ -12,8 +12,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef _PROS_ROBOTCONFIG_H_
-#define _PROS_ROBOTCONFIG_H_
+#ifndef _PROS_AUTONFUNCTIONS_H_
+#define _PROS_AUTONFUNCTIONS_H_
 
 /**
  * If defined, some commonly used enums will have preprocessor macros which give
@@ -39,10 +39,11 @@
 /**
  * You should add more #includes here
  */
-//#include "okapi/api.hpp"
+// #include "okapi/api.hpp"
 //#include "pros/api_legacy.h"
-
-// #include "pros/apix.h"
+#include "robot-config.h"
+#include "AutonFunctions.h"
+#include "DriverControl.h"
 
 /**
  * If you find doing pros::Motor() to be tedious and you'd prefer just to do
@@ -64,22 +65,17 @@ using namespace pros;
 #ifdef __cplusplus
 extern "C" {
 #endif
+/////////////////////////////////////////////////////////////////////////////////////
+//////                            FUNCTION DECLARATIONS                        //////
+/////////////////////////////////////////////////////////////////////////////////////
+// Put autonomous functions here
+double ConvertDegreesToInches(double setDegrees, double turnDiameter = 12.17);
+double ConvertInchesToRevolutions(double requiredInches, double circum = 3.86);
+double ConvertRadiansToDegrees(double radian);
+double CalculateWaitTimeMove(double n);
+double CalculateWaitTimeRotate(double n);
 
-extern Motor lMotor1;
-extern Motor lMotor2;
-extern Motor lMotor3;
-extern Motor lMotor4;
-extern Motor rMotor1;
-extern Motor rMotor2;
-extern Motor rMotor3;
-extern Motor rMotor4;
-extern Motor cataMotor;
-extern Motor intakeRollerMotor;
-extern Controller Controller1;
-// extern Limit cataLimit;
-
-void initialize(void);
-void competition_initialize(void);
+double controlCurve(double controllerPos);
 
 #ifdef __cplusplus
 }
@@ -90,6 +86,7 @@ void competition_initialize(void);
  * You can add C++-only headers here
  */
 //#include <iostream>
+#include <cmath>
 #endif
 
-#endif  // _PROS_ROBOTCONFIG_H_
+#endif  // _PROS_MAIN_H_

@@ -41,6 +41,10 @@
  */
 // #include "okapi/api.hpp"
 //#include "pros/api_legacy.h"
+#include "robot-config.h"
+#include "DriverControl.h"
+#include "Motion.h"
+#include "Convertion.h"
 
 /**
  * If you find doing pros::Motor() to be tedious and you'd prefer just to do
@@ -50,7 +54,7 @@
  * concurrently! The okapi namespace will export all symbols inside the pros
  * namespace.
  */
-// using namespace pros;
+using namespace pros;
 // using namespace pros::literals;
 // using namespace okapi;
 
@@ -66,15 +70,12 @@ extern "C" {
 //////                            FUNCTION DECLARATIONS                        //////
 /////////////////////////////////////////////////////////////////////////////////////
 // Put autonomous functions here
-void chatGPTPID(double target);
-void LateralPID(double x = 0, double y = 0);
-void TrackerPID(double x = 0, double y = 0, double wp = 0);
-
-// Autonomous period functions
-void set_master_auton_enable();
-void clear_master_auton_enable();
-void set_perma_lock();
-void clear_perma_lock();
+void ResetEncoders();
+void SpinMotors(double power, bool isTurning = false);
+void IntakeBalls(bool intakeState = false, double intakePower = 100);
+void OuttakeBalls(bool outtakeState = false, double outtakePower = 100);
+void LowerCatapult(bool catapultState = false, double catapultPower = 100);
+void RaiseCatapult(bool catapultState = false, double catapultPower = 100);
 
 #ifdef __cplusplus
 }
