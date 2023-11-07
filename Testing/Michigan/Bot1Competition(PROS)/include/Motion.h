@@ -12,8 +12,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef _PROS_AUTONFUNCTIONS_H_
-#define _PROS_AUTONFUNCTIONS_H_
+#ifndef _PROS_MOTION_H_
+#define _PROS_MOTION_H_
 
 /**
  * If defined, some commonly used enums will have preprocessor macros which give
@@ -44,7 +44,7 @@
 #include "robot-config.h"
 #include "AutonFunctions.h"
 #include "DriverControl.h"
-#include "Convertion.h"
+#include "Conversions.h"
 
 /**
  * If you find doing pros::Motor() to be tedious and you'd prefer just to do
@@ -66,6 +66,10 @@ using namespace pros;
 #ifdef __cplusplus
 extern "C" {
 #endif
+extern bool isAuton, isPID, isTurning, isFlywheel, isUser; 
+extern bool resetPID, resetTurning, resetFlywheel;
+extern bool isReloading;
+extern double setPID, setTurning, setPIDLeft, setPIDRight, reloadTime;
 /////////////////////////////////////////////////////////////////////////////////////
 //////                            FUNCTION DECLARATIONS                        //////
 /////////////////////////////////////////////////////////////////////////////////////

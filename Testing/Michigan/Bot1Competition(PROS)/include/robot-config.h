@@ -75,7 +75,7 @@ extern Motor rMotor3;
 extern Motor rMotor4;
 extern Motor cataMotor;
 extern Motor intakeRollerMotor;
-extern Controller Controller1;
+extern Controller master;
 // extern Limit cataLimit;
 
 void initialize(void);

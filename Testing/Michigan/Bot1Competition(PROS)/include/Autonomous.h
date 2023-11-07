@@ -41,6 +41,11 @@
  */
 //#include "okapi/api.hpp"
 //#include "pros/api_legacy.h"
+#include "robot-config.h"
+#include "DriverControl.h"
+#include "AutonFunctions.h"
+#include "Motion.h"
+#include "Conversions.h"
 
 /**
  * If you find doing pros::Motor() to be tedious and you'd prefer just to do
@@ -50,7 +55,7 @@
  * concurrently! The okapi namespace will export all symbols inside the pros
  * namespace.
  */
-// using namespace pros;
+using namespace pros;
 // using namespace pros::literals;
 // using namespace okapi;
 
@@ -90,11 +95,8 @@ void completionDelay(int delay);
 // void PurpleGreenAuton();
 
 
-int PreAutonomous(void);
-void Autonomous(int SelectedAuton);
-
-// Troubleshoot sensors
-void troubleshoot();
+// int PreAutonomous(void);
+void Autonomous();
 
 // initialize
 void competition_initialize(void);

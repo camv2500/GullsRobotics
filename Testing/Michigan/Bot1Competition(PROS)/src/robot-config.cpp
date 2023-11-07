@@ -1,7 +1,5 @@
 #include "robot-config.h"
 
-using namespace pros;
-
 // Red is 36:1 (100 rpm), Green is 18:1 (200 rpm), Blue is 6:1 (600 rpm).
 
 // Constants

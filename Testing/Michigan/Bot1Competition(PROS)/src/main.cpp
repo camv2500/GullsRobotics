@@ -1,19 +1,6 @@
 #include "main.h"
-#include "robot-config.h"
-#include "DriverControl.h"
-#include "AutonFunctions.h"
-#include "Autonomous.h"
-// #include "selection.h"
 
 using namespace pros;
-
-// selector configuration
-// TODO Implement UI and PID.
-// #define HUE 360 // color of theme from 0-360
-// #define AUTONS "Do Nothing", "Front", "Back" // names of the autonomous programs
-// #define DEFAULT 1 // default auton
-
-int SelectedAuton;
 
 /**
  * Runs while the robot is in the disabled state of Field Management System or
@@ -37,9 +24,7 @@ void disabled() {
  * from where it left off.
  */
 void autonomous() {
-	// SelectedAuton = selector::auton;
-	SelectedAuton = 1;
-	Autonomous(SelectedAuton); // Runs auton based on menu
+	Autonomous(); // Runs auton based on menu
 }
 
 
@@ -57,29 +42,6 @@ void autonomous() {
  * task, not resume it from where it left off.
  */
 void opcontrol() {
-	lcd::print(1, "Driver");
-	master.print(0, 0, "Driver");
-	// Controller master(pros::E_CONTROLLER_MASTER);
-	// Motor left_mtr(1);
-	// Motor right_mtr(2);
-
-	// while (true) {
-	// 	lcd::print(0, "%d %d %d", (lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
-	// 	                 (lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
-	// 	                 (lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);
-	// 	int left = master.get_analog(ANALOG_LEFT_Y);
-	// 	int right = master.get_analog(ANALOG_RIGHT_Y);
-
-	// 	left_mtr = left;
-	// 	right_mtr = right;
-
-	// 	delay(20);
-	// }
-
-	// autonomous();
-	Task t1(control);
-	Task t2(driver);
-	// Task t3(intake);
-	// Task t4(lift);
-	
+	isAuton = false; resetPID = true; resetTurning = true; resetFlywheel = true; isUser = true;
+	Task t1(userController);
 }

@@ -1,14 +1,16 @@
-#include "Convertion.h"
+#include "Conversions.h"
+
+const double Pi(3.14159265358979);
 
 //convert degrees to inches
 double ConvertDegreesToInches(double setDegrees, double turnDiameter) {
-  double requiredInches = setDegrees / 360.0 * M_PI * turnDiameter;
+  double requiredInches = setDegrees / 360.0 * Pi * turnDiameter;
   return requiredInches;
 }
 
 //convert the inches to revolutions
 double ConvertInchesToRevolutions(double requiredInches, double circum) {
-  double circumferenceOfWheel = circum * M_PI;
+  double circumferenceOfWheel = circum * Pi;
   double outputRat = 3.0/5.0;
   double requiredRevolutions = (requiredInches / circumferenceOfWheel) * outputRat * 360.0;
   return requiredRevolutions;
@@ -16,7 +18,7 @@ double ConvertInchesToRevolutions(double requiredInches, double circum) {
 
 //convert radians to degrees
 double ConvertRadiansToDegrees(double radian) {
-  radian = radian * (180.0 / M_PI);
+  radian = radian * (180.0 / Pi);
   return radian;
 }
 

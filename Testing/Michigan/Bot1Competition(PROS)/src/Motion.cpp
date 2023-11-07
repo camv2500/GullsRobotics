@@ -6,10 +6,10 @@ double error = 0, prevError = 0, integral = 0, derivative = 0;
 double power = 0, sensorValue = 0, lSensor = 0, rSensor = 0;
 
 //variables for the auton task
-static bool isAuton = false, isPID = false, isTurning = false, isFlywheel = false, isUser = false; 
-static bool resetPID = true, resetTurning = true, resetFlywheel = true;
-static bool isReloading = false;
-static double setPID = 0, setTurning = 0, setPIDLeft = 0, setPIDRight = 0, reloadTime = 0;
+/*static*/ bool isAuton = false, isPID = false, isTurning = false, isFlywheel = false, isUser = false; 
+/*static*/ bool resetPID = true, resetTurning = true, resetFlywheel = true;
+/*static*/ bool isReloading = false;
+/*static*/ double setPID = 0, setTurning = 0, setPIDLeft = 0, setPIDRight = 0, reloadTime = 0;
 
 //moves the bot straight, d is the distance in inches, this program runs on the main thread
 void MoveBot(double d) {
@@ -17,9 +17,10 @@ void MoveBot(double d) {
   resetPID = true; //tell the pid to reset
   isPID = true; //tell the thread to turn on the pid
   if (d < 0) { d*= -1; } //now d is used to cacluate the wait time, so we make sure it is positive
-  wait(CalculateWaitTimeMove(d),sec); //the main thread now waits while the other runs the pid until the pid should be done
+  // wait(CalculateWaitTimeMove(d),sec); //the main thread now waits while the other runs the pid until the pid should be done
+  delay(CalculateWaitTimeMove(d)*1000); //the main thread now waits while the other runs the pid until the pid should be done
   setPID = 0; //set the movement to turn off in the pid
-  wait(20,msec); //wait for good measure
+  delay(20); //wait for good measure
   isPID = false; //turn off the pid loop on the other thread
 }
 
@@ -29,9 +30,10 @@ void RotateBot(double d) {
   resetTurning = true; //tell the pid to reset
   isTurning = true; //tell the turning pid loop to turn on on the other thread
   if (d < 0) { d*= -1; } //calculate wait time using d
-  wait(CalculateWaitTimeRotate(d), sec); //and then wait that much time
+  // wait(CalculateWaitTimeRotate(d), sec); //and then wait that much time
+  delay(CalculateWaitTimeRotate(d)*1000); //and then wait that much time
   setTurning = 0; //after waiting, turn movement off
-  wait(20,msec); //wait a sec
+  delay(20); //wait a sec
   isTurning = false; //turn off the turning movement
 }
 
@@ -40,7 +42,7 @@ void ShootDiscs(double waitTime) {
   SpinMotors(0);
   reloadTime = 0;
   isReloading = true;
-  wait(waitTime, msec);
+  delay(waitTime);
 } 
 
 //the distance is in revolutions, the encoders should only be reset on first use
@@ -53,10 +55,10 @@ void runPID(double pidSetDegrees, bool resetEncoders, bool isTurning) {
   }
 
   if (pidSetDegrees != 0) {
-    lSensor = (lMotor1.position(degrees) + lMotor2.position(degrees) + 
-      lMotor3.position(degrees) + lMotor4.position(degrees)) / 4;
-    rSensor = (rMotor1.position(degrees) + rMotor2.position(degrees) + 
-      rMotor3.position(degrees) + rMotor4.position(degrees)) / 4;
+    lSensor = (lMotor1.get_position() + lMotor2.get_position() + 
+      lMotor3.get_position() + lMotor4.get_position()) / 4;
+    rSensor = (rMotor1.get_position() + rMotor2.get_position() + 
+      rMotor3.get_position() + rMotor4.get_position()) / 4;
     if (isTurning) {sensorValue = rSensor;}
     else {sensorValue = (lSensor + rSensor) / 2;}
     error = pidSetDegrees - sensorValue;
@@ -119,7 +121,7 @@ int autonController() {
       }
     } */
 
-    wait(10, msec);
+    delay(10);
   }
   return 1;
 }

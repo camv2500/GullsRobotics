@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "XDriveMove",
+    "project_name": "Bot1Competition(PROS)",
     "target": "v5",
     "templates": {
       "kernel": {
@@ -309,7 +309,9 @@
       }
     },
     "upload_options": {
-      "icon": "alien"
+      "icon": "alien",
+      "slot": 4,
+      "description": "My PROS Project.  This is the competition routine for the first robot."
     }
   }
 }

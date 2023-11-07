@@ -12,8 +12,8 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 
-#ifndef _PROS_AUTONFUNCTIONS_H_
-#define _PROS_AUTONFUNCTIONS_H_
+#ifndef _PROS_CONVERSIONS_H_
+#define _PROS_CONVERSIONS_H_
 
 /**
  * If defined, some commonly used enums will have preprocessor macros which give

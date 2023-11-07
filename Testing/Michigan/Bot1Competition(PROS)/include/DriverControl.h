@@ -41,6 +41,8 @@
  */
 //#include "okapi/api.hpp"
 //#include "pros/api_legacy.h"
+#include "robot-config.h"
+#include "AutonFunctions.h"
 
 /**
  * If you find doing pros::Motor() to be tedious and you'd prefer just to do
@@ -50,7 +52,7 @@
  * concurrently! The okapi namespace will export all symbols inside the pros
  * namespace.
  */
-// using namespace pros;
+using namespace pros;
 // using namespace pros::literals;
 // using namespace okapi;
 
@@ -62,10 +64,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-void control(void);
-void driver(void);
-// void intake(void);
-// void lift(void);
+
+int userController();
+
 #ifdef __cplusplus
 }
 #endif

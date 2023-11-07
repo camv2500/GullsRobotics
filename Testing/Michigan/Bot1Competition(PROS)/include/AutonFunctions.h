@@ -44,7 +44,7 @@
 #include "robot-config.h"
 #include "DriverControl.h"
 #include "Motion.h"
-#include "Convertion.h"
+#include "Conversions.h"
 
 /**
  * If you find doing pros::Motor() to be tedious and you'd prefer just to do
