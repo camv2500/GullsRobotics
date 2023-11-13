@@ -12,10 +12,8 @@
 //   rMotor3.set_position(0,degrees); rMotor4.setPosition(0,degrees);
 // }
 void ResetEncoders() {
-  lMotor1.tare_position(); lMotor2.tare_position();
-  lMotor3.tare_position(); //lMotor4.tare_position();
-  rMotor1.tare_position(); rMotor2.tare_position();
-  rMotor3.tare_position(); //rMotor4.tare_position();
+  lMotor1.tare_position(); lMotor2.tare_position(); lMotor3.tare_position();
+  rMotor1.tare_position(); rMotor2.tare_position(); rMotor3.tare_position();
 }
 
 //spin the motors for pid

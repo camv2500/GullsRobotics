@@ -56,10 +56,8 @@ void runPID(double pidSetDegrees, bool resetEncoders, bool isTurning) {
   }
 
   if (pidSetDegrees != 0) {
-    lSensor = (lMotor1.get_position() + lMotor2.get_position() + 
-      lMotor3.get_position()) / 3; // + lMotor4.get_position()) / 4;
-    rSensor = (rMotor1.get_position() + rMotor2.get_position() + 
-      rMotor3.get_position()) / 3; // + rMotor4.get_position()) / 4;
+    lSensor = (lMotor1.get_position() + lMotor2.get_position() + lMotor3.get_position()) / 3;
+    rSensor = (rMotor1.get_position() + rMotor2.get_position() + rMotor3.get_position()) / 3;
     if (isTurning) {sensorValue = rSensor;}
     else {sensorValue = (lSensor + rSensor) / 2;}
     error = pidSetDegrees - sensorValue;
@@ -91,7 +89,7 @@ int autonController() {
       //if the program is just now setting PID, it will run a first time setup, otherwise just keeps looping the same thing
       if (resetPID) {
         // setPID = ConvertInchesToRevolutions(setPID, 1.13);
-        setPID = ConvertInchesToRevolutions(setPID, 0.5);
+        setPID = ConvertInchesToRevolutions(setPID, 1.3);
         runPID(setPID, true);
         resetPID = false;
       }
@@ -104,8 +102,8 @@ int autonController() {
       if (resetTurning) {
         // setTurning = ConvertDegreesToInches(setTurning, 13);
         // setTurning = ConvertInchesToRevolutions(setTurning, 1.13);
-        setTurning = ConvertDegreesToInches(setTurning, 10.4);
-        setTurning = ConvertInchesToRevolutions(setTurning, 0.5);
+        setTurning = ConvertDegreesToInches(setTurning, 10.4); // 10.4
+        setTurning = ConvertInchesToRevolutions(setTurning, 0.93);
         runPID(setTurning, true, true);
         resetTurning = false;
       }
