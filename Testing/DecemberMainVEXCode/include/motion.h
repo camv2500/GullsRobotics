@@ -58,9 +58,9 @@ void runPID(double pidSetDegrees, bool resetEncoders = false, bool isTurning = f
 
   if (pidSetDegrees != 0) {
     lSensor = (lMotor1.position(degrees) + lMotor2.position(degrees) + 
-      lMotor3.position(degrees) + lMotor4.position(degrees)) / 4;
+      lMotor3.position(degrees) / 3);
     rSensor = (rMotor1.position(degrees) + rMotor2.position(degrees) + 
-      rMotor3.position(degrees) + rMotor4.position(degrees)) / 4;
+      rMotor3.position(degrees) / 3);
     if (isTurning) {sensorValue = rSensor;}
     else {sensorValue = (lSensor + rSensor) / 2;}
     error = pidSetDegrees - sensorValue;
@@ -141,11 +141,9 @@ int userController() {
     lMotor1.spin(fwd, controlCurve(leftDrive), vex::velocityUnits::pct);
     lMotor2.spin(fwd, controlCurve(leftDrive), vex::velocityUnits::pct);
     lMotor3.spin(fwd, controlCurve(leftDrive), vex::velocityUnits::pct);
-    lMotor4.spin(fwd, controlCurve(leftDrive), vex::velocityUnits::pct);
     rMotor1.spin(fwd, controlCurve(rightDrive), vex::velocityUnits::pct);
     rMotor2.spin(fwd, controlCurve(rightDrive), vex::velocityUnits::pct);
     rMotor3.spin(fwd, controlCurve(rightDrive), vex::velocityUnits::pct);
-    rMotor4.spin(fwd, controlCurve(rightDrive), vex::velocityUnits::pct);
 
     //intake control
     if(Controller1.ButtonL1.pressing()) {
