@@ -57,9 +57,9 @@ void runPID(double pidSetDegrees, bool resetEncoders, bool isTurning) {
 
   if (pidSetDegrees != 0) {
     lSensor = (lMotor1.get_position() + lMotor2.get_position() + 
-      lMotor3.get_position() + lMotor4.get_position()) / 4;
+      lMotor3.get_position()) / 3; // + lMotor4.get_position()) / 4;
     rSensor = (rMotor1.get_position() + rMotor2.get_position() + 
-      rMotor3.get_position() + rMotor4.get_position()) / 4;
+      rMotor3.get_position()) / 3; // + rMotor4.get_position()) / 4;
     if (isTurning) {sensorValue = rSensor;}
     else {sensorValue = (lSensor + rSensor) / 2;}
     error = pidSetDegrees - sensorValue;

@@ -43,6 +43,7 @@
 //#include "pros/api_legacy.h"
 #include "robot-config.h"
 #include "AutonFunctions.h"
+#include "Motion.h"
 #include "DriverControl.h"
 
 /**

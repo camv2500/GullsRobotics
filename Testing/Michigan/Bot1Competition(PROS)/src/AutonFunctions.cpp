@@ -13,9 +13,9 @@
 // }
 void ResetEncoders() {
   lMotor1.tare_position(); lMotor2.tare_position();
-  lMotor3.tare_position(); lMotor4.tare_position();
+  lMotor3.tare_position(); //lMotor4.tare_position();
   rMotor1.tare_position(); rMotor2.tare_position();
-  rMotor3.tare_position(); rMotor4.tare_position();
+  rMotor3.tare_position(); //rMotor4.tare_position();
 }
 
 //spin the motors for pid
@@ -28,7 +28,7 @@ void SpinMotors(double power, bool isTurning) {
     lMotor1.move(-power); rMotor1.move(power);
     lMotor2.move(-power); rMotor2.move(power);
     lMotor3.move(-power); rMotor3.move(power);
-    lMotor4.move(-power); rMotor4.move(power);
+    // lMotor4.move(-power); rMotor4.move(power);
   }
   else {
     // lMotor1.spin(forward, power, pct); rMotor1.spin(forward, power, pct);
@@ -38,7 +38,7 @@ void SpinMotors(double power, bool isTurning) {
     lMotor1.move(power); rMotor1.move(power);
     lMotor2.move(power); rMotor2.move(power);
     lMotor3.move(power); rMotor3.move(power);
-    lMotor4.move(power); rMotor4.move(power);
+    // lMotor4.move(power); rMotor4.move(power);
   }
 }
 

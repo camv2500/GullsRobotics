@@ -68,11 +68,9 @@ extern "C" {
 extern Motor lMotor1;
 extern Motor lMotor2;
 extern Motor lMotor3;
-extern Motor lMotor4;
 extern Motor rMotor1;
 extern Motor rMotor2;
 extern Motor rMotor3;
-extern Motor rMotor4;
 extern Motor cataMotor;
 extern Motor intakeRollerMotor;
 extern Controller master;

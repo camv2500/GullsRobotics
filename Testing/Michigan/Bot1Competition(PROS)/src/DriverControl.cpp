@@ -20,11 +20,11 @@ int userController() {
     lMotor1.move(controlCurve(leftDrive));
     lMotor2.move(controlCurve(leftDrive));
     lMotor3.move(controlCurve(leftDrive));
-    lMotor4.move(controlCurve(leftDrive));
+    // lMotor4.move(controlCurve(leftDrive));
     rMotor1.move(controlCurve(rightDrive));
     rMotor2.move(controlCurve(rightDrive));
     rMotor3.move(controlCurve(rightDrive));
-    rMotor4.move(controlCurve(rightDrive));
+    // rMotor4.move(controlCurve(rightDrive));
 
     //intake control
     if(master.get_digital(E_CONTROLLER_DIGITAL_L1)) {
