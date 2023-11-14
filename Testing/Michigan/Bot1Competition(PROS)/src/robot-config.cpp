@@ -6,16 +6,14 @@
 // #define LEFT_WHEELS_PORT 1
 // #define RIGHT_WHEELS_PORT 10
 
-Motor lMotor1 (6, E_MOTOR_GEARSET_06, true);
-Motor lMotor2 (11, E_MOTOR_GEARSET_06, true);
+Motor lMotor1 (11, E_MOTOR_GEARSET_06, true);
+Motor lMotor2 (12, E_MOTOR_GEARSET_06, true);
 Motor lMotor3 (13, E_MOTOR_GEARSET_06, true);
-Motor lMotor4 (12, E_MOTOR_GEARSET_06, true);
-Motor rMotor1 (8, E_MOTOR_GEARSET_06, false);
-Motor rMotor2 (9, E_MOTOR_GEARSET_06, false);
-Motor rMotor3 (10, E_MOTOR_GEARSET_06, false);
-Motor rMotor4 (2, E_MOTOR_GEARSET_06, false);
+Motor rMotor1 (18, E_MOTOR_GEARSET_06, false);
+Motor rMotor2 (19, E_MOTOR_GEARSET_06, false);
+Motor rMotor3 (20, E_MOTOR_GEARSET_06, false);
 Motor cataMotor (1, E_MOTOR_GEARSET_36, false);
-Motor intakeRollerMotor (19, E_MOTOR_GEARSET_06, false);
+Motor intakeRollerMotor (10, E_MOTOR_GEARSET_06, false);
 Controller master (CONTROLLER_MASTER);
 // limit cataLimit = limit(Brain.ThreeWirePort.C);
 

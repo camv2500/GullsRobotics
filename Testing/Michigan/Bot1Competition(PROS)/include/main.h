@@ -44,6 +44,8 @@
 #include "robot-config.h"
 #include "DriverControl.h"
 #include "AutonFunctions.h"
+#include "Motion.h"
+#include "Conversions.h"
 #include "Autonomous.h"
 
 /**
