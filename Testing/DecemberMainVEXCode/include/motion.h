@@ -5,7 +5,7 @@
 #include <math.h>
 
 //variables for pid
-double kP = 0.1775, kI = 0, kD = 0.01775;
+double kP = 0.07, kI = 0.00013, kD =.0125;
 double error = 0, prevError = 0, integral = 0, derivative = 0;
 double power = 0, sensorValue = 0, lSensor = 0, rSensor = 0;
 
@@ -71,9 +71,9 @@ void runPID(double pidSetDegrees, bool resetEncoders = false, bool isTurning = f
     derivative = error - prevError;
     prevError = error;
 
-    power = error * kP + integral * kI + derivative * kD;
-    if (power > 33.5) {power = 33.5;}
-    if (power < -33.5) {power = -33.5;}
+    power = (error * kP) + (integral * kI) + (derivative * kD);
+    if (power > 25) {power = 25;}
+    if (power < -25) {power = -25;}
   
     if (isTurning) {SpinMotors(power, true);}
     else {SpinMotors(power);}
@@ -91,7 +91,7 @@ int autonController() {
     if (isPID) {
       //if the program is just now setting PID, it will run a first time setup, otherwise just keeps looping the same thing
       if (resetPID) {
-        setPID = ConvertInchesToRevolutions(setPID, 1.13);
+        setPID = ConvertInchesToRevolutions(setPID, 0.5);
         runPID(setPID, true);
         resetPID = false;
       }
@@ -102,8 +102,8 @@ int autonController() {
     if (isTurning) {
       //if the program is just now setting PID, it will run a first time setup, otherwise just keeps looping the same thing
       if (resetTurning) {
-        setTurning = ConvertDegreesToInches(setTurning, 13);
-        setTurning = ConvertInchesToRevolutions(setTurning, 1.13);
+        setTurning = ConvertDegreesToInches(setTurning, 10.4);
+        setTurning = ConvertInchesToRevolutions(setTurning, 0.5);
         runPID(setTurning, true, true);
         resetTurning = false;
       }
@@ -123,7 +123,7 @@ int autonController() {
       }
     } */
 
-    wait(10, msec);
+   wait(5, msec);
   }
   return 1;
 }
