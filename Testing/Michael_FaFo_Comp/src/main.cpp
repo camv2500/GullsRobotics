@@ -64,6 +64,7 @@ bool intakeMotor = false;
 void setR1(){
   r1 = 1;
 }
+//this is how you push things
 
 
 void setLiftCheck(){
