@@ -86,17 +86,17 @@ void autonomous(void) {
   SpinMotors(100);
   wait(700,msec);
   MoveBot(-8);
-  RotateBot(135);
+  RotateBot(-135);
   MoveBot(18);
-  RotateBot(90);
+  RotateBot(-90);
   MoveBot(10);
 
   wait(1,sec);
 
   MoveBot(-5);
-  RotateBot(-90);
+  RotateBot(90);
   MoveBot(10);
-  RotateBot(-45);
+  RotateBot(45);
   MoveBot(34);
   //MoveBot(15);
 }
