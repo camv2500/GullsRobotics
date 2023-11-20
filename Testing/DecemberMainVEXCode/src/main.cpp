@@ -83,21 +83,25 @@ void autonomous(void) {
   //if given a parameter, the program will wait that long in milliseconds after shooting to continue. default 0
   ShootBall(100);
   */
-  SpinMotors(100);
-  wait(700,msec);
-  MoveBot(-8);
-  RotateBot(135);
-  MoveBot(18);
+  // SpinMotors(100);
+  // wait(700,msec);
+  // MoveBot(-8);
+  // RotateBot(135);
+  // MoveBot(18);
+  // RotateBot(90);
+  // MoveBot(10);
+
+  // wait(1,sec);
+
+  // MoveBot(-5);
+  // RotateBot(-90);
+  // MoveBot(10);
+  // RotateBot(-45);
+  // MoveBot(34);
+
   RotateBot(90);
-  MoveBot(10);
+  MoveBot(16);
 
-  wait(1,sec);
-
-  MoveBot(-5);
-  RotateBot(-90);
-  MoveBot(10);
-  RotateBot(-45);
-  MoveBot(34);
   //MoveBot(15);
 }
 

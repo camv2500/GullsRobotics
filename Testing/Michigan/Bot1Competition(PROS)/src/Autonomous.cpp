@@ -53,6 +53,23 @@ void Autonomous() {
    
     // MoveBot(16);
     master.print(0, 0, "PID Called");
-    RotateBot(90);
-    MoveBot(16);
+    // RotateBot(90);
+    // MoveBot(16);
+    // RotateBot(-90);
+    // MoveBot(-16);
+    
+    RotateBot(45);
+    MoveBot(6);
+    RotateBot(-90);
+    MoveBot(9);
+    MoveBot(-5);
+    RotateBot(-90);
+    MoveBot(6);
+    RotateBot(-45);
+    MoveBot(15);
+    MoveBot(-5);
+    RotateBot(-90);
+    MoveBot(72);
+    RotateBot(-45);
+    MoveBot(3);
 }
