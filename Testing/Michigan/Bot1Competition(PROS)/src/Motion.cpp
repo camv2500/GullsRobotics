@@ -103,7 +103,7 @@ int autonController() {
         // setTurning = ConvertDegreesToInches(setTurning, 13);
         // setTurning = ConvertInchesToRevolutions(setTurning, 1.13);
         setTurning = ConvertDegreesToInches(setTurning, 10.4); // 10.4
-        setTurning = ConvertInchesToRevolutions(setTurning, 0.93);
+        setTurning = ConvertInchesToRevolutions(setTurning, 0.945);
         runPID(setTurning, true, true);
         resetTurning = false;
       }

@@ -31,7 +31,7 @@ double CalculateWaitTimeMove(double n) {
 //formula for how long of a wait between rotations to enable quick speed but ensure completion of task
 double CalculateWaitTimeRotate(double n) {
   // n = 0.005 * n; n += 0.75; return n;
-  n = 0.23 * n; n += 0.75; return n;
+  n = 0.023 * n; n += 0.75; return n;
 }
 
 double controlCurve(double controllerPos) {

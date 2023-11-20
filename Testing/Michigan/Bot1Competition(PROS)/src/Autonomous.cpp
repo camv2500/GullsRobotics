@@ -50,7 +50,9 @@ void Autonomous() {
     //if given a parameter, the program will wait that long in milliseconds after shooting to continue. default 0
     ShootBall(100);
     */
-    MoveBot(16);
+   
+    // MoveBot(16);
     master.print(0, 0, "PID Called");
     RotateBot(90);
+    MoveBot(16);
 }
