@@ -41,9 +41,9 @@ int userController() {
     if(master.get_digital(E_CONTROLLER_DIGITAL_R1)) {
       LowerCatapult(true, 100);
     }
-    else if (master.get_digital(E_CONTROLLER_DIGITAL_R2)) {
-      RaiseCatapult(true, 100);
-    }
+    // else if (master.get_digital(E_CONTROLLER_DIGITAL_R2)) {
+    //   RaiseCatapult(true, 100);
+    // }
     else {
       LowerCatapult(false);
     }
