@@ -1,3 +1,49 @@
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// lMotor1              motor         11              
+// lMotor2              motor         12              
+// lMotor3              motor         13              
+// rMotor1              motor         18              
+// rMotor2              motor         19              
+// rMotor3              motor         20              
+// cataMotor            motor         1               
+// intakeRollerMotor    motor         10              
+// Controller1          controller                    
+// cataLimit            limit         H               
+// Piston1              digital_out   F               
+// Piston2              digital_out   C               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// lMotor1              motor         11              
+// lMotor2              motor         12              
+// lMotor3              motor         13              
+// rMotor1              motor         18              
+// rMotor2              motor         19              
+// rMotor3              motor         20              
+// cataMotor            motor         1               
+// intakeRollerMotor    motor         10              
+// Controller1          controller                    
+// cataLimit            limit         H               
+// Piston1              digital_out   F               
+// ---- END VEXCODE CONFIGURED DEVICES ----
+// ---- START VEXCODE CONFIGURED DEVICES ----
+// Robot Configuration:
+// [Name]               [Type]        [Port(s)]
+// lMotor1              motor         11              
+// lMotor2              motor         12              
+// lMotor3              motor         13              
+// rMotor1              motor         18              
+// rMotor2              motor         19              
+// rMotor3              motor         20              
+// cataMotor            motor         1               
+// intakeRollerMotor    motor         10              
+// Controller1          controller                    
+// cataLimit            limit         C               
+// Piston1              digital_out   F               
+// ---- END VEXCODE CONFIGURED DEVICES ----
 #include "vex.h"
 
 // ---- START VEXCODE CONFIGURED DEVICES ----

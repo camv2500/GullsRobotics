@@ -167,6 +167,20 @@ int userController() {
       LowerCatapult(false);
     }
 
+    if(Controller1.ButtonA.pressing()) {
+      Piston1.set(true);
+    }
+    else if (Controller1.ButtonB.pressing()) {
+      Piston1.set(false);
+    }
+
+    if(Controller1.ButtonX.pressing()) {
+      Piston2.set(true);
+    }
+    else if (Controller1.ButtonY.pressing()) {
+      Piston2.set(false);
+    }
+
     /* commented out bc no limit switch
     //catapult control with limit switch
     if (Controller1.ButtonR1.pressing() && cataLimit.pressing()) {

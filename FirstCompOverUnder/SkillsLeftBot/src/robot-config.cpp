@@ -17,7 +17,9 @@ motor rMotor3 = motor(PORT20, ratio6_1, false);
 motor cataMotor = motor(PORT1, ratio36_1, false);
 motor intakeRollerMotor = motor(PORT10, ratio18_1, false);
 controller Controller1 = controller(primary);
-limit cataLimit = limit(Brain.ThreeWirePort.C);
+limit cataLimit = limit(Brain.ThreeWirePort.H);
+digital_out Piston1 = digital_out(Brain.ThreeWirePort.F);
+digital_out Piston2 = digital_out(Brain.ThreeWirePort.C);
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable
