@@ -42,9 +42,10 @@ void RotateBot(double d) {
 //emptys the bot of the current ball
 void ShootDiscs(double waitTime = 0) {
   SpinMotors(0);
+  cataMotor.spin(fwd,60,pct);
+  wait(waitTime, msec);
   reloadTime = 0;
   isReloading = true;
-  wait(waitTime, msec);
 } 
 
 //the distance is in revolutions, the encoders should only be reset on first use
@@ -110,18 +111,16 @@ int autonController() {
       else {runPID(setTurning, false, true);}
     }
 
-    /* commented out until catapult is confirmed to be working
-    // without the use of a limit switch. a little bit buggy without it, hoping we get a working limit switch and can use that
+    //NEEDS WORK
     if (isReloading) {
-      if (reloadTime > 3120) {
+      if (cataLimit.pressing()) {
         cataMotor.spin(forward, 0, pct);
         isReloading = false;
       }
       else {
-        reloadTime += 10;
-        cataMotor.spin(forward, 100, pct);
+        cataMotor.spin(forward, 60, pct);
       }
-    } */
+    }
 
    wait(5, msec);
   }
@@ -145,54 +144,34 @@ int userController() {
     rMotor2.spin(fwd, controlCurve(rightDrive), vex::velocityUnits::pct);
     rMotor3.spin(fwd, controlCurve(rightDrive), vex::velocityUnits::pct);
 
-    //intake control
-    if(Controller1.ButtonL1.pressing()) {
+
+    Controller1.ButtonL1.pressed(ToggleIntakeLift);
+    Controller1.ButtonL2.pressed(ToggleIntakeFlip);
+    Controller1.ButtonR2.pressed(ToggleWings);
+
+    if (Controller1.ButtonX.pressing()) {
+      cataMotor.spinFor(fwd,45,deg);
+      setButtonXPressed();
+    } 
+
+    ShootBallAuto();
+
+    // if (Controller1.ButtonX.pressing() && cataLimit.pressing()) {
+    //   cataMotor.spin(fwd,40,pct);
+    // }
+    // else if (cataLimit.pressing()) {
+    //   cataMotor.stop(brakeType::coast);
+    // }
+    // else {
+    //   cataMotor.spin(fwd,40,pct);
+    // }
+
+    if(Controller1.ButtonR1.pressing()) {
       IntakeBalls(true, 100);
-    }
-    else if (Controller1.ButtonL2.pressing()) {
-      OuttakeBalls(true, 100);
     }
     else {
       IntakeBalls(false);
     }
-
-    //Maunal Catapult Control
-    if(Controller1.ButtonR1.pressing()) {
-      LowerCatapult(true, 100);
-    }
-    else if (Controller1.ButtonR2.pressing()) {
-      RaiseCatapult(true, 100);
-    }
-    else {
-      LowerCatapult(false);
-    }
-
-    if(Controller1.ButtonA.pressing()) {
-      Piston1.set(true);
-    }
-    else if (Controller1.ButtonB.pressing()) {
-      Piston1.set(false);
-    }
-
-    if(Controller1.ButtonX.pressing()) {
-      Piston2.set(true);
-    }
-    else if (Controller1.ButtonY.pressing()) {
-      Piston2.set(false);
-    }
-
-    /* commented out bc no limit switch
-    //catapult control with limit switch
-    if (Controller1.ButtonR1.pressing() && cataLimit.pressing()) {
-      cataMotor.spin(fwd,100,pct);
-    }
-    else if (cataLimit.pressing()) {
-      cataMotor.stop(brakeType::hold);
-    }
-    else {
-      cataMotor.spin(fwd,100,pct);
-    }
-    */
 
     wait(10,msec);
   }

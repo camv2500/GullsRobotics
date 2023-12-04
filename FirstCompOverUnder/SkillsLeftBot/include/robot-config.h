@@ -13,8 +13,9 @@ extern motor cataMotor;
 extern motor intakeRollerMotor;
 extern controller Controller1;
 extern limit cataLimit;
-extern digital_out Piston1;
-extern digital_out Piston2;
+extern digital_out intakeLift;
+extern digital_out intakeFlip;
+extern digital_out wings;
 
 /**
  * Used to initialize code/tasks/devices added using tools in VEXcode Pro.

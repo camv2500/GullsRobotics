@@ -7,42 +7,13 @@
 // rMotor1              motor         18              
 // rMotor2              motor         19              
 // rMotor3              motor         20              
-// cataMotor            motor         1               
+// cataMotor            motor         2               
 // intakeRollerMotor    motor         10              
 // Controller1          controller                    
 // cataLimit            limit         H               
-// Piston1              digital_out   F               
-// Piston2              digital_out   C               
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// lMotor1              motor         11              
-// lMotor2              motor         12              
-// lMotor3              motor         13              
-// rMotor1              motor         18              
-// rMotor2              motor         19              
-// rMotor3              motor         20              
-// cataMotor            motor         1               
-// intakeRollerMotor    motor         10              
-// Controller1          controller                    
-// cataLimit            limit         H               
-// Piston1              digital_out   F               
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// lMotor1              motor         11              
-// lMotor2              motor         12              
-// lMotor3              motor         13              
-// rMotor1              motor         18              
-// rMotor2              motor         19              
-// rMotor3              motor         20              
-// cataMotor            motor         1               
-// intakeRollerMotor    motor         10              
-// Controller1          controller                    
-// cataLimit            limit         C               
-// Piston1              digital_out   F               
+// intakeLift           digital_out   A               
+// intakeFlip           digital_out   C               
+// wings                digital_out   G               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 #include "vex.h"
 
@@ -86,6 +57,8 @@ competition Competition;
 void pre_auton(void) {
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
+  intakeLift.set(false);
+  intakeFlip.set(true);
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
 }
@@ -129,19 +102,49 @@ void autonomous(void) {
   //if given a parameter, the program will wait that long in milliseconds after shooting to continue. default 0
   ShootBall(100);
   */
-  SpinMotors(100);
-  wait(700,msec);
-  MoveBot(-8);
-  RotateBot(135);
-  MoveBot(18);
+
+  intakeLift.set(false);
+  intakeFlip.set(true);
+  wait(500,msec);
+
+  SpinMotors(-100);
+  wait(200,msec);
+  intakeLift.set(true);
+  MoveBot(8);
+  RotateBot(-45);
+  MoveBot(14);
   RotateBot(90);
+  intakeFlip.set(false);
+  IntakeBalls(true);
   MoveBot(10);
 
+  //shoot first ball
+  wait(150,msec);
+  MoveBot(-7);
+  ShootDiscs(300);
+  MoveBot(7);
+
+  for (int i = 0; i < 20; i++) {
+    wait(150,msec);
+    MoveBot(-7);
+    ShootDiscs(300);
+    MoveBot(7);
+  }
+
+  //last shot
+  wait(150,msec);
+  MoveBot(-7);
+  ShootDiscs(300);
+  wait(1,sec);
+  //shot balls end
+
+  intakeLift.set(false);
+  intakeFlip.set(true);
+  IntakeBalls(false);
   wait(1,sec);
 
-  MoveBot(-5);
   RotateBot(-90);
-  MoveBot(10);
+  MoveBot(14);
   RotateBot(-45);
   MoveBot(34);
   //MoveBot(15);
