@@ -53,13 +53,13 @@ void OuttakeBalls(bool outtakeState, double outtakePower) {
 }
 
 //manual catapult control, lowers it down to accept balls
-void LowerCatapult(bool catapultState, double catapultPower) {
+void LowerCatapultManual(bool catapultState, double catapultPower) {
   if (catapultState) {cataMotor.move(catapultPower);}
   else {cataMotor.move(0);}
 }
 
 //manual catapult control, raises the catapult until it reaches max raised. dont abuse
-void RaiseCatapult(bool catapultState, double catapultPower) {
+void RaiseCatapultManual(bool catapultState, double catapultPower) {
   if (catapultState) {cataMotor.move(-catapultPower);}
   else {cataMotor.move(0);}
 }

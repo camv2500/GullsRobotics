@@ -69,8 +69,8 @@ void runPID(double pidSetDegrees, bool resetEncoders, bool isTurning) {
     prevError = error;
 
     power = error * kP + integral * kI + derivative * kD;
-    if (power > 33.5) {power = 33.5;}
-    if (power < -33.5) {power = -33.5;}
+    if (power > 33.5) {power = 33.5;} // 25 if fail.
+    if (power < -33.5) {power = -33.5;} // -25 if fail.
   
     if (isTurning) {SpinMotors(power, true);}
     else {SpinMotors(power);}
@@ -110,18 +110,16 @@ int autonController() {
       else {runPID(setTurning, false, true);}
     }
 
-    /* commented out until catapult is confirmed to be working
-    // without the use of a limit switch. a little bit buggy without it, hoping we get a working limit switch and can use that
+    //NEEDS WORK
     if (isReloading) {
-      if (reloadTime > 3120) {
-        cataMotor.spin(forward, 0, pct);
+      if (cataLimit.get_new_press()) {
+        cataMotor.move(0);
         isReloading = false;
       }
       else {
-        reloadTime += 10;
-        cataMotor.spin(forward, 100, pct);
+        cataMotor.move(60);
       }
-    } */
+    }
 
     delay(10);
   }

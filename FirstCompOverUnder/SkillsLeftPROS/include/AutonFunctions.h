@@ -74,8 +74,8 @@ void ResetEncoders();
 void SpinMotors(double power, bool isTurning = false);
 void IntakeBalls(bool intakeState = false, double intakePower = 100);
 void OuttakeBalls(bool outtakeState = false, double outtakePower = 100);
-void LowerCatapult(bool catapultState = false, double catapultPower = 100);
-void RaiseCatapult(bool catapultState = false, double catapultPower = 100);
+void LowerCatapultManual(bool catapultState = false, double catapultPower = 100);
+void RaiseCatapultManual(bool catapultState = false, double catapultPower = 100);
 
 #ifdef __cplusplus
 }

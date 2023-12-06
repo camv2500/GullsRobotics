@@ -66,6 +66,12 @@ extern "C" {
 #endif
 
 int userController();
+void ShootBallAuto();
+void setButtonXPressed();
+void setButtonYPressed();
+void ToggleIntakeLift();
+void ToggleIntakeFlip();
+void ToggleWings();
 
 #ifdef __cplusplus
 }

@@ -5,7 +5,11 @@
 // const int Intake_Speed = 100; // Percentage intake motor speed
 // const int Lift_Speed = 100; // Percentage Lift motor speed
 
-// Variables
+/////////////////////////////////////////////////////////////////////////////////////
+//////                              GLOBAL VARIABLES                           //////
+/////////////////////////////////////////////////////////////////////////////////////
+bool intakeLiftState = true; bool intakeFlipState = true; bool wingsState = true; 
+bool buttonYPressed = false; bool buttonXPressed = false; bool limitSwitch = false;
 
 int userController() {
   while(isUser) {
@@ -26,43 +30,100 @@ int userController() {
     rMotor3.move(controlCurve(rightDrive));
     // rMotor4.move(controlCurve(rightDrive));
 
-    //intake control
-    if(master.get_digital(E_CONTROLLER_DIGITAL_L1)) {
-      IntakeBalls(true, 100);
+    if (master.get_digital(E_CONTROLLER_DIGITAL_L1)) {
+      ToggleIntakeLift();
     }
-    else if (master.get_digital(E_CONTROLLER_DIGITAL_L2)) {
-      OuttakeBalls(true, 100);
+    if (master.get_digital(E_CONTROLLER_DIGITAL_L2)) {
+      ToggleIntakeFlip();
+    }
+    if (master.get_digital(E_CONTROLLER_DIGITAL_R2)) {
+      ToggleWings();
+    }
+
+    if (master.get_digital_new_press(E_CONTROLLER_DIGITAL_X)) {
+      // cataMotor.spinFor(fwd,45,deg);
+      cataMotor.move(45);
+      setButtonXPressed();
+    } 
+
+    ShootBallAuto();
+
+    // if (Controller1.ButtonX.pressing() && cataLimit.pressing()) {
+    //   cataMotor.spin(fwd,40,pct);
+    // }
+    // else if (cataLimit.pressing()) {
+    //   cataMotor.stop(brakeType::coast);
+    // }
+    // else {
+    //   cataMotor.spin(fwd,40,pct);
+    // }
+
+    if(master.get_digital(E_CONTROLLER_DIGITAL_R1)) {
+      IntakeBalls(true, 100);
     }
     else {
       IntakeBalls(false);
     }
 
-    //Maunal Catapult Control
-    if(master.get_digital(E_CONTROLLER_DIGITAL_R1)) {
-      LowerCatapult(true, 100);
-    }
-    // else if (master.get_digital(E_CONTROLLER_DIGITAL_R2)) {
-    //   RaiseCatapult(true, 100);
-    // }
-    else {
-      LowerCatapult(false);
-    }
-
-    /* commented out bc no limit switch
-    //catapult control with limit switch
-    if (Controller1.ButtonR1.pressing() && cataLimit.pressing()) {
-      cataMotor.spin(fwd,100,pct);
-    }
-    else if (cataLimit.pressing()) {
-      cataMotor.stop(brakeType::hold);
-    }
-    else {
-      cataMotor.spin(fwd,100,pct);
-    }
-    */
-
     delay(10);
   }
 
   return 1;
+}
+
+void ShootBallAuto() {
+  if (buttonXPressed) {
+    if (!cataLimit.get_value()) {
+      cataMotor.move(60);
+    }
+    else {
+      cataMotor.set_brake_mode(E_MOTOR_BRAKE_COAST);
+      cataMotor.brake();
+      buttonXPressed = false;
+    }
+  }
+}
+
+void setButtonXPressed() {
+  intakeLift.set_value(true);
+  intakeFlip.set_value(false);
+  buttonXPressed = true;
+}
+
+void setButtonYPressed() {
+  intakeLift.set_value(true);
+  intakeFlip.set_value(false);
+}
+
+void ToggleIntakeLift() {
+  if (intakeLiftState == true) {
+    intakeLift.set_value(false);
+    intakeLiftState = false;
+  }
+  else {
+    intakeLift.set_value(true);
+    intakeLiftState = true;
+  }
+}
+
+void ToggleIntakeFlip() {
+  if (intakeFlipState == true) {
+    intakeFlip.set_value(false);
+    intakeFlipState = false;
+  }
+  else {
+    intakeFlip.set_value(true);
+    intakeFlipState = true;
+  }
+}
+
+void ToggleWings() {
+  if (wingsState == true) {
+    wings.set_value(false);
+    wingsState = false;
+  }
+  else {
+    wings.set_value(true);
+    wingsState = true;
+  }
 }

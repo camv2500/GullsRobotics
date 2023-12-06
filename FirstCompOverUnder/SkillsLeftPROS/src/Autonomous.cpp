@@ -51,45 +51,45 @@ void Autonomous() {
   ShootBall(100);
   */
 
-  intakeLift.set(false);
-  intakeFlip.set(true);
+  intakeLift.set_value(false);
+  intakeFlip.set_value(true);
   delay(500);
 
   SpinMotors(-100);
-  wait(200,msec);
-  intakeLift.set(true);
+  delay(200);
+  intakeLift.set_value(true);
   MoveBot(8);
   RotateBot(-45);
   MoveBot(14);
   RotateBot(90);
-  intakeFlip.set(false);
+  intakeFlip.set_value(false);
   IntakeBalls(true);
   MoveBot(10);
 
   //shoot first ball
-  wait(150,msec);
+  delay(150);
   MoveBot(-7);
   ShootDiscs(300);
   MoveBot(7);
 
   for (int i = 0; i < 20; i++) {
-    wait(150,msec);
+    delay(150);
     MoveBot(-7);
     ShootDiscs(300);
     MoveBot(7);
   }
 
   //last shot
-  wait(150,msec);
+  delay(150);
   MoveBot(-7);
   ShootDiscs(300);
-  wait(1,sec);
+  delay(1000);
   //shot balls end
 
-  intakeLift.set(false);
-  intakeFlip.set(true);
+  intakeLift.set_value(false);
+  intakeFlip.set_value(true);
   IntakeBalls(false);
-  wait(1,sec);
+  delay(1000);
 
   RotateBot(-90);
   MoveBot(14);

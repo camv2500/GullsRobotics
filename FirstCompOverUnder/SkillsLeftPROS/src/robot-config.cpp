@@ -16,6 +16,7 @@ Motor cataMotor (2, E_MOTOR_GEARSET_36, false);
 Motor intakeRollerMotor (10, E_MOTOR_GEARSET_06, false);
 Controller master (CONTROLLER_MASTER);
 // limit cataLimit = limit(Brain.ThreeWirePort.H);
+ADIDigitalIn cataLimit ('H');
 ADIDigitalOut intakeLift ('A');
 ADIDigitalOut intakeFlip ('C');
 ADIDigitalOut wings ('G');
