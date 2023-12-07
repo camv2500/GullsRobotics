@@ -10,6 +10,9 @@ using namespace pros;
 void disabled() {
 	// SelectedAuton = PreAutonomous(); // RED = 1-4, BLUE = 5-8, ORANGE = 9-12, PURPLE = 13-16;
 	// selector::init();
+	initialize();
+	intakeLift.set_value(false);
+	intakeFlip.set_value(true);
 }
 
 /**

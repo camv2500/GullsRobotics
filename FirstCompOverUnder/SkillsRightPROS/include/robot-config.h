@@ -74,7 +74,10 @@ extern Motor rMotor3;
 extern Motor cataMotor;
 extern Motor intakeRollerMotor;
 extern Controller master;
-// extern Limit cataLimit;
+extern ADIDigitalIn cataLimit;
+extern ADIDigitalOut intakeLift;
+extern ADIDigitalOut intakeFlip;
+extern ADIDigitalOut wings;
 
 void initialize(void);
 void competition_initialize(void);

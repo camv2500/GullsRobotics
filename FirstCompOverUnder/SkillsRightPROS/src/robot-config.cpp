@@ -12,10 +12,14 @@ Motor lMotor3 (13, E_MOTOR_GEARSET_06, true);
 Motor rMotor1 (18, E_MOTOR_GEARSET_06, false);
 Motor rMotor2 (19, E_MOTOR_GEARSET_06, false);
 Motor rMotor3 (20, E_MOTOR_GEARSET_06, false);
-Motor cataMotor (1, E_MOTOR_GEARSET_36, false);
+Motor cataMotor (2, E_MOTOR_GEARSET_36, false);
 Motor intakeRollerMotor (10, E_MOTOR_GEARSET_06, false);
 Controller master (CONTROLLER_MASTER);
-// limit cataLimit = limit(Brain.ThreeWirePort.C);
+// limit cataLimit = limit(Brain.ThreeWirePort.H);
+ADIDigitalIn cataLimit ('H');
+ADIDigitalOut intakeLift ('A');
+ADIDigitalOut intakeFlip ('C');
+ADIDigitalOut wings ('G');
 
 // VEXcode generated functions
 // define variable for remote controller enable/disable
