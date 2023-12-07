@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "Skills Left PROS",
+    "project_name": "Skills Right PROS",
     "target": "v5",
     "templates": {
       "kernel": {
@@ -311,7 +311,7 @@
     "upload_options": {
       "icon": "alien",
       "slot": 4,
-      "description": "My PROS Project.  This is the skills routine for the left robot."
+      "description": "My PROS Project.  This is the skills routine for the right robot."
     }
   }
 }
