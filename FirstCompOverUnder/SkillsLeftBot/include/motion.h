@@ -118,7 +118,7 @@ int autonController() {
         isReloading = false;
       }
       else {
-        cataMotor.spin(forward, 60, pct);
+        cataMotor.spin(forward, 75, pct);
       }
     }
 

@@ -87,10 +87,6 @@ void autonomous(void) {
   ShootBall(100);
   */
 
-  intakeLift.set(false);
-  intakeFlip.set(true);
-  wait(500,msec);
-
   SpinMotors(-100);
   wait(200,msec);
   intakeLift.set(true);
@@ -103,7 +99,7 @@ void autonomous(void) {
   MoveBot(10);
 
   //shoot balls
-  for (int i = 0; i < 21; i++) {
+  for (int i = 0; i < 22; i++) {
     wait(150,msec);
     MoveBot(-7);
     ShootDiscs(0);
@@ -114,19 +110,36 @@ void autonomous(void) {
   wait(150,msec);
   MoveBot(-7);
   ShootDiscs(0);
-  wait(1,sec);
+  wait(600,msec);
   //shot balls end
 
-  intakeLift.set(false);
-  intakeFlip.set(true);
-  IntakeBalls(false);
-  wait(1,sec);
+  Controller1.ButtonL1.pressed(ToggleIntakeLift);
+  Controller1.ButtonL2.pressed(ToggleIntakeFlip);
+  Controller1.ButtonR2.pressed(ToggleWings);
+  
+  isAuton = false; resetPID = true; resetTurning = true; resetFlywheel = true; isUser = true;
+  task StartUser(userController);
 
-  RotateBot(-90);
-  MoveBot(14);
-  RotateBot(-45);
-  MoveBot(34);
-  //MoveBot(15);
+  // intakeLift.set(false);
+  // intakeFlip.set(true);
+  // IntakeBalls(false);
+
+  // RotateBot(-90);
+  // MoveBot(16);
+  // RotateBot(-45);
+  // intakeFlip.set(false);
+  // OuttakeBalls(true);
+
+  // MoveBot(98);
+  // RotateBot(-45);
+  // MoveBot(25);
+  // RotateBot(-45);
+  // OuttakeBalls(false);
+  // intakeFlip.set(true);
+  // intakeLift.set(false);
+  // SpinMotors(100);
+  // wait(200,msec);
+  // SpinMotors(0);
 }
 
 
@@ -141,6 +154,35 @@ void autonomous(void) {
 /*---------------------------------------------------------------------------*/
 
 void usercontrol(void) {
+  isAuton = true; resetPID = true; resetTurning = true; resetFlywheel = true; isUser = false;
+  task StartAuton(autonController);
+
+  SpinMotors(-100);
+  wait(200,msec);
+  intakeLift.set(true);
+  MoveBot(8);
+  RotateBot(-45);
+  MoveBot(14);
+  RotateBot(90);
+  intakeFlip.set(false);
+  IntakeBalls(true);
+  MoveBot(10);
+
+  //shoot balls
+  for (int i = 0; i < 22; i++) {
+    wait(150,msec);
+    MoveBot(-7);
+    ShootDiscs(0);
+    MoveBot(7);
+  }
+
+  //last shot
+  wait(150,msec);
+  MoveBot(-7);
+  ShootDiscs(0);
+  wait(600,msec);
+  //shot balls end
+
   Controller1.ButtonL1.pressed(ToggleIntakeLift);
   Controller1.ButtonL2.pressed(ToggleIntakeFlip);
   Controller1.ButtonR2.pressed(ToggleWings);
