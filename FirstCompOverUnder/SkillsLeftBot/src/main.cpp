@@ -1,3 +1,5 @@
+#include "vex.h"
+
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
@@ -7,32 +9,13 @@
 // rMotor1              motor         18              
 // rMotor2              motor         19              
 // rMotor3              motor         20              
-// cataMotor            motor         2               
+// cataMotor            motor         5               
 // intakeRollerMotor    motor         10              
 // Controller1          controller                    
 // cataLimit            limit         H               
-// intakeLift           digital_out   A               
+// intakeLift           digital_out   F               
 // intakeFlip           digital_out   C               
-// wings                digital_out   G               
-// ---- END VEXCODE CONFIGURED DEVICES ----
-#include "vex.h"
-
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// lMotor1              motor         10              
-// lMotor2              motor         9               
-// lMotor3              motor         8               
-// lMotor4              motor         7               
-// rMotor1              motor         6               
-// rMotor2              motor         4               
-// rMotor3              motor         3               
-// rMotor4              motor         2               
-// cataMotor            motor         1               
-// intakeRollerMotor    motor         19              
-// endGame              digital_out   A               
-// Controller1          controller                    
-// autonPiston          digital_out   B               
+// wings                digital_out   A               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 #include "motion.h"
 #include "math.h"
@@ -59,6 +42,7 @@ void pre_auton(void) {
   vexcodeInit();
   intakeLift.set(false);
   intakeFlip.set(true);
+  wings.set(true);
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
 }
@@ -118,23 +102,18 @@ void autonomous(void) {
   IntakeBalls(true);
   MoveBot(10);
 
-  //shoot first ball
-  wait(150,msec);
-  MoveBot(-7);
-  ShootDiscs(300);
-  MoveBot(7);
-
-  for (int i = 0; i < 20; i++) {
+  //shoot balls
+  for (int i = 0; i < 21; i++) {
     wait(150,msec);
     MoveBot(-7);
-    ShootDiscs(300);
+    ShootDiscs(0);
     MoveBot(7);
   }
 
   //last shot
   wait(150,msec);
   MoveBot(-7);
-  ShootDiscs(300);
+  ShootDiscs(0);
   wait(1,sec);
   //shot balls end
 
@@ -162,6 +141,10 @@ void autonomous(void) {
 /*---------------------------------------------------------------------------*/
 
 void usercontrol(void) {
+  Controller1.ButtonL1.pressed(ToggleIntakeLift);
+  Controller1.ButtonL2.pressed(ToggleIntakeFlip);
+  Controller1.ButtonR2.pressed(ToggleWings);
+  
   isAuton = false; resetPID = true; resetTurning = true; resetFlywheel = true; isUser = true;
   task StartUser(userController);
 }

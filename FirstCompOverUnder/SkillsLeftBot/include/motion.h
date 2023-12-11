@@ -42,7 +42,7 @@ void RotateBot(double d) {
 //emptys the bot of the current ball
 void ShootDiscs(double waitTime = 0) {
   SpinMotors(0);
-  cataMotor.spin(fwd,60,pct);
+  cataMotor.spinFor(fwd,80,deg);
   wait(waitTime, msec);
   reloadTime = 0;
   isReloading = true;
@@ -143,11 +143,6 @@ int userController() {
     rMotor1.spin(fwd, controlCurve(rightDrive), vex::velocityUnits::pct);
     rMotor2.spin(fwd, controlCurve(rightDrive), vex::velocityUnits::pct);
     rMotor3.spin(fwd, controlCurve(rightDrive), vex::velocityUnits::pct);
-
-
-    Controller1.ButtonL1.pressed(ToggleIntakeLift);
-    Controller1.ButtonL2.pressed(ToggleIntakeFlip);
-    Controller1.ButtonR2.pressed(ToggleWings);
 
     if (Controller1.ButtonX.pressing()) {
       cataMotor.spinFor(fwd,45,deg);
