@@ -122,9 +122,10 @@ void autonomous(void) {
   RotateBot(45);
   intakeFlip.set(false);
   OuttakeBalls(true);
-
   SpinMotors(-100);
-  wait(1000,msec); //change this to change how far bot goes to cross field
+  wait(1400,msec); //change this to change how far bot goes to cross field
+  SpinMotors(0);
+  wait(200,msec);
   RotateBot(45);
   MoveBot(-25);
   RotateBot(45);
@@ -193,6 +194,7 @@ void usercontrol(void) {
   
   isAuton = false; resetPID = true; resetTurning = true; resetFlywheel = true; isUser = true;
   task StartUser(userController);
+  cataMotor.spin(fwd,0,pct);
 
   Controller1.rumble("-");
 }
