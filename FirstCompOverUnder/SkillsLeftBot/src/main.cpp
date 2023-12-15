@@ -1,37 +1,3 @@
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// lMotor1              motor         11              
-// lMotor2              motor         12              
-// lMotor3              motor         13              
-// rMotor1              motor         18              
-// rMotor2              motor         19              
-// rMotor3              motor         20              
-// cataMotor            motor         4               
-// intakeRollerMotor    motor         10              
-// Controller1          controller                    
-// cataLimit            limit         G               
-// intakeLift           digital_out   F               
-// intakeFlip           digital_out   C               
-// wings                digital_out   A               
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// lMotor1              motor         11              
-// lMotor2              motor         12              
-// lMotor3              motor         13              
-// rMotor1              motor         18              
-// rMotor2              motor         19              
-// rMotor3              motor         20              
-// cataMotor            motor         4               
-// intakeRollerMotor    motor         10              
-// Controller1          controller                    
-// cataLimit            limit         H               
-// intakeLift           digital_out   F               
-// intakeFlip           digital_out   C               
-// wings                digital_out   A               
-// ---- END VEXCODE CONFIGURED DEVICES ----
 #include "vex.h"
 
 // ---- START VEXCODE CONFIGURED DEVICES ----
@@ -158,6 +124,7 @@ void autonomous(void) {
   OuttakeBalls(true);
 
   MoveBot(98);
+  wings.set(true);
   RotateBot(-45);
   MoveBot(25);
   RotateBot(-38);
