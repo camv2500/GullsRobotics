@@ -99,6 +99,7 @@ void autonomous(void) {
   MoveBot(10);
 
   //shoot balls
+
   for (int i = 0; i < 22; i++) {
     wait(150,msec);
     MoveBot(-7);
@@ -161,8 +162,15 @@ void usercontrol(void) {
   IntakeBalls(true);
   MoveBot(10);
 
-  //shoot balls
+ /*
   for (int i = 0; i < 22; i++) {
+    wait(150,msec);
+    MoveBot(-7);
+    ShootDiscs(0);
+    MoveBot(7);
+  }
+  */
+  for (int i = 0; i < 4; i++) {
     wait(150,msec);
     MoveBot(-7);
     ShootDiscs(0);
@@ -173,11 +181,11 @@ void usercontrol(void) {
   wait(150,msec);
   MoveBot(-7);
   ShootDiscs(0);
-  wait(600,msec);
+  wait(800,msec);
   //shot balls end
 
-  intakeLift.set(false);
-  IntakeBalls(false);
+  //intakeLift.set(false);
+  //IntakeBalls(false);
 
   Controller1.ButtonL1.pressed(ToggleIntakeLift);
   Controller1.ButtonL2.pressed(ToggleIntakeFlip);

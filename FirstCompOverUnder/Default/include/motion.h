@@ -136,14 +136,32 @@ int userController() {
     //calculate the power for the left and right side independently using one joystick (arcade control)
     //double leftDrive = (Controller1.Axis2.value() - Controller1.Axis1.value());
     //double rightDrive = (Controller1.Axis2.value() + Controller1.Axis1.value());
+    if (Controller1.ButtonR2.pressing()){
+      
+    lMotor1.spin(fwd, (Controller1.Axis2.position()),pct);
+    lMotor2.spin(fwd, (Controller1.Axis2.position()),pct);
+    lMotor3.spin(fwd, (Controller1.Axis2.position()),pct);
+    rMotor1.spin(fwd, (Controller1.Axis2.position()),pct);
+    rMotor2.spin(fwd, (Controller1.Axis2.position()),pct);
+    rMotor3.spin(fwd, (Controller1.Axis2.position()),pct);
 
-    lMotor1.spin(fwd, controlCurve(leftDrive), vex::velocityUnits::pct);
+    }
+    else{
+    /*lMotor1.spin(fwd, controlCurve(leftDrive), vex::velocityUnits::pct);
     lMotor2.spin(fwd, controlCurve(leftDrive), vex::velocityUnits::pct);
     lMotor3.spin(fwd, controlCurve(leftDrive), vex::velocityUnits::pct);
     rMotor1.spin(fwd, controlCurve(rightDrive), vex::velocityUnits::pct);
     rMotor2.spin(fwd, controlCurve(rightDrive), vex::velocityUnits::pct);
-    rMotor3.spin(fwd, controlCurve(rightDrive), vex::velocityUnits::pct);
+    rMotor3.spin(fwd, controlCurve(rightDrive), vex::velocityUnits::pct);*/
 
+    lMotor1.spin(fwd, (Controller1.Axis3.position()),pct);
+    lMotor2.spin(fwd, (Controller1.Axis3.position()),pct);
+    lMotor3.spin(fwd, (Controller1.Axis3.position()),pct);
+    rMotor1.spin(fwd, (Controller1.Axis2.position()),pct);
+    rMotor2.spin(fwd, (Controller1.Axis2.position()),pct);
+    rMotor3.spin(fwd, (Controller1.Axis2.position()),pct);
+
+    }
     if (Controller1.ButtonX.pressing()) {
       cataMotor.spinFor(fwd,45,deg);
       setButtonXPressed();
@@ -163,6 +181,9 @@ int userController() {
 
     if(Controller1.ButtonR1.pressing()) {
       IntakeBalls(true, 100);
+    }
+    else if (Controller1.ButtonY.pressing()){
+      IntakeBalls(true, -100);
     }
     else {
       IntakeBalls(false);
