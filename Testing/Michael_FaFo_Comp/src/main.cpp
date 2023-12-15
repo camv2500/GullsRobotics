@@ -17,9 +17,9 @@
 // Ml2                  motor         12              
 // Ml3                  motor         13              
 // Controller1          controller                    
-// Catapult             motor         1               
-// cataLimit            limit         H               
-// liftPistons          digital_out   A               
+// Catapult             motor         4               
+// cataLimit            limit         G               
+// liftPistons          digital_out   F               
 // intakePistons        digital_out   C               
 // Intake               motor         10              
 // ---- END VEXCODE CONFIGURED DEVICES ----
@@ -221,26 +221,27 @@ void usercontrol(void) {
     }
 
 //Fire Catapult
-    if (Controller1.ButtonY.pressing()){
-      Catapult.spinFor(fwd,45,deg);
+   if (Controller1.ButtonY.pressing()){
+      Catapult.spinFor(fwd,80,deg);
       r1=1;
       }
+
 
 //intake
 
 if (intakeStatus == 1){
-    Intake.spin(fwd,60,pct);
+    Intake.spin(fwd,100,pct);
 }
 else if (intakeStatus ==0){
   Intake.stop(coast);
 }
 //Arcade Drive
-  Ml1.spin(fwd,(Controller1.Axis3.position(pct) + Controller1.Axis4.position(pct))*.5,pct);
-  Ml3.spin(fwd,(Controller1.Axis3.position(pct) + Controller1.Axis4.position(pct))*.5,pct);
-  Mr1.spin(fwd,(Controller1.Axis3.position(pct) - Controller1.Axis4.position(pct))*.5,pct);
-  Ml2.spin(fwd,(Controller1.Axis3.position(pct) + Controller1.Axis4.position(pct))*.5,pct);
-  Mr2.spin(fwd,(Controller1.Axis3.position(pct) - Controller1.Axis4.position(pct))*.5,pct);
-  Mr3.spin(fwd,(Controller1.Axis3.position(pct) - Controller1.Axis4.position(pct))*.5,pct);
+  Ml1.spin(fwd,(Controller1.Axis3.position(pct)),pct);
+  Ml3.spin(fwd,(Controller1.Axis3.position(pct)),pct);
+  Ml2.spin(fwd,(Controller1.Axis3.position(pct)),pct);
+  Mr1.spin(fwd,(Controller1.Axis3.position(pct)),pct);
+  Mr2.spin(fwd,(Controller1.Axis3.position(pct)),pct);
+  Mr3.spin(fwd,(Controller1.Axis3.position(pct)),pct);
 
 
     // ........................................................................

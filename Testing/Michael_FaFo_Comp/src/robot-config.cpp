@@ -15,9 +15,9 @@ motor Ml1 = motor(PORT11, ratio6_1, true);
 motor Ml2 = motor(PORT12, ratio18_1, true);
 motor Ml3 = motor(PORT13, ratio6_1, true);
 controller Controller1 = controller(primary);
-motor Catapult = motor(PORT1, ratio36_1, false);
-limit cataLimit = limit(Brain.ThreeWirePort.H);
-digital_out liftPistons = digital_out(Brain.ThreeWirePort.A);
+motor Catapult = motor(PORT4, ratio36_1, false);
+limit cataLimit = limit(Brain.ThreeWirePort.G);
+digital_out liftPistons = digital_out(Brain.ThreeWirePort.F);
 digital_out intakePistons = digital_out(Brain.ThreeWirePort.C);
 motor Intake = motor(PORT10, ratio18_1, false);
 
