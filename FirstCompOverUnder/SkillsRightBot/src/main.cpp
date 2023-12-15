@@ -3,19 +3,19 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
-// lMotor1              motor         10              
-// lMotor2              motor         9               
-// lMotor3              motor         8               
-// lMotor4              motor         7               
-// rMotor1              motor         6               
-// rMotor2              motor         4               
-// rMotor3              motor         3               
-// rMotor4              motor         2               
-// cataMotor            motor         1               
-// intakeRollerMotor    motor         19              
-// endGame              digital_out   A               
+// lMotor1              motor         11              
+// lMotor2              motor         12              
+// lMotor3              motor         13              
+// rMotor1              motor         18              
+// rMotor2              motor         19              
+// rMotor3              motor         20              
+// cataMotor            motor         5               
+// intakeRollerMotor    motor         10              
 // Controller1          controller                    
-// autonPiston          digital_out   B               
+// cataLimit            limit         H               
+// intakeLift           digital_out   F               
+// intakeFlip           digital_out   C               
+// wings                digital_out   A               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 #include "motion.h"
 #include "math.h"
@@ -40,6 +40,9 @@ competition Competition;
 void pre_auton(void) {
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
+  intakeLift.set(false);
+  intakeFlip.set(true);
+  wings.set(false);
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
 }
@@ -83,22 +86,52 @@ void autonomous(void) {
   //if given a parameter, the program will wait that long in milliseconds after shooting to continue. default 0
   ShootBall(100);
   */
-  SpinMotors(100);
-  wait(700,msec);
-  MoveBot(-8);
-  RotateBot(-135);
-  MoveBot(18);
-  RotateBot(-90);
-  MoveBot(10);
 
-  wait(1,sec);
-
-  MoveBot(-5);
-  RotateBot(90);
-  MoveBot(10);
+  SpinMotors(-100);
+  wait(200,msec);
+  intakeLift.set(true);
+  MoveBot(8);
   RotateBot(45);
-  MoveBot(34);
-  //MoveBot(15);
+  MoveBot(14);
+  RotateBot(-90);
+  intakeFlip.set(false);
+  IntakeBalls(true);
+  MoveBot(10);
+
+  //shoot balls
+  for (int i = 0; i < 22; i++) {
+    wait(150,msec);
+    MoveBot(-7);
+    ShootDiscs(0);
+    MoveBot(7);
+  }
+
+  //last shot
+  wait(150,msec);
+  MoveBot(-7);
+  ShootDiscs(0);
+  wait(600,msec);
+  //shot balls end
+
+  intakeLift.set(false);
+  IntakeBalls(false);
+
+  RotateBot(90);
+  MoveBot(16);
+  RotateBot(45);
+  intakeFlip.set(false);
+  OuttakeBalls(true);
+
+  MoveBot(98);
+  RotateBot(45);
+  MoveBot(25);
+  RotateBot(45);
+  OuttakeBalls(false);
+  intakeFlip.set(true);
+  intakeLift.set(false);
+  SpinMotors(100);
+  wait(200,msec);
+  SpinMotors(0);
 }
 
 
@@ -113,8 +146,46 @@ void autonomous(void) {
 /*---------------------------------------------------------------------------*/
 
 void usercontrol(void) {
+  isAuton = true; resetPID = true; resetTurning = true; resetFlywheel = true; isUser = false;
+  task StartAuton(autonController);
+
+  SpinMotors(-100);
+  wait(200,msec);
+  intakeLift.set(true);
+  MoveBot(6);
+  RotateBot(45);
+  MoveBot(18);
+  RotateBot(-90);
+  intakeFlip.set(false);
+  IntakeBalls(true);
+  MoveBot(10);
+
+  //shoot balls
+  for (int i = 0; i < 22; i++) {
+    wait(150,msec);
+    MoveBot(-7);
+    ShootDiscs(0);
+    MoveBot(7);
+  }
+
+  //last shot
+  wait(150,msec);
+  MoveBot(-7);
+  ShootDiscs(0);
+  wait(600,msec);
+  //shot balls end
+
+  intakeLift.set(false);
+  IntakeBalls(false);
+
+  Controller1.ButtonL1.pressed(ToggleIntakeLift);
+  Controller1.ButtonL2.pressed(ToggleIntakeFlip);
+  Controller1.ButtonR2.pressed(ToggleWings);
+  
   isAuton = false; resetPID = true; resetTurning = true; resetFlywheel = true; isUser = true;
   task StartUser(userController);
+
+  Controller1.rumble("-");
 }
 
 //
