@@ -117,20 +117,21 @@ void autonomous(void) {
   intakeLift.set(false);
   IntakeBalls(false);
 
-  RotateBot(90);
-  MoveBot(16);
+  RotateBot(-90);
+  MoveBot(-16);
   RotateBot(45);
   intakeFlip.set(false);
   OuttakeBalls(true);
 
-  MoveBot(98);
+  SpinMotors(-100);
+  wait(1000,msec); //change this to change how far bot goes to cross field
   RotateBot(45);
-  MoveBot(25);
+  MoveBot(-25);
   RotateBot(45);
   OuttakeBalls(false);
   intakeFlip.set(true);
   intakeLift.set(false);
-  SpinMotors(100);
+  SpinMotors(-100);
   wait(200,msec);
   SpinMotors(0);
 }
