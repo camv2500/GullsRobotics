@@ -125,7 +125,7 @@ void autonomous(void) {
   intakeLift.set(false);
 
   MoveBot(-98);
-  RotateBot(45);
+  RotateBot(-45);
   MoveBot(-16);
   SpinMotors(-100);
   wait(1200,msec);
