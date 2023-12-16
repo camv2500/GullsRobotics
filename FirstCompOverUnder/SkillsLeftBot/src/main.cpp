@@ -175,8 +175,8 @@ void usercontrol(void) {
   wait(800,msec);
   //shot balls end
 
-  //intakeLift.set(false);
-  //IntakeBalls(false);
+  intakeLift.set(false);
+  IntakeBalls(false);
 
   Controller1.ButtonL1.pressed(ToggleIntakeLift);
   Controller1.ButtonL2.pressed(ToggleIntakeFlip);
