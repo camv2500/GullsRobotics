@@ -118,23 +118,29 @@ void autonomous(void) {
   IntakeBalls(false);
 
   RotateBot(-90);
-  MoveBot(-16);
+  MoveBot(-14);
   RotateBot(45);
-  intakeFlip.set(false);
-  OuttakeBalls(true);
-  SpinMotors(-100);
-  wait(1400,msec); //change this to change how far bot goes to cross field
-  SpinMotors(0);
-  wait(200,msec);
-  RotateBot(45);
-  MoveBot(-25);
-  RotateBot(45);
+
   OuttakeBalls(false);
   intakeFlip.set(true);
   intakeLift.set(false);
+  MoveBot(-98);
+  RotateBot(45);
+  MoveBot(-16);
   SpinMotors(-100);
-  wait(200,msec);
+  wait(1200,msec);
   SpinMotors(0);
+
+// THIS IS GOOD FOR TEST HYPOTHETICALLY    qwe good?
+//check insta for vid     //we good                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+
+  // RotateBot(45);
+  // OuttakeBalls(false);
+  // intakeFlip.set(true);
+  // intakeLift.set(false);
+  // SpinMotors(-100);
+  // wait(200,msec);
+  // SpinMotors(0);
 }
 
 
@@ -185,8 +191,8 @@ void usercontrol(void) {
   wait(800,msec);
   //shot balls end
 
-  //intakeLift.set(false);
-  //IntakeBalls(false);
+  intakeLift.set(false);
+  IntakeBalls(false);
 
   Controller1.ButtonL1.pressed(ToggleIntakeLift);
   Controller1.ButtonL2.pressed(ToggleIntakeFlip);
