@@ -118,14 +118,16 @@ void autonomous(void) {
   IntakeBalls(false);
 
   RotateBot(90);
-  MoveBot(-16);
-  RotateBot(-45);
+  MoveBot(-20);
+  RotateBot(-36);
   OuttakeBalls(false);
   intakeFlip.set(true);
   intakeLift.set(false);
 
-  MoveBot(-98);
-  RotateBot(-45);
+  //i miss u guys
+
+  MoveBot(-86);
+  RotateBot(-40);
   MoveBot(-16);
   SpinMotors(-100);
   wait(1200,msec);

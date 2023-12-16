@@ -177,7 +177,7 @@ void usercontrol(void) {
     MoveBot(7);
   }
   */
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < 22; i++) {
     wait(150,msec);
     MoveBot(-7);
     ShootDiscs(0);
