@@ -40,11 +40,9 @@ competition Competition;
 void pre_auton(void) {
   // Initializing Robot Configuration. DO NOT REMOVE!
   vexcodeInit();
-  intakeLift.set(false);
-  intakeFlip.set(true);
-  wings.set(false);
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
+  intakeFlip.set(true);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -87,60 +85,55 @@ void autonomous(void) {
   ShootBall(100);
   */
 
-  SpinMotors(-100);
-  wait(200,msec);
-  intakeLift.set(true);
-  MoveBot(8);
-  RotateBot(45);
-  MoveBot(14);
-  RotateBot(-90);
-  intakeFlip.set(false);
-  IntakeBalls(true);
-  MoveBot(10);
-
   //shoot balls
 
-  for (int i = 0; i < 22; i++) {
-    wait(150,msec);
+  cataMotor.spinFor(forward, 100, deg);
+
+  RotateBot(-45);
+  MoveBot(14);
+  RotateBot(90);
+  IntakeBalls(true, 60);
+  MoveBot(14);
+  wait(200,msec);
+  MoveBot(-8);
+  RotateBot(-90);
+  intakeFlip.set(false);
+  IntakeBalls(false);
+  MoveBot(16);
+  RotateBot(-40);
+  MoveBot(8);
+
+  MoveBot(-8);
+  RotateBot(45);
+  intakeFlip.set(true);
+  IntakeBalls(true, 60);
+  MoveBot(-14);
+  ShootDiscs(0);
+  RotateBot(85);
+  MoveBot(10);
+
+  for (int i = 0; i < 1; i++) {
+    wait(300,msec);
     MoveBot(-7);
-    ShootDiscs(0);
+    //RotateBot(-46);
+    ShootDiscs(100);
+    //RotateBot(46);
     MoveBot(7);
   }
 
-  //last shot
-  wait(150,msec);
+  //last ball
+  wait(300,msec);
   MoveBot(-7);
-  ShootDiscs(0);
-  wait(600,msec);
-  //shot balls end
-
-  intakeLift.set(false);
+  //RotateBot(-46);
+  ShootDiscs(100);
+  //RotateBot(46);
+  
+  intakeFlip.set(false);
   IntakeBalls(false);
-
   RotateBot(-90);
-  MoveBot(-14);
-  RotateBot(45);
-
-  OuttakeBalls(false);
-  intakeFlip.set(true);
-  intakeLift.set(false);
-  MoveBot(-98);
-  RotateBot(45);
-  MoveBot(-16);
-  SpinMotors(-100);
-  wait(1200,msec);
-  SpinMotors(0);
-
-// THIS IS GOOD FOR TEST HYPOTHETICALLY    qwe good?
-//check insta for vid     //we good                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
-
-  // RotateBot(45);
-  // OuttakeBalls(false);
-  // intakeFlip.set(true);
-  // intakeLift.set(false);
-  // SpinMotors(-100);
-  // wait(200,msec);
-  // SpinMotors(0);
+  MoveBot(-12);
+  RotateBot(40);
+  MoveBot(-46);
 }
 
 
@@ -155,54 +148,15 @@ void autonomous(void) {
 /*---------------------------------------------------------------------------*/
 
 void usercontrol(void) {
-  isAuton = true; resetPID = true; resetTurning = true; resetFlywheel = true; isUser = false;
-  task StartAuton(autonController);
-
-  SpinMotors(-100);
-  wait(200,msec);
-  intakeLift.set(true);
-  MoveBot(6);
-  RotateBot(45);
-  MoveBot(18);
-  RotateBot(-90);
-  intakeFlip.set(false);
-  IntakeBalls(true);
-  MoveBot(10);
-
- /*
-  for (int i = 0; i < 22; i++) {
-    wait(150,msec);
-    MoveBot(-7);
-    ShootDiscs(0);
-    MoveBot(7);
-  }
-  */
-  for (int i = 0; i < 22; i++) {
-    wait(150,msec);
-    MoveBot(-7);
-    ShootDiscs(0);
-    MoveBot(7);
-  }
-
-  //last shot
-  wait(150,msec);
-  MoveBot(-7);
-  ShootDiscs(0);
-  wait(800,msec);
-  //shot balls end
-
-  intakeLift.set(false);
-  IntakeBalls(false);
-
-  Controller1.ButtonL1.pressed(ToggleIntakeLift);
   Controller1.ButtonL2.pressed(ToggleIntakeFlip);
   Controller1.ButtonR2.pressed(ToggleWings);
+  Controller1.ButtonB.pressed(ToggleEndgame);
   
   isAuton = false; resetPID = true; resetTurning = true; resetFlywheel = true; isUser = true;
   task StartUser(userController);
   cataMotor.spin(fwd,0,pct);
 
-  Controller1.rumble("-");
+  //Controller1.rumble("-");
 }
 
 //

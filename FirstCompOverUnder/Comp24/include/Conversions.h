@@ -22,7 +22,7 @@ double ConvertRadiansToDegrees(double radian) {
 
 //formula for how long of a wait between movements
 double CalculateWaitTimeMove(double n) {
-  n = 0.05 * n; n += 0.35; return n;
+  n = 0.05 * n; n += 0.25; return n;
 }
 
 //formula for how long of a wait between rotations to enable quick speed but ensure completion of task

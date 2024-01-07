@@ -4,8 +4,8 @@
 #include "RobotFunctions.h"
 #include <math.h>
 
-//variables for pid
-double kP = 0.07, kI = 0.00013, kD =.0125;
+//variables for pid //kI = 0.00013, kD =.0125
+double kP = 0.029, kI = 0.0, kD = 0.005;
 double error = 0, prevError = 0, integral = 0, derivative = 0;
 double power = 0, sensorValue = 0, lSensor = 0, rSensor = 0;
 
@@ -42,7 +42,7 @@ void RotateBot(double d) {
 //emptys the bot of the current ball
 void ShootDiscs(double waitTime = 0) {
   SpinMotors(0);
-  cataMotor.spinFor(fwd,80,deg);
+  cataMotor.spinFor(fwd,120,deg);
   wait(waitTime, msec);
   reloadTime = 0;
   isReloading = true;
@@ -59,9 +59,9 @@ void runPID(double pidSetDegrees, bool resetEncoders = false, bool isTurning = f
 
   if (pidSetDegrees != 0) {
     lSensor = (lMotor1.position(degrees) + lMotor2.position(degrees) + 
-      lMotor3.position(degrees) / 3);
+      lMotor3.position(degrees) + lMotor4.position(degrees) / 4);
     rSensor = (rMotor1.position(degrees) + rMotor2.position(degrees) + 
-      rMotor3.position(degrees) / 3);
+      rMotor3.position(degrees) + rMotor4.position(degrees) / 4);
     if (isTurning) {sensorValue = rSensor;}
     else {sensorValue = (lSensor + rSensor) / 2;}
     error = pidSetDegrees - sensorValue;
@@ -73,8 +73,8 @@ void runPID(double pidSetDegrees, bool resetEncoders = false, bool isTurning = f
     prevError = error;
 
     power = (error * kP) + (integral * kI) + (derivative * kD);
-    if (power > 25) {power = 25;}
-    if (power < -25) {power = -25;}
+    if (power > 70) {power = 70;}
+    if (power < -70) {power = -70;}
   
     if (isTurning) {SpinMotors(power, true);}
     else {SpinMotors(power);}
@@ -92,7 +92,7 @@ int autonController() {
     if (isPID) {
       //if the program is just now setting PID, it will run a first time setup, otherwise just keeps looping the same thing
       if (resetPID) {
-        setPID = ConvertInchesToRevolutions(setPID, 0.5);
+        setPID = ConvertInchesToRevolutions(setPID, 0.36);
         runPID(setPID, true);
         resetPID = false;
       }
@@ -103,8 +103,8 @@ int autonController() {
     if (isTurning) {
       //if the program is just now setting PID, it will run a first time setup, otherwise just keeps looping the same thing
       if (resetTurning) {
-        setTurning = ConvertDegreesToInches(setTurning, 10.4);
-        setTurning = ConvertInchesToRevolutions(setTurning, 0.5);
+        setTurning = ConvertDegreesToInches(setTurning, 12);
+        setTurning = ConvertInchesToRevolutions(setTurning, 0.36);
         runPID(setTurning, true, true);
         resetTurning = false;
       }
@@ -140,9 +140,11 @@ int userController() {
     lMotor1.spin(fwd, controlCurve(leftDrive), vex::velocityUnits::pct);
     lMotor2.spin(fwd, controlCurve(leftDrive), vex::velocityUnits::pct);
     lMotor3.spin(fwd, controlCurve(leftDrive), vex::velocityUnits::pct);
+    lMotor4.spin(fwd, controlCurve(leftDrive), vex::velocityUnits::pct);
     rMotor1.spin(fwd, controlCurve(rightDrive), vex::velocityUnits::pct);
     rMotor2.spin(fwd, controlCurve(rightDrive), vex::velocityUnits::pct);
     rMotor3.spin(fwd, controlCurve(rightDrive), vex::velocityUnits::pct);
+    rMotor4.spin(fwd, controlCurve(rightDrive), vex::velocityUnits::pct);
 
     if (Controller1.ButtonX.pressing()) {
       cataMotor.spinFor(fwd,45,deg);
