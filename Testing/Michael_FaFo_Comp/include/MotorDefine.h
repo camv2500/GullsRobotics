@@ -9,9 +9,10 @@ double mAllSpeedB = 0;
 
 
 void mBLeft(){
-    Ml1.spin(vex::forward, mLSpeed, pct);
-    Ml2.spin(vex::forward, mLSpeed, pct);
-    Ml3.spin(vex::forward, mLSpeed, pct);
+    leftFront.spin(vex::forward, mLSpeed, pct);
+    leftMiddle.spin(vex::forward, mLSpeed, pct);
+    leftRear.spin(vex::forward, mLSpeed, pct);
+    leftRaised.spin(vex::forward, mLSpeed, pct);
 }
 
 void setmLSpeed(double mL) {
@@ -29,12 +30,14 @@ double getmLSpeed() {
 //All Motors
 
 void mAll(){
-    Ml1.spin(vex::forward, mAllSpeedB, pct);
-    Mr1.spin(vex::forward, mAllSpeedB, pct);
-    Ml2.spin(vex::forward, mAllSpeedB, pct);
-    Mr2.spin(vex::forward, mAllSpeedB, pct);
-    Ml3.spin(vex::forward, mAllSpeedB, pct);
-    Mr3.spin(vex::forward, mAllSpeedB, pct);
+    leftFront.spin(vex::forward, mAllSpeedB, pct);
+    leftMiddle.spin(vex::forward, mAllSpeedB, pct);
+    leftRear.spin(vex::forward, mAllSpeedB, pct);
+    leftRaised.spin(vex::forward, mAllSpeedB, pct);
+    rightFront.spin(vex::forward, mAllSpeedB, pct);
+    rightMiddle.spin(vex::forward, mAllSpeedB, pct);
+    rightRear.spin(vex::forward, mAllSpeedB, pct);
+    rightRaised.spin(vex::forward, mAllSpeedB, pct);
 }
 
 void setmAllSpeed(double mA) {
@@ -54,9 +57,10 @@ mAllAvg = (Ml1.rotation(rev) + Ml2.rotation(rev) + Ml3.rotation(rev)+Mr1.rotatio
 
 
 void mBRight(){
-    Mr1.spin(vex::forward, mRSpeed, pct);
-    Mr2.spin(vex::forward, mRSpeed, pct);
-    Mr3.spin(vex::forward, mRSpeed, pct);  
+    rightFront.spin(vex::forward, mRSpeed, pct);
+    rightMiddle.spin(vex::forward, mRSpeed, pct);
+    rightRear.spin(vex::forward, mRSpeed, pct); 
+    rightRaised.spin(vex::forward, mRSpeed, pct);  
 }
 void setmRSpeed(double mR) {
   mRSpeed = mR;
@@ -70,12 +74,14 @@ double getmRSpeed() {
 
 //drive motor encoder reset
 void encoderReset(){
-  Mr1.setPosition(0,rev);
-  Mr2.setPosition(0,rev);
-  Mr3.setPosition(0,rev);
-  Ml1.setPosition(0,rev);
-  Ml2.setPosition(0,rev);
-  Ml3.setPosition(0,rev);
+  leftFront.setPosition(0,rev);
+  leftMiddle.setPosition(0,rev);
+  leftRear.setPosition(0,rev);
+  leftRaised.setPosition(0,rev);
+  rightFront.setPosition(0,rev);
+  rightMiddle.setPosition(0,rev);
+  rightRear.setPosition(0,rev);
+  rightRaised.setPosition(0,rev);
 }
 
 
