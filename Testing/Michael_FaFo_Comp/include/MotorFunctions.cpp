@@ -43,7 +43,7 @@ void pidCalcLBank( double kpl, double kil, double kdl,double TargetL){
   kIL=kil;
   kDL=kdl;
   targetL=TargetL;
-  mLAvg = (Ml1.rotation(rev) + Ml2.rotation(rev) + Ml3.rotation(rev))/3;
+  mLAvg = (leftFront.rotation(rev) + leftMiddle.rotation(rev) + leftRear.rotation(rev)+ leftRaised.rotation(rev))/4;
  errorL = targetL - mLAvg;
  /*intergalL += errorL;
 
@@ -67,7 +67,7 @@ void pidCalcRBank(double kpr, double kir, double kdr, double TargetR){
   kIR=kir;
   kDR=kdr; 
   targetR=TargetR;
-  mRAvg = (Mr1.rotation(rev) + Mr2.rotation(rev) + Mr3.rotation(rev))/3;
+  mRAvg = (rightFront.rotation(rev) + rightMiddle.rotation(rev) + rightRear.rotation(rev)+ rightRaised.rotation(rev))/4;
   
 
  errorR = targetR - mRAvg;
@@ -98,8 +98,7 @@ void pidCalcAll(double kpa, double kia, double kda, double TargetA){
   kIA=kia;
   kDA=kda; 
   targetA=TargetA;
-  mAllAvg = (Ml1.rotation(rev) + Ml2.rotation(rev) + Ml3.rotation(rev)+Mr1.rotation(rev) + Mr2.rotation(rev) + Mr3.rotation(rev))/6;
-
+  mAllAvg = (rightFront.rotation(rev) + rightMiddle.rotation(rev) + rightRear.rotation(rev)+ rightRaised.rotation(rev)+leftFront.rotation(rev) + leftMiddle.rotation(rev) + leftRear.rotation(rev)+ leftRaised.rotation(rev))/8;
 
  errorA = targetA - mAllAvg;
  

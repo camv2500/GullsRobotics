@@ -10,18 +10,20 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
-// Mr1                  motor         19              
-// Mr2                  motor         20              
-// Mr3                  motor         21              
-// Ml1                  motor         11              
-// Ml2                  motor         12              
-// Ml3                  motor         13              
+// rightMiddle          motor         19              
+// rightFront           motor         20              
+// rightRear            motor         18              
+// leftFront            motor         11              
+// leftMiddle           motor         12              
+// leftRear             motor         13              
 // Controller1          controller                    
-// Catapult             motor         4               
-// cataLimit            limit         G               
+// Catapult             motor         5               
+// cataLimit            limit         A               
 // liftPistons          digital_out   F               
 // intakePistons        digital_out   C               
 // Intake               motor         10              
+// rightRaised          motor         17              
+// leftRaised           motor         14              
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
@@ -235,13 +237,21 @@ if (intakeStatus == 1){
 else if (intakeStatus ==0){
   Intake.stop(coast);
 }
-//Arcade Drive
-  Ml1.spin(fwd,(Controller1.Axis3.position(pct)),pct);
-  Ml3.spin(fwd,(Controller1.Axis3.position(pct)),pct);
-  Ml2.spin(fwd,(Controller1.Axis3.position(pct)),pct);
-  Mr1.spin(fwd,(Controller1.Axis3.position(pct)),pct);
-  Mr2.spin(fwd,(Controller1.Axis3.position(pct)),pct);
-  Mr3.spin(fwd,(Controller1.Axis3.position(pct)),pct);
+
+
+//tank drive
+
+  //left Motors
+  leftFront.spin(fwd,(Controller1.Axis3.position(pct)),pct);
+  leftMiddle.spin(fwd,(Controller1.Axis3.position(pct)),pct);
+  leftRear.spin(fwd,(Controller1.Axis3.position(pct)),pct);
+  leftRaised.spin(fwd,(Controller1.Axis3.position(pct)),pct);
+
+  //right Motors
+  rightFront.spin(fwd,(Controller1.Axis2.position(pct)),pct);
+  rightMiddle.spin(fwd,(Controller1.Axis2.position(pct)),pct);
+  rightRear.spin(fwd,(Controller1.Axis2.position(pct)),pct);
+  rightRaised.spin(fwd,(Controller1.Axis2.position(pct)),pct);
 
 
     // ........................................................................
