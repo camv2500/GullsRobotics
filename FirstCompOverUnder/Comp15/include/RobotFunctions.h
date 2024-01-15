@@ -2,14 +2,15 @@
 #include "vex.h"
 
 bool intakeLiftState = false; bool intakeFlipState = true; bool wingsState = true; 
+bool endgameState = false;
 bool buttonYPressed = false; bool buttonXPressed = false; bool limitSwitch = false;
 
 //reset all the encoders
 void ResetEncoders() {
   lMotor1.setPosition(0,degrees); lMotor2.setPosition(0,degrees);
-  lMotor3.setPosition(0,degrees);
+  lMotor3.setPosition(0,degrees); lMotor4.setPosition(0,degrees);
   rMotor1.setPosition(0,degrees); rMotor2.setPosition(0,degrees);
-  rMotor3.setPosition(0,degrees);
+  rMotor3.setPosition(0,degrees); rMotor4.setPosition(0,degrees);
 }
 
 //spin the motors for pid
@@ -18,11 +19,13 @@ void SpinMotors(double power, bool isTurning = false) {
     lMotor1.spin(reverse, power, pct); rMotor1.spin(forward, power, pct);
     lMotor2.spin(reverse, power, pct); rMotor2.spin(forward, power, pct);
     lMotor3.spin(reverse, power, pct); rMotor3.spin(forward, power, pct);
+    lMotor4.spin(reverse, power, pct); rMotor4.spin(forward, power, pct);
   }
   else {
     lMotor1.spin(forward, power, pct); rMotor1.spin(forward, power, pct);
     lMotor2.spin(forward, power, pct); rMotor2.spin(forward, power, pct);
     lMotor3.spin(forward, power, pct); rMotor3.spin(forward, power, pct);
+    lMotor4.spin(forward, power, pct); rMotor4.spin(forward, power, pct);
   }
 }
 
@@ -53,7 +56,7 @@ void RaiseCatapultManual(bool catapultState = false, double catapultPower = 100)
 void ShootBallAuto() {
   if (buttonXPressed) {
     if (!cataLimit.pressing()) {
-      cataMotor.spin(fwd,60,pct);
+      cataMotor.spin(fwd,75,pct);
     }
     else {
       cataMotor.stop(brakeType::coast);
@@ -63,25 +66,7 @@ void ShootBallAuto() {
 }
 
 void setButtonXPressed() {
-  intakeLift.set(true);
-  intakeFlip.set(false);
   buttonXPressed = true;
-}
-
-void setButtonYPressed() {
-  intakeLift.set(true);
-  intakeFlip.set(false);
-}
-
-void ToggleIntakeLift() {
-  if (intakeLiftState == true) {
-    intakeLift.set(false);
-    intakeLiftState = false;
-  }
-  else {
-    intakeLift.set(true);
-    intakeLiftState = true;
-  }
 }
 
 void ToggleIntakeFlip() {
@@ -103,6 +88,17 @@ void ToggleWings() {
   else {
     wings.set(true);
     wingsState = true;
+  }
+}
+
+void ToggleEndgame() {
+  if (endgameState == true) {
+    endgame.set(false);
+    endgameState = false;
+  }
+  else {
+    endgame.set(true);
+    endgameState = true;
   }
 }
 
