@@ -151,17 +151,17 @@ int userController() {
       setButtonXPressed();
     } 
 
-    ShootBallAuto();
+    // ShootBallAuto();
 
-    // if (Controller1.ButtonX.pressing() && cataLimit.pressing()) {
-    //   cataMotor.spin(fwd,40,pct);
-    // }
-    // else if (cataLimit.pressing()) {
-    //   cataMotor.stop(brakeType::coast);
-    // }
-    // else {
-    //   cataMotor.spin(fwd,40,pct);
-    // }
+    if (Controller1.ButtonX.pressing() && cataLimit.pressing()) {
+      cataMotor.spin(fwd,40,pct);
+    }
+    else if (cataLimit.pressing()) {
+      cataMotor.stop(brakeType::hold);
+    }
+    else {
+      cataMotor.spin(fwd,40,pct);
+    }
 
     if(Controller1.ButtonR1.pressing()) {
       IntakeBalls(true, 100);
