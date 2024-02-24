@@ -1,9 +1,7 @@
 #include "robot-config.h"
 #include "vex.h"
 
-bool intakeLiftState = false; bool intakeFlipState = true; bool wingsState = true; 
-bool endgameState = false;
-bool buttonYPressed = false; bool buttonXPressed = false; bool limitSwitch = false;
+bool intakeFlipState = true; bool wingsState = true; 
 
 //reset all the encoders
 void ResetEncoders() {
@@ -41,34 +39,6 @@ void OuttakeBalls(bool outtakeState = false, double outtakePower = 100) {
   else {intakeRollerMotor.spin(fwd,0,pct);}
 }
 
-//manual catapult control, lowers it down to accept balls
-void LowerCatapultManual(bool catapultState = false, double catapultPower = 100) {
-  if (catapultState) {cataMotor.spin(fwd, catapultPower, pct);}
-  else {cataMotor.spin(fwd, 0, pct);}
-}
-
-//manual catapult control, raises the catapult until it reaches max raised. dont abuse
-void RaiseCatapultManual(bool catapultState = false, double catapultPower = 100) {
-  if (catapultState) {cataMotor.spin(reverse, catapultPower, pct);}
-  else {cataMotor.spin(fwd, 0, pct);}
-}
-
-void ShootBallAuto() {
-  if (buttonXPressed) {
-    if (!cataLimit.pressing()) {
-      cataMotor.spin(fwd,75,pct);
-    }
-    else {
-      cataMotor.stop(brakeType::coast);
-      buttonXPressed = false;
-    }
-  }
-}
-
-void setButtonXPressed() {
-  buttonXPressed = true;
-}
-
 void ToggleIntakeFlip() {
   if (intakeFlipState == true) {
     intakeFlip.set(false);
@@ -90,15 +60,3 @@ void ToggleWings() {
     wingsState = true;
   }
 }
-
-void ToggleEndgame() {
-  if (endgameState == true) {
-    endgame.set(false);
-    endgameState = false;
-  }
-  else {
-    endgame.set(true);
-    endgameState = true;
-  }
-}
-

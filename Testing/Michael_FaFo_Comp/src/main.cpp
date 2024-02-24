@@ -10,20 +10,20 @@
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
-// rightMiddle          motor         19              
-// rightFront           motor         20              
-// rightRear            motor         18              
-// leftFront            motor         11              
-// leftMiddle           motor         12              
-// leftRear             motor         13              
+// rightMiddle          motor         9               
+// rightFront           motor         10              
+// rightRear            motor         8               
+// leftFront            motor         1               
+// leftMiddle           motor         2               
+// leftRear             motor         3               
 // Controller1          controller                    
-// Catapult             motor         5               
+// Catapult             motor         21              
 // cataLimit            limit         A               
 // liftPistons          digital_out   F               
 // intakePistons        digital_out   C               
-// Intake               motor         10              
-// rightRaised          motor         17              
-// leftRaised           motor         14              
+// Intake               motor         5               
+// rightRaised          motor         6               
+// leftRaised           motor         4               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 
 #include "vex.h"
@@ -231,14 +231,21 @@ void usercontrol(void) {
 
 //intake
 
+/*
 if (intakeStatus == 1){
     Intake.spin(fwd,100,pct);
 }
 else if (intakeStatus ==0){
   Intake.stop(coast);
 }
+*/
 
-
+if(Controller1.ButtonR1.pressing()){
+  Intake.spin(fwd, 100, pct);
+}else if(Controller1.ButtonR2.pressing()){
+  Intake.spin(reverse, 100, pct);
+}else
+  Intake.stop(brakeType::brake);
 //tank drive
 
   //left Motors

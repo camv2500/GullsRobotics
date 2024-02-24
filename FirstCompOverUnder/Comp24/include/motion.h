@@ -166,6 +166,9 @@ int userController() {
     if(Controller1.ButtonR1.pressing()) {
       IntakeBalls(true, 100);
     }
+    else if (Controller1.ButtonR2.pressing()){
+      IntakeBalls(true, -100);
+    }
     else {
       IntakeBalls(false);
     }
