@@ -4,20 +4,21 @@
 #include "RobotFunctions.h"
 #include <math.h>
 
-//variables for pid //kI = 0.00013, kD =.0125
-double kP = 0.029, kI = 0.0, kD = 0.005;
+//variables for pid
+double kP = 0.029, kI = 0.0, kD = 0.009;
 double error = 0, prevError = 0, integral = 0, derivative = 0;
 double power = 0, sensorValue = 0, lSensor = 0, rSensor = 0;
 
 //variables for the auton task
-static bool isAuton = false, isPID = false, isTurning = false, isFlywheel = false, isUser = false; 
-static bool resetPID = true, resetTurning = true, resetFlywheel = true;
-static bool isReloading = false;
-static double setPID = 0, setTurning = 0, setPIDLeft = 0, setPIDRight = 0, reloadTime = 0;
+static bool isAuton = false, isPID = false, isTurning = false, isUser = false, isIntaking = false; 
+static bool resetPID = true, resetTurning = true;
+static double setPID = 0, setTurning = 0, setPIDLeft = 0, setPIDRight = 0;
+double movePower = 100, turnPower = 100;
 
 //moves the bot straight, d is the distance in inches, this program runs on the main thread
-void MoveBot(double d) {
+void MoveBot(double d, double p = 65) {
   setPID = d; //tell the pid loop the new destination
+  movePower = p;
   resetPID = true; //tell the pid to reset
   isPID = true; //tell the thread to turn on the pid
   if (d < 0) { d*= -1; } //now d is used to cacluate the wait time, so we make sure it is positive
@@ -28,8 +29,9 @@ void MoveBot(double d) {
 }
 
 //rotate the bot, d is the degrees of the rotation
-void RotateBot(double d) {
+void RotateBot(double d, double p = 65) {
   setTurning = d; //tell the pid loop the new destination
+  turnPower = p;
   resetTurning = true; //tell the pid to reset
   isTurning = true; //tell the turning pid loop to turn on on the other thread
   if (d < 0) { d*= -1; } //calculate wait time using d
@@ -39,14 +41,10 @@ void RotateBot(double d) {
   isTurning = false; //turn off the turning movement
 }
 
-//emptys the bot of the current ball
-void ShootDiscs(double waitTime = 0) {
-  SpinMotors(0);
-  cataMotor.spinFor(fwd,120,deg);
-  wait(waitTime, msec);
-  reloadTime = 0;
-  isReloading = true;
-} 
+void intake(double p = 100) {
+  IntakeBalls(true, p);
+  isIntaking = true;
+  }
 
 //the distance is in revolutions, the encoders should only be reset on first use
 void runPID(double pidSetDegrees, bool resetEncoders = false, bool isTurning = false) {
@@ -73,8 +71,14 @@ void runPID(double pidSetDegrees, bool resetEncoders = false, bool isTurning = f
     prevError = error;
 
     power = (error * kP) + (integral * kI) + (derivative * kD);
-    if (power > 70) {power = 70;}
-    if (power < -70) {power = -70;}
+    if (isTurning) {
+      if (power > turnPower) {power = turnPower;}
+      if (power < -turnPower) {power = -turnPower;}
+    }
+    else {
+      if (power > movePower) {power = movePower;}
+      if (power < -movePower) {power = -movePower;}
+    }
   
     if (isTurning) {SpinMotors(power, true);}
     else {SpinMotors(power);}
@@ -92,7 +96,7 @@ int autonController() {
     if (isPID) {
       //if the program is just now setting PID, it will run a first time setup, otherwise just keeps looping the same thing
       if (resetPID) {
-        setPID = ConvertInchesToRevolutions(setPID, 0.36);
+        setPID = ConvertInchesToRevolutions(setPID, 0.375);
         runPID(setPID, true);
         resetPID = false;
       }
@@ -103,23 +107,20 @@ int autonController() {
     if (isTurning) {
       //if the program is just now setting PID, it will run a first time setup, otherwise just keeps looping the same thing
       if (resetTurning) {
-        setTurning = ConvertDegreesToInches(setTurning, 12);
-        setTurning = ConvertInchesToRevolutions(setTurning, 0.36);
+        setTurning = ConvertDegreesToInches(setTurning, 11.012);
+        setTurning = ConvertInchesToRevolutions(setTurning, 0.375);
         runPID(setTurning, true, true);
         resetTurning = false;
       }
       else {runPID(setTurning, false, true);}
     }
 
-    //NEEDS WORK
-    if (isReloading) {
-      if (cataLimit.pressing()) {
-        cataMotor.spin(forward, 0, pct);
-        isReloading = false;
-      }
-      else {
-        cataMotor.spin(forward, 75, pct);
-      }
+    if (isIntaking) {
+        if(ballDetector.objectDistance(mm) < 100){
+          intakeRollerMotor.spinFor( 180, degrees, false );
+          IntakeBalls(false, 0);
+          isIntaking = false;
+        }
     }
 
    wait(5, msec);
@@ -130,40 +131,28 @@ int autonController() {
 int userController() {
   while(isUser) {
     //calculate the power for the left and right side independently using two joysticks (tank control)
-    double leftDrive = (Controller1.Axis3.value());
-    double rightDrive = (Controller1.Axis2.value());
 
     //calculate the power for the left and right side independently using one joystick (arcade control)
-    //double leftDrive = (Controller1.Axis2.value() - Controller1.Axis1.value());
-    //double rightDrive = (Controller1.Axis2.value() + Controller1.Axis1.value());
 
-    lMotor1.spin(fwd, controlCurve(leftDrive), vex::velocityUnits::pct);
-    lMotor2.spin(fwd, controlCurve(leftDrive), vex::velocityUnits::pct);
-    lMotor3.spin(fwd, controlCurve(leftDrive), vex::velocityUnits::pct);
-    lMotor4.spin(fwd, controlCurve(leftDrive), vex::velocityUnits::pct);
-    rMotor1.spin(fwd, controlCurve(rightDrive), vex::velocityUnits::pct);
-    rMotor2.spin(fwd, controlCurve(rightDrive), vex::velocityUnits::pct);
-    rMotor3.spin(fwd, controlCurve(rightDrive), vex::velocityUnits::pct);
-    rMotor4.spin(fwd, controlCurve(rightDrive), vex::velocityUnits::pct);
+    double leftDrive = (Controller1.Axis3.value() + Controller1.Axis1.value());
+    double rightDrive = (Controller1.Axis3.value() - Controller1.Axis1.value());
+    lMotor1.spin(fwd, leftDrive, vex::velocityUnits::pct);
+    lMotor2.spin(fwd, leftDrive, vex::velocityUnits::pct);
+    lMotor3.spin(fwd, leftDrive, vex::velocityUnits::pct);
+    lMotor4.spin(fwd, leftDrive, vex::velocityUnits::pct);
+    rMotor1.spin(fwd, rightDrive, vex::velocityUnits::pct);
+    rMotor2.spin(fwd, rightDrive, vex::velocityUnits::pct);
+    rMotor3.spin(fwd, rightDrive, vex::velocityUnits::pct);
+    rMotor4.spin(fwd, rightDrive, vex::velocityUnits::pct);
 
-    if (Controller1.ButtonX.pressing()) {
-      cataMotor.spinFor(fwd,45,deg);
-      setButtonXPressed();
-    } 
-
-    ShootBallAuto();
-
-    // if (Controller1.ButtonX.pressing() && cataLimit.pressing()) {
-    //   cataMotor.spin(fwd,40,pct);
-    // }
-    // else if (cataLimit.pressing()) {
-    //   cataMotor.stop(brakeType::coast);
-    // }
-    // else {
-    //   cataMotor.spin(fwd,40,pct);
-    // }
-
-    if(Controller1.ButtonR1.pressing()) {
+    
+    if(Controller1.ButtonR1.pressing() && ballDetector.objectDistance(mm) > 100) {
+      IntakeBalls(true, 100);
+    }
+    else if (Controller1.ButtonR2.pressing()) {
+      OuttakeBalls(true, 100);
+    }
+    else if (Controller1.ButtonA.pressing()) {
       IntakeBalls(true, 100);
     }
     else {

@@ -1,231 +1,3 @@
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// lMotor1              motor         1               
-// lMotor2              motor         2               
-// lMotor3              motor         3               
-// rMotor1              motor         10              
-// rMotor2              motor         9               
-// rMotor3              motor         8               
-// cataMotor            motor         21              
-// intakeRollerMotor    motor         5               
-// Controller1          controller                    
-// cataLimit            limit         F               
-// intakeFlip           digital_out   A               
-// wings                digital_out   C               
-// rMotor4              motor         20              
-// lMotor4              motor         14              
-// endgame              digital_out   B               
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// lMotor1              motor         1               
-// lMotor2              motor         2               
-// lMotor3              motor         3               
-// rMotor1              motor         10              
-// rMotor2              motor         9               
-// rMotor3              motor         8               
-// cataMotor            motor         21              
-// intakeRollerMotor    motor         5               
-// Controller1          controller                    
-// cataLimit            limit         F               
-// intakeFlip           digital_out   D               
-// wings                digital_out   C               
-// rMotor4              motor         20              
-// lMotor4              motor         14              
-// endgame              digital_out   B               
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// lMotor1              motor         1               
-// lMotor2              motor         2               
-// lMotor3              motor         3               
-// rMotor1              motor         10              
-// rMotor2              motor         9               
-// rMotor3              motor         8               
-// cataMotor            motor         21              
-// intakeRollerMotor    motor         5               
-// Controller1          controller                    
-// cataLimit            limit         A               
-// intakeFlip           digital_out   D               
-// wings                digital_out   C               
-// rMotor4              motor         20              
-// lMotor4              motor         14              
-// endgame              digital_out   B               
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// lMotor1              motor         1               
-// lMotor2              motor         2               
-// lMotor3              motor         3               
-// rMotor1              motor         10              
-// rMotor2              motor         9               
-// rMotor3              motor         8               
-// cataMotor            motor         21              
-// intakeRollerMotor    motor         5               
-// Controller1          controller                    
-// cataLimit            limit         A               
-// intakeFlip           digital_out   F               
-// wings                digital_out   C               
-// rMotor4              motor         20              
-// lMotor4              motor         14              
-// endgame              digital_out   B               
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// lMotor1              motor         1               
-// lMotor2              motor         2               
-// lMotor3              motor         3               
-// rMotor1              motor         10              
-// rMotor2              motor         9               
-// rMotor3              motor         17              
-// cataMotor            motor         21              
-// intakeRollerMotor    motor         5               
-// Controller1          controller                    
-// cataLimit            limit         A               
-// intakeFlip           digital_out   F               
-// wings                digital_out   C               
-// rMotor4              motor         20              
-// lMotor4              motor         14              
-// endgame              digital_out   B               
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// lMotor1              motor         1               
-// lMotor2              motor         2               
-// lMotor3              motor         3               
-// rMotor1              motor         10              
-// rMotor2              motor         9               
-// rMotor3              motor         17              
-// cataMotor            motor         21              
-// intakeRollerMotor    motor         5               
-// Controller1          controller                    
-// cataLimit            limit         A               
-// intakeFlip           digital_out   F               
-// wings                digital_out   C               
-// rMotor4              motor         20              
-// lMotor4              motor         14              
-// endgame              digital_out   B               
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// lMotor1              motor         1               
-// lMotor2              motor         2               
-// lMotor3              motor         3               
-// rMotor1              motor         10              
-// rMotor2              motor         19              
-// rMotor3              motor         17              
-// cataMotor            motor         21              
-// intakeRollerMotor    motor         5               
-// Controller1          controller                    
-// cataLimit            limit         A               
-// intakeFlip           digital_out   F               
-// wings                digital_out   C               
-// rMotor4              motor         20              
-// lMotor4              motor         14              
-// endgame              digital_out   B               
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// lMotor1              motor         1               
-// lMotor2              motor         2               
-// lMotor3              motor         3               
-// rMotor1              motor         18              
-// rMotor2              motor         19              
-// rMotor3              motor         17              
-// cataMotor            motor         21              
-// intakeRollerMotor    motor         5               
-// Controller1          controller                    
-// cataLimit            limit         A               
-// intakeFlip           digital_out   F               
-// wings                digital_out   C               
-// rMotor4              motor         20              
-// lMotor4              motor         14              
-// endgame              digital_out   B               
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// lMotor1              motor         1               
-// lMotor2              motor         2               
-// lMotor3              motor         13              
-// rMotor1              motor         18              
-// rMotor2              motor         19              
-// rMotor3              motor         17              
-// cataMotor            motor         21              
-// intakeRollerMotor    motor         5               
-// Controller1          controller                    
-// cataLimit            limit         A               
-// intakeFlip           digital_out   F               
-// wings                digital_out   C               
-// rMotor4              motor         20              
-// lMotor4              motor         14              
-// endgame              digital_out   B               
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// lMotor1              motor         1               
-// lMotor2              motor         12              
-// lMotor3              motor         13              
-// rMotor1              motor         18              
-// rMotor2              motor         19              
-// rMotor3              motor         17              
-// cataMotor            motor         21              
-// intakeRollerMotor    motor         5               
-// Controller1          controller                    
-// cataLimit            limit         A               
-// intakeFlip           digital_out   F               
-// wings                digital_out   C               
-// rMotor4              motor         20              
-// lMotor4              motor         14              
-// endgame              digital_out   B               
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// lMotor1              motor         1               
-// lMotor2              motor         12              
-// lMotor3              motor         13              
-// rMotor1              motor         18              
-// rMotor2              motor         19              
-// rMotor3              motor         17              
-// cataMotor            motor         21              
-// intakeRollerMotor    motor         10              
-// Controller1          controller                    
-// cataLimit            limit         A               
-// intakeFlip           digital_out   F               
-// wings                digital_out   C               
-// rMotor4              motor         20              
-// lMotor4              motor         14              
-// endgame              digital_out   B               
-// ---- END VEXCODE CONFIGURED DEVICES ----
-// ---- START VEXCODE CONFIGURED DEVICES ----
-// Robot Configuration:
-// [Name]               [Type]        [Port(s)]
-// lMotor1              motor         1               
-// lMotor2              motor         12              
-// lMotor3              motor         13              
-// rMotor1              motor         18              
-// rMotor2              motor         19              
-// rMotor3              motor         17              
-// cataMotor            motor         5               
-// intakeRollerMotor    motor         10              
-// Controller1          controller                    
-// cataLimit            limit         A               
-// intakeFlip           digital_out   F               
-// wings                digital_out   C               
-// rMotor4              motor         20              
-// lMotor4              motor         14              
-// endgame              digital_out   B               
-// ---- END VEXCODE CONFIGURED DEVICES ----
 #include "vex.h"
 
 // ---- START VEXCODE CONFIGURED DEVICES ----
@@ -270,7 +42,6 @@ void pre_auton(void) {
   vexcodeInit();
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
-  intakeFlip.set(true);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -284,7 +55,7 @@ void pre_auton(void) {
 /*---------------------------------------------------------------------------*/
 
 void autonomous(void) {
-  isAuton = true; resetPID = true; resetTurning = true; resetFlywheel = true; isUser = false;
+  isAuton = true; resetPID = true; resetTurning = true; isUser = false;
   task StartAuton(autonController);
 
   /*
@@ -308,60 +79,12 @@ void autonomous(void) {
   //second paramter tells power to send motor if desired, default 100
   OuttakeBalls(true, 70);
 
-  //shoots the current ball and gets the program ready to reload the catapult
-  //if given a parameter, the program will wait that long in milliseconds after shooting to continue. default 0
-  ShootBall(100);
   */
 
-  //shoot balls
-
-  cataMotor.spinFor(forward, 100, deg);
-
-  RotateBot(-45);
-  MoveBot(14);
-  RotateBot(90);
-  IntakeBalls(true, 60);
-  MoveBot(14);
-  wait(200,msec);
-  MoveBot(-8);
-  RotateBot(-90);
-  intakeFlip.set(false);
-  IntakeBalls(false);
-  MoveBot(16);
-  RotateBot(-40);
-  MoveBot(8);
-
-  MoveBot(-8);
-  RotateBot(45);
-  intakeFlip.set(true);
-  IntakeBalls(true, 60);
-  MoveBot(-14);
-  ShootDiscs(0);
-  RotateBot(85);
-  MoveBot(10);
-
-  for (int i = 0; i < 1; i++) {
-    wait(300,msec);
-    MoveBot(-7);
-    //RotateBot(-46);
-    ShootDiscs(100);
-    //RotateBot(46);
-    MoveBot(7);
-  }
-
-  //last ball
-  wait(300,msec);
-  MoveBot(-7);
-  //RotateBot(-46);
-  ShootDiscs(100);
-  //RotateBot(46);
-  
-  intakeFlip.set(false);
-  IntakeBalls(false);
-  RotateBot(-90);
-  MoveBot(-12);
-  RotateBot(40);
-  MoveBot(-46);
+  //check intaking
+  intake(100);
+  MoveBot(24);
+  //stop checking
 }
 
 
@@ -377,12 +100,57 @@ void autonomous(void) {
 
 void usercontrol(void) {
   Controller1.ButtonL2.pressed(ToggleIntakeFlip);
-  Controller1.ButtonR2.pressed(ToggleWings);
-  Controller1.ButtonB.pressed(ToggleEndgame);
+  Controller1.ButtonL1.pressed(ToggleWings);
+
+  isAuton = true; resetPID = true; resetTurning = true; isUser = false;
+  task StartAuton(autonController);
+
   
-  isAuton = false; resetPID = true; resetTurning = true; resetFlywheel = true; isUser = true;
+  // wings.set(true);
+  // MoveBot(8,100);
+  // wait(100, msec);
+  // intake(80);
+  // MoveBot(10, 50);
+  // wait(200, msec);
+
+  // MoveBot(50,50);
+  // RotateBot(45, 30);
+  // MoveBot(10, 30);
+  // OuttakeBalls(true);
+  // wait(1000, msec);
+  // OuttakeBalls(false);
+  // MoveBot(5,50);
+  // RotateBot(-90,30);
+  // intake(100);
+  // MoveBot(10,20);
+  // wait(1000, msec);
+  // MoveBot(-15,30);
+  // RotateBot(90,30);
+  // OuttakeBalls(true);
+  // wait(1000, msec);
+  // OuttakeBalls(false);
+  // intakeFlip.set(true);
+  // wings.set(false);
+  // MoveBot(7,50);
+  // RotateBot(-45, 30);
+  // intakeFlip.set(false);
+  // MoveBot(14, 50);
+  // RotateBot(90, 30);
+  // MoveBot(20,100);
+  // MoveBot(-10, 50);
+  // MoveBot(20,100);
+  // MoveBot(-10, 40);
+  // RotateBot(90, 30);
+  // wings.set(true);
+  // MoveBot(20,100);
+  // wait(100,msec);
+  // MoveBot(24,50);
+  // RotateBot(45, 20);
+  // MoveBot(15, 20);
+
+  
+  isAuton = false; resetPID = true; resetTurning = true; isUser = true;
   task StartUser(userController);
-  cataMotor.spin(fwd,0,pct);
 
   //Controller1.rumble("-");
 }
