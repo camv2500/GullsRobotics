@@ -134,8 +134,8 @@ int userController() {
 
     //calculate the power for the left and right side independently using one joystick (arcade control)
 
-    double leftDrive = (Controller1.Axis3.value() + Controller1.Axis1.value());
-    double rightDrive = (Controller1.Axis3.value() - Controller1.Axis1.value());
+    double leftDrive = (-Controller1.Axis3.value() + Controller1.Axis1.value());
+    double rightDrive = (-Controller1.Axis3.value() - Controller1.Axis1.value());
     lMotor1.spin(fwd, leftDrive, vex::velocityUnits::pct);
     lMotor2.spin(fwd, leftDrive, vex::velocityUnits::pct);
     lMotor3.spin(fwd, leftDrive, vex::velocityUnits::pct);
@@ -149,15 +149,22 @@ int userController() {
     if(Controller1.ButtonR1.pressing() && ballDetector.objectDistance(mm) > 100) {
       IntakeBalls(true, 100);
     }
-    else if (Controller1.ButtonR2.pressing()) {
+    else if (Controller1.ButtonR1.pressing()) {
       OuttakeBalls(true, 100);
     }
-    else if (Controller1.ButtonA.pressing()) {
+    else if (Controller1.ButtonR2.pressing()) {
       IntakeBalls(true, 100);
     }
     else {
       IntakeBalls(false);
     }
+
+    if(Controller1.ButtonLeft.pressing()){
+      DigitalOutC.set(true);
+    }else if(Controller1.ButtonRight.pressing()){
+      DigitalOutC.set(false);
+    }
+
 
     wait(10,msec);
   }

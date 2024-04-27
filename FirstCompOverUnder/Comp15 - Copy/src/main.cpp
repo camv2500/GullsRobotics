@@ -1,5 +1,7 @@
 #include "vex.h"
 
+/*This is a copy of the comp15 code adding the pneumatics.*/
+
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
@@ -14,8 +16,10 @@
 // Controller1          controller                    
 // cataLimit            limit         H               
 // intakeLift           digital_out   F               
-// intakeFlip           digital_out   C               
-// wings                digital_out   A               
+// intakeFlip           digital_out   C     Commented Out          
+// wings                digital_out   A     Commented Out          
+// DigitalOutA          digital_out   A               
+// DigitalOutB          digital_out   B               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 #include "motion.h"
 #include "math.h"
@@ -101,6 +105,22 @@ void autonomous(void) {
 void usercontrol(void) {
   Controller1.ButtonL2.pressed(ToggleIntakeFlip);
   Controller1.ButtonL1.pressed(ToggleWings);
+
+  // if(Controller1.ButtonL1.pressing()){
+  //     DigitalOutA.set(true);
+  //     printf("L1 Pressed");
+  //   }else if(Controller1.ButtonL2.pressing()){
+  //     DigitalOutA.set(false);
+  //     printf("L2 Pressed");
+  //   }
+    
+  //   if(Controller1.ButtonR1.pressing()){
+  //     DigitalOutB.set(true);
+  //     printf("R1 Pressed");
+  //   }else if(Controller1.ButtonR2.pressing()){
+  //     DigitalOutB.set(false);
+  //     printf("R2 Pressed");
+  //   }
 
   isAuton = true; resetPID = true; resetTurning = true; isUser = false;
   task StartAuton(autonController);
