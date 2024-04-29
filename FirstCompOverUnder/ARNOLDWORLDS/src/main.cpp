@@ -152,7 +152,7 @@ void autonomous(void) {
   IntakeBalls(true, 100);
   wait(200, msec);
 
-  for (int i = 0; i < 4; i++) {
+  for (int i = 0; i < 8; i++) {
     RotateBot(-88, 50);
     IntakeBalls(false, 100);
     OuttakeBalls(true, 100);
@@ -166,7 +166,14 @@ void autonomous(void) {
     IntakeBalls(true, 100);
     wait(200, msec);
   }
-  //
+
+  RotateBot(180);
+  MoveBot(17);
+  RotateBot(60);
+  MoveBot(75);
+  RotateBot(60);
+  MoveBot(50, 100);
+  MoveBot(-10, 100);
   // Stop Check
 }
 
