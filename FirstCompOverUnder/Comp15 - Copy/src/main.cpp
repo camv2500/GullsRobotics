@@ -84,10 +84,35 @@ void autonomous(void) {
   OuttakeBalls(true, 70);
 
   */
-
+  OuttakeBalls(true, 100);
+  DigitalOutB.set(true);
+  wait(300, msec);
+  MoveBot(-18, 45);
+  MoveBot(35, 45);
+  RotateBot(100, 20);
+  MoveBot(-28, 45);
   //check intaking
-  intake(100);
-  MoveBot(24);
+  wait(2000, msec);
+  RotateBot(220, 50);
+
+
+  OuttakeBalls(false, 100);
+  IntakeBalls(true, 100);
+  wait(500, msec);
+  MoveBot(-3, 20);
+  RotateBot(-88, 50);
+
+  DigitalOutA.set(true);
+  wait(200, msec);
+  IntakeBalls(false, 100);
+  OuttakeBalls(true, 100);
+  MoveBot(-45, 30);
+  DigitalOutA.set(false);
+  MoveBot(24, 20);
+  RotateBot(88, 50);
+  OuttakeBalls(false, 100);
+  IntakeBalls(true, 100);
+  wait(200, msec);
   //stop checking
 }
 
@@ -104,69 +129,7 @@ void autonomous(void) {
 
 void usercontrol(void) {
   Controller1.ButtonL2.pressed(ToggleIntakeFlip);
-  Controller1.ButtonL1.pressed(ToggleWings);
-
-  // if(Controller1.ButtonL1.pressing()){
-  //     DigitalOutA.set(true);
-  //     printf("L1 Pressed");
-  //   }else if(Controller1.ButtonL2.pressing()){
-  //     DigitalOutA.set(false);
-  //     printf("L2 Pressed");
-  //   }
-    
-  //   if(Controller1.ButtonR1.pressing()){
-  //     DigitalOutB.set(true);
-  //     printf("R1 Pressed");
-  //   }else if(Controller1.ButtonR2.pressing()){
-  //     DigitalOutB.set(false);
-  //     printf("R2 Pressed");
-  //   }
-
-  isAuton = true; resetPID = true; resetTurning = true; isUser = false;
-  task StartAuton(autonController);
-
-  
-  // wings.set(true);
-  // MoveBot(8,100);
-  // wait(100, msec);
-  // intake(80);
-  // MoveBot(10, 50);
-  // wait(200, msec);
-
-  // MoveBot(50,50);
-  // RotateBot(45, 30);
-  // MoveBot(10, 30);
-  // OuttakeBalls(true);
-  // wait(1000, msec);
-  // OuttakeBalls(false);
-  // MoveBot(5,50);
-  // RotateBot(-90,30);
-  // intake(100);
-  // MoveBot(10,20);
-  // wait(1000, msec);
-  // MoveBot(-15,30);
-  // RotateBot(90,30);
-  // OuttakeBalls(true);
-  // wait(1000, msec);
-  // OuttakeBalls(false);
-  // intakeFlip.set(true);
-  // wings.set(false);
-  // MoveBot(7,50);
-  // RotateBot(-45, 30);
-  // intakeFlip.set(false);
-  // MoveBot(14, 50);
-  // RotateBot(90, 30);
-  // MoveBot(20,100);
-  // MoveBot(-10, 50);
-  // MoveBot(20,100);
-  // MoveBot(-10, 40);
-  // RotateBot(90, 30);
-  // wings.set(true);
-  // MoveBot(20,100);
-  // wait(100,msec);
-  // MoveBot(24,50);
-  // RotateBot(45, 20);
-  // MoveBot(15, 20);
+  Controller1.ButtonL1.pressed(ToggleWings);   
 
   
   isAuton = false; resetPID = true; resetTurning = true; isUser = true;

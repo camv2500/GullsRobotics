@@ -81,10 +81,42 @@ void autonomous(void) {
 
   */
 
-  //check intaking
-  intake(100);
-  MoveBot(24);
-  //stop checking
+  //lower intake? intake ball
+  intakeFlip.set(true);
+  intake();
+  wait(1500,msec);
+
+  //move back, rotate
+  MoveBot(-8);
+  RotateBot(110);
+
+  //spin around, push in
+  MoveBot(-14);
+  RotateBot(-65);
+
+  //output the ball
+  IntakeBalls(100);
+  passThru.spin(reverse, 100, pct);
+  wait(2500, msec);
+  intakeFlip.set(false);
+
+  MoveBot(-12, 100);
+  wait(1000, msec);
+
+  //back up, slam, back up, slam
+  MoveBot(11, 40);
+  MoveBot(-18, 100);
+  wait(200, msec);
+  MoveBot(5);
+
+  //go touch bar
+  RotateBot(50);
+  wait(500,msec);
+  intakeFlip.set(true);
+  MoveBot(8);
+  RotateBot(-90);
+  intakeFlip.set(false);
+  intake();
 }
 
 
@@ -99,12 +131,16 @@ void autonomous(void) {
 /*---------------------------------------------------------------------------*/
 
 void usercontrol(void) {
-  Controller1.ButtonL1.pressed(ToggleIntakeFlip);
-  Controller1.ButtonL2.pressed(ToggleWings);
+  Controller1.ButtonRight.pressed(ToggleIntakeFlip);
+  Controller1.ButtonLeft.pressed(ToggleWings);
 
-  isAuton = true; resetPID = true; resetTurning = true; isUser = false;
+  isAuton = false; resetPID = true; resetTurning = true; isUser = true;
+  task StartUser(userController);
+
+  /* isAuton = true; resetPID = true; resetTurning = true; isUser = false;
   task StartAuton(autonController);
-  MoveBot(34,50);
+  intakeFlip.set(true);
+  MoveBot(30,50);
   RotateBot(115,40);
   MoveBot(-3, 100);
   IntakeBalls(100);
@@ -155,7 +191,7 @@ void usercontrol(void) {
   MoveBot(10,50);
   RotateBot(60, 30);
   MoveBot(20, 50);
-  RotateBot(230, 30);
+  RotateBot(230, 30);*/
 
   //MoveBot(40, 50);
 
@@ -201,11 +237,7 @@ void usercontrol(void) {
   // RotateBot(45, 20);
   // MoveBot(15, 20);
 
-  
-  isAuton = false; resetPID = true; resetTurning = true; isUser = true;
-  task StartUser(userController);
-
-  //Controller1.rumble("-");
+  Controller1.rumble("-");
 }
 
 //
