@@ -84,33 +84,69 @@ void autonomous(void) {
   OuttakeBalls(true, 70);
 
   */
-  OuttakeBalls(true, 100);
-  DigitalOutB.set(true);
-  wait(300, msec);
-  MoveBot(-18, 45);
-  MoveBot(35, 45);
-  RotateBot(100, 20);
-  MoveBot(-28, 45);
+  // OuttakeBalls(true, 100);
+  // DigitalOutB.set(true);
+  // wait(300, msec);
+  // MoveBot(-18, 45);
+  // MoveBot(35, 45);
+  // RotateBot(100, 20);
+  // MoveBot(-28, 45);
   //check intaking
-  wait(2000, msec);
-  RotateBot(220, 50);
+  // wait(2000, msec);
+  // RotateBot(220, 50);
 
 
-  OuttakeBalls(false, 100);
-  IntakeBalls(true, 100);
-  wait(250, msec);
-  MoveBot(-3, 20);
-  RotateBot(-88, 50);
+  // OuttakeBalls(false, 100);
+  // IntakeBalls(true, 100);
+  // wait(250, msec);
+  // MoveBot(-3, 20);
+  // RotateBot(-88, 50);
 
-  DigitalOutA.set(true);
+  // DigitalOutA.set(true);
+  // wait(200, msec);
+  // IntakeBalls(false, 100);
+  // OuttakeBalls(true, 100);
+  // MoveBot(-35, 25);
+  // wait(250, msec);
+
+  // DigitalOutA.set(false);
+  // MoveBot(24, 20);
+  // RotateBot(88, 50);
+  // OuttakeBalls(false, 100);
+  // IntakeBalls(true, 100);
+  // wait(200, msec);
+
+  // for (int i = 0; i < 4; i++) {
+  //   RotateBot(-88, 50);
+  //   IntakeBalls(false, 100);
+  //   OuttakeBalls(true, 100);
+  //   DigitalOutA.set(true);
+  //   MoveBot(-24, 20);
+  //   wait(200, msec);
+  //   DigitalOutA.set(false);
+  //   MoveBot(24, 20);
+  //   RotateBot(88, 50);
+  //   OuttakeBalls(false, 100);
+  //   IntakeBalls(true, 100);
+  //   wait(200, msec);
+  // }
+
+  // RotateBot(180);
+  // MoveBot(17);
+  // RotateBot(60);
+  // MoveBot(75);
+  // RotateBot(60);
+  // MoveBot(40, 100);
+  //stop checking
+  // Check
+  DigitalOutB.set(true);
   wait(200, msec);
-  IntakeBalls(false, 100);
+  DigitalOutA.set(true);
   OuttakeBalls(true, 100);
-  MoveBot(-35, 25);
-  wait(250, msec);
+  MoveBot(-10, 20);
 
   DigitalOutA.set(false);
-  MoveBot(24, 20);
+  MoveBot(15, 20);
   RotateBot(88, 50);
   OuttakeBalls(false, 100);
   IntakeBalls(true, 100);
@@ -121,23 +157,17 @@ void autonomous(void) {
     IntakeBalls(false, 100);
     OuttakeBalls(true, 100);
     DigitalOutA.set(true);
-    MoveBot(-24, 20);
+    MoveBot(-15, 20);
     wait(200, msec);
     DigitalOutA.set(false);
-    MoveBot(24, 20);
+    MoveBot(15, 20);
     RotateBot(88, 50);
     OuttakeBalls(false, 100);
     IntakeBalls(true, 100);
     wait(200, msec);
   }
-
-  RotateBot(180);
-  MoveBot(17);
-  RotateBot(60);
-  MoveBot(75);
-  RotateBot(60);
-  MoveBot(40, 100);
-  //stop checking
+  //
+  // Stop Check
 }
 
 

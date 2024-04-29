@@ -1,25 +1,21 @@
 #include "vex.h"
 
-/*This is a copy of the comp15 code adding the pneumatics.*/
-
 // ---- START VEXCODE CONFIGURED DEVICES ----
 // Robot Configuration:
 // [Name]               [Type]        [Port(s)]
-// lMotor1              motor         11              
-// lMotor2              motor         12              
-// lMotor3              motor         13              
-// rMotor1              motor         18              
-// rMotor2              motor         19              
-// rMotor3              motor         20              
-// cataMotor            motor         5               
-// intakeRollerMotor    motor         10              
+// lMotor1              motor         10              
+// lMotor2              motor         9               
+// lMotor3              motor         8               
+// lMotor4              motor         7               
+// rMotor1              motor         6               
+// rMotor2              motor         4               
+// rMotor3              motor         3               
+// rMotor4              motor         2               
+// cataMotor            motor         1               
+// intakeRollerMotor    motor         19              
+// endGame              digital_out   A               
 // Controller1          controller                    
-// cataLimit            limit         H               
-// intakeLift           digital_out   F               
-// intakeFlip           digital_out   C     Commented Out          
-// wings                digital_out   A     Commented Out          
-// DigitalOutA          digital_out   A               
-// DigitalOutB          digital_out   B               
+// autonPiston          digital_out   B               
 // ---- END VEXCODE CONFIGURED DEVICES ----
 #include "motion.h"
 #include "math.h"
@@ -43,6 +39,8 @@ competition Competition;
 
 void pre_auton(void) {
   // Initializing Robot Configuration. DO NOT REMOVE!
+  OpticalRight.setLightPower(10, percent);
+  OpticalLeft.setLightPower(10, percent);
   vexcodeInit();
   // All activities that occur before the competition starts
   // Example: clearing encoders, setting servo positions, ...
@@ -59,85 +57,35 @@ void pre_auton(void) {
 /*---------------------------------------------------------------------------*/
 
 void autonomous(void) {
-  isAuton = true; resetPID = true; resetTurning = true; isUser = false;
+  isAuton = true; resetPID = true; resetTurning = true; resetFlywheel = true; isUser = false;
   task StartAuton(autonController);
+  double timer = 0;
 
-  /*
-  //example of how to use functions
-
-  //moves the bot the provided amount of inches (roughly)
-  //i wouldnt use a tape measurer to get the distance for these but rather tune each one
-  //until it moves the way you want
-  MoveBot(12);
-
-  //rotates the bot clockwise? the amout of degrees provided (even more roughly)
-  //this function needs to be tuned to how you want even more than movebot
-  RotateBot(90);
-
-  //send true to turn the intake motor on, false to turn it off
-  //can also use second parameter to tell a specific power, default 100
-  IntakeBalls(true, 40);
-
-  //spins the intake backwards to outake any balls
-  //not sure if will be used in auton but will be used in user
-  //second paramter tells power to send motor if desired, default 100
-  OuttakeBalls(true, 70);
-
-  */
-  OuttakeBalls(true, 100);
-  DigitalOutB.set(true);
-  wait(300, msec);
-  MoveBot(-18, 45);
-  MoveBot(35, 45);
-  RotateBot(100, 20);
-  MoveBot(-28, 45);
-  //check intaking
-  wait(2000, msec);
-  RotateBot(220, 50);
-
-
-  OuttakeBalls(false, 100);
-  IntakeBalls(true, 100);
-  wait(250, msec);
-  MoveBot(-3, 20);
-  RotateBot(-88, 50);
-
-  DigitalOutA.set(true);
-  wait(200, msec);
-  IntakeBalls(false, 100);
-  OuttakeBalls(true, 100);
-  MoveBot(-35, 25);
-  wait(250, msec);
-
-  DigitalOutA.set(false);
-  MoveBot(24, 20);
-  RotateBot(88, 50);
-  OuttakeBalls(false, 100);
-  IntakeBalls(true, 100);
-  wait(200, msec);
-
-  for (int i = 0; i < 4; i++) {
-    RotateBot(-88, 50);
-    IntakeBalls(false, 100);
-    OuttakeBalls(true, 100);
-    DigitalOutA.set(true);
-    MoveBot(-24, 20);
-    wait(200, msec);
-    DigitalOutA.set(false);
-    MoveBot(24, 20);
-    RotateBot(88, 50);
-    OuttakeBalls(false, 100);
-    IntakeBalls(true, 100);
-    wait(200, msec);
+  MoveBot(-21);
+  RotateBot(84);
+  MoveBot(-7.5);
+  while(OpticalRight.hue() > 5 && OpticalRight.hue() < 25){
+    if(timer >= 200) {
+      SpinMotors(-10);
+    }
+    SpinRoller(300);
+    timer+=10;
   }
+  MoveBot(6);
+  RotateBot(90);
+  SpinMotors(0);
+  MoveBot(-42);
+  RotateBot(45);
+  IntakeDiscs();
+  MoveBot(-10);
+  vex::task::sleep(2000);
+  IntakeDiscs(true);
+  MoveBot(10);
+  RotateBot(-45);
+  MoveBot(42);
 
-  RotateBot(180);
-  MoveBot(17);
-  RotateBot(60);
-  MoveBot(75);
-  RotateBot(60);
-  MoveBot(40, 100);
-  //stop checking
+  
+  // ShootDiscs();
 }
 
 
@@ -152,14 +100,8 @@ void autonomous(void) {
 /*---------------------------------------------------------------------------*/
 
 void usercontrol(void) {
-  Controller1.ButtonL2.pressed(ToggleIntakeFlip);
-  Controller1.ButtonL1.pressed(ToggleWings);   
-
-  
-  isAuton = false; resetPID = true; resetTurning = true; isUser = true;
+  isAuton = false; resetPID = true; resetTurning = true; resetFlywheel = true; isUser = true;
   task StartUser(userController);
-
-  //Controller1.rumble("-");
 }
 
 //
