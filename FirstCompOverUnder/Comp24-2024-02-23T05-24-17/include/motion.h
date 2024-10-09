@@ -45,7 +45,7 @@ void intake(double p = 100) {
   IntakeBalls(true, p);
   passThru.spin(reverse, 100, pct);
   isIntaking = true;
-  }
+}
 
 //the distance is in revolutions, the encoders should only be reset on first use
 void runPID(double pidSetDegrees, bool resetEncoders = false, bool isTurning = false) {
@@ -169,7 +169,7 @@ int userController() {
       OuttakeBalls(true, 100);
       passThru.spin(fwd, 100, pct);
     }
-    else if (Controller1.ButtonA.pressing()) {
+    else if (Controller1.ButtonY.pressing()) {
       IntakeBalls(true, 100);
       passThru.spin(reverse, 100, pct);
     }

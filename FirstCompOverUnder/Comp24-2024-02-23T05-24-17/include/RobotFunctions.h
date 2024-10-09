@@ -1,7 +1,7 @@
 #include "robot-config.h"
 #include "vex.h"
 
-bool intakeFlipState = true; bool wingsState = true; 
+bool intakeFlipState = false; bool wingsState = true; 
 
 //reset all the encoders
 void ResetEncoders() {

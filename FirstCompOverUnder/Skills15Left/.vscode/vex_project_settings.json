@@ -1,0 +1,18 @@
+{
+	"project": {
+		"name": "SkillsLeftBot",
+		"slot": 2,
+		"description": "The Auton skills routine for the bot that starts on the left side of the driver",
+		"platform": "V5",
+		"creationDate": "Fri, 26 Apr 2024 23:44:20 GMT",
+		"language": "cpp",
+		"sdkVersion": "V5_20240223_11_00_00",
+		"cpp": {
+			"includePath": []
+		}
+	},
+	"extension": {
+		"version": "0.5.0",
+		"json": 1
+	}
+}

@@ -15,8 +15,8 @@ motor lMotor4 = motor(PORT10, ratio18_1, false);
 
 motor rMotor1 = motor(PORT4, ratio6_1, false);
 motor rMotor2 = motor(PORT11, ratio6_1, false);
-motor rMotor3 = motor(PORT13, ratio6_1, false);
-motor rMotor4 = motor(PORT17, ratio18_1, true);
+motor rMotor3 = motor(PORT17, ratio6_1, false);
+motor rMotor4 = motor(PORT20, ratio18_1, true);
 
 motor passThru = motor(PORT12, ratio6_1, true);
 motor intakeRollerMotor = motor(PORT2, ratio18_1, false);

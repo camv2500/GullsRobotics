@@ -41,22 +41,22 @@ void OuttakeBalls(bool outtakeState = false, double outtakePower = 100) {
 
 void ToggleIntakeFlip() {
   if (intakeFlipState == true) {
-    intakeFlip.set(false);
+    DigitalOutA.set(false);
     intakeFlipState = false;
   }
   else {
-    intakeFlip.set(true);
+    DigitalOutA.set(true);
     intakeFlipState = true;
   }
 }
 
 void ToggleWings() {
   if (wingsState == true) {
-    wings.set(false);
+    DigitalOutB.set(false);
     wingsState = false;
   }
   else {
-    wings.set(true);
+    DigitalOutB.set(true);
     wingsState = true;
   }
 }
