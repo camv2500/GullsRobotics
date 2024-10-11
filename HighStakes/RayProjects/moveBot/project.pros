@@ -310,7 +310,7 @@
     },
     "upload_options": {
       "icon": "alien",
-      "slot": 1
+      "slot": 4
     }
   }
 }

@@ -5,11 +5,23 @@
 using namespace pros;
 
 void driverControl() {
-
     while (true) {
-        left_wheels.move(master.get_analog(ANALOG_LEFT_Y));
-        right_wheels.move(master.get_analog(ANALOG_RIGHT_Y));
+        // Test with fixed forward values
+        back_left_wheels.move(500);
+        front_left_wheels.move(500);
+        back_right_wheels.move(500);
+        middle_right_wheels.move(500);
+        middle_left_wheels.move(500);
+        front_right_wheels.move(500);
+        top_front_right_wheels.move(500);
+        top_front_left_wheels.move(500);
+        top_back_left_wheels.move(500);
+        top_back_right_wheels.move(500);
 
-    delay(2);
+        delay(5000);
+  
+        
     }
 }
+
+
