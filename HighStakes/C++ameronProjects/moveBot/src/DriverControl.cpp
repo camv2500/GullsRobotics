@@ -44,9 +44,20 @@ void driverControl() {
         // int left_power = power + turn;   // Left motor receives more power when turning right
         // int right_power = power - turn;  // Right motor receives more power when turning left
 
-        // Scale joystick values for extra speed (1.5x boost), but limit to the range -127 to 127
-        int left_power = (leftY + rightX) * 1.5;   // Left motor control
-        int right_power = (leftY - rightX) * 1.5;  // Right motor control
+        // Scale joystick values for extra speed (2x boost), but limit to the range -127 to 127
+        // int left_power = ((leftY + rightX) * 2) * 0.95;   // Left motor control
+        // int right_power = ((leftY - rightX) * 2) * 1.05;  // Right motor control
+        int left_power = (leftY + rightX) * 2;   // Left motor control
+        int right_power = (leftY - rightX) * 2;  // Right motor control
+
+
+        if (rightX >= 0) {  // Moving forward
+            left_power = left_power * 0.95;
+            right_power = right_power * 1.05;
+        } else {  // Moving backward
+            left_power = left_power * 0.95;
+            right_power = right_power * 1.05;
+        }
 
         // Ensure the values don't exceed the maximum allowed motor power
         left_power = std::max(-127, std::min(127, left_power));
