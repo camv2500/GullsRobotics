@@ -31,8 +31,8 @@ void driverControl() {
     // }
     while (true) {
         // Read joystick values
-        int leftY = master.get_analog(ANALOG_LEFT_Y);
-        int rightX = master.get_analog(ANALOG_RIGHT_X);
+        int leftY = -1*master.get_analog(ANALOG_LEFT_Y);
+        int rightX = -1*master.get_analog(ANALOG_RIGHT_X);
         
         // Optional: Apply a deadband
         if (abs(leftY) < 10) leftY = 0;  // Adjust deadband threshold as needed
@@ -64,15 +64,16 @@ void driverControl() {
         right_power = std::max(-127, std::min(127, right_power));
 
         // Move wheels based on joystick input
-        back_left_wheels.move(left_power);
         front_left_wheels.move(left_power);
-        back_right_wheels.move(right_power);
-        middle_right_wheels.move(right_power);
         middle_left_wheels.move(left_power);
-        front_right_wheels.move(right_power);
-        top_front_right_wheels.move(right_power);
+        back_left_wheels.move(left_power);
         top_front_left_wheels.move(left_power);
         top_back_left_wheels.move(left_power);
+
+        front_right_wheels.move(right_power);
+        middle_right_wheels.move(right_power);
+        back_right_wheels.move(right_power);
+        top_front_right_wheels.move(right_power);
         top_back_right_wheels.move(right_power);
 
         // Short delay for control loop frequency

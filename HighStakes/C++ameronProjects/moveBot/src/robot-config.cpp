@@ -19,16 +19,19 @@ using namespace pros;
 #define BLUE MOTOR_GEARSET_6
 
 // Motors and Sensors
-Motor back_left_wheels (BACK_LEFT_PORT, BLUE, true);
-Motor back_right_wheels (BACK_RIGHT_PORT, BLUE, true); 
-Motor middle_left_wheels (MIDDLE_LEFT_PORT, BLUE, true);
-Motor middle_right_wheels (MIDDLE_RIGHT_PORT, BLUE, true); 
-Motor front_left_wheels (FRONT_LEFT_PORT, BLUE, true);
-Motor front_right_wheels (FRONT_RIGHT_PORT, BLUE, false); 
-Motor top_front_right_wheels (TOP_FRONT_RIGHT_PORT, BLUE, true);
-Motor top_front_left_wheels (TOP_FRONT_LEFT_PORT, BLUE, false);
-Motor top_back_left_wheels (TOP_BACK_LEFT_PORT, BLUE, false);
-Motor top_back_right_wheels (TOP_BACK_RIGHT_PORT, BLUE, true);
+Motor front_left_wheels (FRONT_LEFT_PORT, BLUE, false); // 
+Motor middle_left_wheels (MIDDLE_LEFT_PORT, BLUE, false); // 
+Motor back_left_wheels (BACK_LEFT_PORT, BLUE, true); // 
+Motor top_front_left_wheels (TOP_FRONT_LEFT_PORT, BLUE, true); // 
+Motor top_back_left_wheels (TOP_BACK_LEFT_PORT, BLUE, true); // 
+
+Motor front_right_wheels (FRONT_RIGHT_PORT, BLUE, true); // 
+Motor middle_right_wheels (MIDDLE_RIGHT_PORT, BLUE, true); // 
+Motor back_right_wheels (BACK_RIGHT_PORT, BLUE, false); // 
+Motor top_front_right_wheels (TOP_FRONT_RIGHT_PORT, BLUE, false); // 
+Motor top_back_right_wheels (TOP_BACK_RIGHT_PORT, BLUE, false); // 
+
+// Motor_Group left (back_left_wheels, middle_left_wheels, front_left_wheels, top_front_left_wheels, top_back_left_wheels)
 
 Controller master (CONTROLLER_MASTER);
 
