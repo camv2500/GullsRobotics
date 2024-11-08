@@ -7,7 +7,7 @@
 #include "api.h"
 
 // Function declarations
-void moveForwardPID(int targetDistance, int maxSpeed, int moveTime);
+void moveForwardPID(int targetDistance, int maxSpeed);
 void turnClockwiseTime(int turnTime, int maxSpeed);
 
 // PID Constants (extern to be defined in AutonFunctions.cpp)

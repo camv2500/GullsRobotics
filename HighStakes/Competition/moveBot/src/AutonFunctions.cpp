@@ -11,7 +11,7 @@ double ki = 0.0;  // Integral constant (set to 0 initially, typically less used 
 double kd = 0.1;  // Derivative constant
 
 // Function to move the robot forward using PID control
-void moveForwardPID(int targetDistance, int maxSpeed, int moveTime) {
+void moveForwardPID(int targetDistance, int maxSpeed) {
     int currentDistance = 0;  // This will depend on how you measure distance (e.g., encoder counts)
     int previousError = 0;
     int integral = 0;
@@ -25,28 +25,33 @@ void moveForwardPID(int targetDistance, int maxSpeed, int moveTime) {
         int controlSignal = kp * error + ki * integral + kd * derivative;
 
         // Apply control signal to motors, limiting to maxSpeed
-        int leftSpeed = std::max(-maxSpeed, std::min(maxSpeed, controlSignal));
-        int rightSpeed = std::max(-maxSpeed, std::min(maxSpeed, controlSignal));
+        int leftSpeed = std::min(maxSpeed, std::max(-maxSpeed, controlSignal));
+        int rightSpeed = std::min(maxSpeed, std::max(-maxSpeed, controlSignal));
 
+
+        leftSpeed = -leftSpeed;
+        rightSpeed = -rightSpeed;
+        
         // Apply motor speeds (replace with your motor control functions)
-        front_left_wheels.move_velocity(-leftSpeed);
-        middle_left_wheels.move_velocity(-leftSpeed);
-        back_left_wheels.move_velocity(-leftSpeed);
-        top_front_left_wheels.move_velocity(-leftSpeed);
-        top_back_left_wheels.move_velocity(-leftSpeed);
+        front_left_wheels.move_velocity(leftSpeed);
+        middle_left_wheels.move_velocity(leftSpeed);
+        back_left_wheels.move_velocity(leftSpeed);
+        top_front_left_wheels.move_velocity(leftSpeed);
+        top_back_left_wheels.move_velocity(leftSpeed);
 
-        front_right_wheels.move_velocity(-rightSpeed);
-        middle_right_wheels.move_velocity(-rightSpeed);
-        back_right_wheels.move_velocity(-rightSpeed);
-        top_front_right_wheels.move_velocity(-rightSpeed);
-        top_back_right_wheels.move_velocity(-rightSpeed);
+        front_right_wheels.move_velocity(rightSpeed);
+        middle_right_wheels.move_velocity(rightSpeed);
+        back_right_wheels.move_velocity(rightSpeed);
+        top_front_right_wheels.move_velocity(rightSpeed);
+        top_back_right_wheels.move_velocity(rightSpeed);
 
         previousError = error;
 
-        // Update current distance based on encoders (this is a placeholder)
-        currentDistance = front_left_wheels.get_position();  // Example: use encoder position to track distance
 
-        delay(moveTime);  // Adjust loop frequency as needed
+        // Update current distance based on encoders (this is a placeholder)
+        currentDistance = -front_left_wheels.get_position();  // Example: use encoder position to track distance
+
+        delay(10);  // Adjust loop frequency as needed
     }
 
     // Stop motors once the target distance is reached
@@ -61,6 +66,8 @@ void moveForwardPID(int targetDistance, int maxSpeed, int moveTime) {
     back_right_wheels.move_velocity(0);
     top_front_right_wheels.move_velocity(0);
     top_back_right_wheels.move_velocity(0);
+
+    return;
 }
 
 // Function to turn the robot clockwise for a fixed amount of time
@@ -92,4 +99,6 @@ void turnClockwiseTime(int turnTime, int maxSpeed) {
     back_right_wheels.move_velocity(0);
     top_front_right_wheels.move_velocity(0);
     top_back_right_wheels.move_velocity(0);
+
+    return;
 }
