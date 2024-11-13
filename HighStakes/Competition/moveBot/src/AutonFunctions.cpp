@@ -11,22 +11,22 @@ double ki = 0.0;  // Integral constant (set to 0 initially, typically less used 
 double kd = 0.1;  // Derivative constant
 
 // Function to move the robot forward using PID control
-void moveForwardPID(int targetDistance, int maxSpeed) {
-    int currentDistance = 0;  // This will depend on how you measure distance (e.g., encoder counts)
-    int previousError = 0;
-    int integral = 0;
+void moveForwardPID(double targetDistance, int maxSpeed) {
+    double currentDistance = 0;  // This will depend on how you measure distance (e.g., encoder counts)
+    double previousError = 0;
+    double integral = 0;
 
     while (currentDistance < targetDistance) {
-        int error = targetDistance - currentDistance;
+        double error = targetDistance - currentDistance;
         integral += error;
-        int derivative = error - previousError;
+        double derivative = error - previousError;
 
         // Compute PID control value
-        int controlSignal = kp * error + ki * integral + kd * derivative;
+        double controlSignal = kp * error + ki * integral + kd * derivative;
 
         // Apply control signal to motors, limiting to maxSpeed
-        int leftSpeed = std::min(maxSpeed, std::max(-maxSpeed, controlSignal));
-        int rightSpeed = std::min(maxSpeed, std::max(-maxSpeed, controlSignal));
+        double leftSpeed = std::min(maxSpeed, std::max(-maxSpeed, controlSignal));
+        double rightSpeed = std::min(maxSpeed, std::max(-maxSpeed, controlSignal));
 
 
         leftSpeed = -leftSpeed;
@@ -49,7 +49,7 @@ void moveForwardPID(int targetDistance, int maxSpeed) {
 
 
         // Update current distance based on encoders (this is a placeholder)
-        currentDistance = -front_left_wheels.get_position();  // Example: use encoder position to track distance
+        currentDistance = degreesToInches(-front_left_wheels.get_position());  // Example: use encoder position to track distance
 
         delay(10);  // Adjust loop frequency as needed
     }
@@ -101,4 +101,12 @@ void turnClockwiseTime(int turnTime, int maxSpeed) {
     top_back_right_wheels.move_velocity(0);
 
     return;
+}
+
+// convert from degrees to inches
+double degreesToInches(double degrees) {
+    double radius = 1.375 // radius of wheel in inches
+    double pi = 3.1415926535897;
+
+    return (degrees * pi * radius) / 180;
 }

@@ -9,7 +9,7 @@
 // Function declarations
 void moveForwardPID(int targetDistance, int maxSpeed);
 void turnClockwiseTime(int turnTime, int maxSpeed);
-
+double degreesToInches(double);
 // PID Constants (extern to be defined in AutonFunctions.cpp)
 extern double kp;  // Proportional constant
 extern double ki;  // Integral constant
