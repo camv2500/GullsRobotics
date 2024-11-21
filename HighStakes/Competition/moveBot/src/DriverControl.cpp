@@ -65,17 +65,14 @@ void driverControl() {
         right_power = std::max(-127, std::min(127, right_power));
 
         // Move wheels based on joystick input
-        front_left_wheels.move(left_power);
-        middle_left_wheels.move(left_power);
-        back_left_wheels.move(left_power);
-        top_front_left_wheels.move(left_power);
-        top_back_left_wheels.move(left_power);
+        middle_left_red_gear.move(left_power);
+        middle_left_green_gear.move(left_power);
+        back_left_green_gear.move(left_power);
 
-        front_right_wheels.move(right_power);
-        middle_right_wheels.move(right_power);
-        back_right_wheels.move(right_power);
-        top_front_right_wheels.move(right_power);
-        top_back_right_wheels.move(right_power);
+        // right side
+        middle_right_red_gear.move(right_power);
+        middle_right_green_gear.move(right_power);
+        back_right_green_gear.move(right_power);
 
         // Short delay for control loop frequency
         delay(20); // Adjust as needed
