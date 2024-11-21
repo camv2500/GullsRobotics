@@ -6,15 +6,16 @@
 
 
 // Initialize the PID constants
-double kp = 0.5;  // Proportional constant
-double ki = 0.0;  // Integral constant (set to 0 initially, typically less used for basic moves)
-double kd = 0.1;  // Derivative constant
+double kp = 0.2; // Lower proportional gain
+double ki = 0.0; // Keep integral at 0
+double kd = 0.1; // Keep derivative at 0.1
+
 
 // Function to move the robot forward using PID control
 void moveForwardPID(double targetDistance, int maxSpeed) {
     double currentDistance = 0;  // This will depend on how you measure distance (e.g., encoder counts)
-    double previousError = 0;
-    double integral = 0;
+    int previousError = 0;
+    int integral = 0;
 
     while (currentDistance < targetDistance) {
         double error = targetDistance - currentDistance;
@@ -22,7 +23,7 @@ void moveForwardPID(double targetDistance, int maxSpeed) {
         double derivative = error - previousError;
 
         // Compute PID control value
-        double controlSignal = kp * error + ki * integral + kd * derivative;
+        int controlSignal = kp * error + ki * integral + kd * derivative;
 
         // Apply control signal to motors, limiting to maxSpeed
         double leftSpeed = std::min(maxSpeed, std::max(-maxSpeed, controlSignal));
@@ -51,7 +52,7 @@ void moveForwardPID(double targetDistance, int maxSpeed) {
         // Update current distance based on encoders (this is a placeholder)
         currentDistance = degreesToInches(-front_left_wheels.get_position());  // Example: use encoder position to track distance
 
-        delay(10);  // Adjust loop frequency as needed
+        delay(2);  // Adjust loop frequency as needed
     }
 
     // Stop motors once the target distance is reached
@@ -105,7 +106,7 @@ void turnClockwiseTime(int turnTime, int maxSpeed) {
 
 // convert from degrees to inches
 double degreesToInches(double degrees) {
-    double radius = 1.375 // radius of wheel in inches
+    double radius = 1.375; // radius of wheel in inches
     double pi = 3.1415926535897;
 
     return (degrees * pi * radius) / 180;
