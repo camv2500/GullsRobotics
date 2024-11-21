@@ -1,5 +1,5 @@
 
-#include "robot-config.h"
+/*#include "robot-config.h"
 #include "AutonFunctions.h"
 #include "pros/motors.hpp"
 #include "pros/misc.hpp"
@@ -110,3 +110,4 @@ double degreesToInches(double degrees) {
 
     return (degrees * pi * radius) / 180;
 }
+*/
