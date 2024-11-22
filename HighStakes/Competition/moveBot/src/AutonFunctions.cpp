@@ -1,5 +1,5 @@
 
-/*#include "robot-config.h"
+#include "robot-config.h"
 #include "AutonFunctions.h"
 #include "pros/motors.hpp"
 #include "pros/misc.hpp"
@@ -16,13 +16,19 @@ void moveForwardPID(double targetDistance, int maxSpeed) {
     double previousError = 0;
     double integral = 0;
 
+    // Adjust PID constants dynamically for short distances
+    if (targetDistance < 10) { // For distances less than 10 inches
+        kp *= 1.5; // Increase proportional gain
+        maxSpeed = std::max(50, maxSpeed / 2); // Limit max speed
+    }
+
     while (currentDistance < targetDistance) {
         double error = targetDistance - currentDistance;
         integral += error;
         double derivative = error - previousError;
 
         // Compute PID control value
-        double controlSignal = kp * error + ki * integral + kd * derivative;
+        int controlSignal = kp * error + ki * integral + kd * derivative;
 
         // Apply control signal to motors, limiting to maxSpeed
         double leftSpeed = std::min(maxSpeed, std::max(-maxSpeed, controlSignal));
@@ -33,17 +39,15 @@ void moveForwardPID(double targetDistance, int maxSpeed) {
         rightSpeed = -rightSpeed;
         
         // Apply motor speeds (replace with your motor control functions)
-        front_left_wheels.move_velocity(leftSpeed);
-        middle_left_wheels.move_velocity(leftSpeed);
-        back_left_wheels.move_velocity(leftSpeed);
-        top_front_left_wheels.move_velocity(leftSpeed);
-        top_back_left_wheels.move_velocity(leftSpeed);
+            // left side
+            middle_left_red_gear.move_velocity(leftSpeed);
+            middle_left_green_gear.move_velocity(leftSpeed);
+            back_left_green_gear.move_velocity(leftSpeed);
 
-        front_right_wheels.move_velocity(rightSpeed);
-        middle_right_wheels.move_velocity(rightSpeed);
-        back_right_wheels.move_velocity(rightSpeed);
-        top_front_right_wheels.move_velocity(rightSpeed);
-        top_back_right_wheels.move_velocity(rightSpeed);
+            // right side
+            middle_right_red_gear.move_velocity(rightSpeed);
+            middle_right_green_gear.move_velocity(rightSpeed);
+            back_right_green_gear.move_velocity(rightSpeed);
 
         previousError = error;
 
@@ -54,18 +58,15 @@ void moveForwardPID(double targetDistance, int maxSpeed) {
         delay(10);  // Adjust loop frequency as needed
     }
 
-    // Stop motors once the target distance is reached
-    front_left_wheels.move_velocity(0);
-    middle_left_wheels.move_velocity(0);
-    back_left_wheels.move_velocity(0);
-    top_front_left_wheels.move_velocity(0);
-    top_back_left_wheels.move_velocity(0);
+    // left side
+    middle_left_red_gear.move_velocity(0);
+    middle_left_green_gear.move_velocity(0);
+    back_left_green_gear.move_velocity(0);
 
-    front_right_wheels.move_velocity(0);
-    middle_right_wheels.move_velocity(0);
-    back_right_wheels.move_velocity(0);
-    top_front_right_wheels.move_velocity(0);
-    top_back_right_wheels.move_velocity(0);
+    // right side
+    middle_right_red_gear.move_velocity(0);
+    middle_right_green_gear.move_velocity(0);
+    back_right_green_gear.move_velocity(0);
 
     return;
 }
@@ -73,41 +74,35 @@ void moveForwardPID(double targetDistance, int maxSpeed) {
 // Function to turn the robot clockwise for a fixed amount of time
 void turnClockwiseTime(int turnTime, int maxSpeed) {
     // Move the robot in opposite directions to turn
-    front_left_wheels.move_velocity(-maxSpeed);
-    middle_left_wheels.move_velocity(-maxSpeed);
-    back_left_wheels.move_velocity(-maxSpeed);
-    top_front_left_wheels.move_velocity(-maxSpeed);
-    top_back_left_wheels.move_velocity(-maxSpeed);
+        // left side
+        middle_left_red_gear.move_velocity(-maxSpeed);
+        middle_left_green_gear.move_velocity(-maxSpeed);
+        back_left_green_gear.move_velocity(-maxSpeed);
 
-    front_right_wheels.move_velocity(maxSpeed);  // Reverse right motors for clockwise turn
-    middle_right_wheels.move_velocity(maxSpeed);
-    back_right_wheels.move_velocity(maxSpeed);
-    top_front_right_wheels.move_velocity(maxSpeed);
-    top_back_right_wheels.move_velocity(maxSpeed);
+        // right side
+        middle_right_red_gear.move_velocity(maxSpeed);
+        middle_right_green_gear.move_velocity(maxSpeed);
+        back_right_green_gear.move_velocity(maxSpeed);
 
     delay(turnTime);  // Run the motors for the specified time
 
     // Stop motors after the turn
-    front_left_wheels.move_velocity(0);
-    middle_left_wheels.move_velocity(0);
-    back_left_wheels.move_velocity(0);
-    top_front_left_wheels.move_velocity(0);
-    top_back_left_wheels.move_velocity(0);
+        // left side
+        middle_left_red_gear.move_velocity(0);
+        middle_left_green_gear.move_velocity(0);
+        back_left_green_gear.move_velocity(0);
 
-    front_right_wheels.move_velocity(0);
-    middle_right_wheels.move_velocity(0);
-    back_right_wheels.move_velocity(0);
-    top_front_right_wheels.move_velocity(0);
-    top_back_right_wheels.move_velocity(0);
-
+        // right side
+        middle_right_red_gear.move_velocity(0);
+        middle_right_green_gear.move_velocity(0);
+        back_right_green_gear.move_velocity(0);
     return;
 }
 
 // convert from degrees to inches
 double degreesToInches(double degrees) {
-    double radius = 1.375 // radius of wheel in inches
+    double radius = 1.375; // radius of wheel in inches
     double pi = 3.1415926535897;
 
     return (degrees * pi * radius) / 180;
 }
-*/
