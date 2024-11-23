@@ -53,7 +53,7 @@ void moveForwardPID(double targetDistance, int maxSpeed) {
 
 
         // Update current distance based on encoders (this is a placeholder)
-        currentDistance = degreesToInches(-front_left_wheels.get_position());  // Example: use encoder position to track distance
+        currentDistance = degreesToInches(-middle_left_green_gear.get_position());  // Example: use encoder position to track distance
 
         delay(10);  // Adjust loop frequency as needed
     }
