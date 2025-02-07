@@ -65,7 +65,13 @@ extern "C" {
 /////////////////////////////////////////////////////////////////////////////////////
 //////                            FUNCTION DECLARATIONS                        //////
 /////////////////////////////////////////////////////////////////////////////////////
-// Put autonomous functions here
+void moveForwardPID(double targetDistance, int maxSpeed);
+void turnClockwiseTime(int turnTime, int maxSpeed);
+double degreesToInches(double);
+// PID Constants (extern to be defined in AutonFunctions.cpp)
+extern double kp;  // Proportional constant
+extern double ki;  // Integral constant
+extern double kd;  // Derivative constant
 #ifdef __cplusplus
 }
 #endif
