@@ -55,6 +55,9 @@ void moveForwardPID(double targetDistance, int maxSpeed) {
         double leftSpeed = std::min(maxSpeed, std::max(-maxSpeed, controlSignal));
         double rightSpeed = std::min(maxSpeed, std::max(-maxSpeed, controlSignal));
 
+        leftSpeed = -leftSpeed;
+        rightSpeed = -rightSpeed;
+
         // left side 
         front_left_wheels.move_velocity(leftSpeed);
         middle_left_wheels.move_velocity(leftSpeed);
