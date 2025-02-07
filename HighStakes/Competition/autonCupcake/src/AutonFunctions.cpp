@@ -55,10 +55,6 @@ void moveForwardPID(double targetDistance, int maxSpeed) {
         double leftSpeed = std::min(maxSpeed, std::max(-maxSpeed, controlSignal));
         double rightSpeed = std::min(maxSpeed, std::max(-maxSpeed, controlSignal));
 
-        leftSpeed = -leftSpeed;
-        rightSpeed = -rightSpeed;
-
-        // Apply motor speeds (replace with your motor control functions)
         // left side 
         front_left_wheels.move_velocity(leftSpeed);
         middle_left_wheels.move_velocity(leftSpeed);
@@ -78,7 +74,7 @@ void moveForwardPID(double targetDistance, int maxSpeed) {
         // Update current distance based on encoders (this is a placeholder)
         currentDistance = degreesToInches(middle_left_wheels.get_position());  // Example: use encoder position to track distance
 
-        delay(5);  // Adjust loop frequency as needed
+        delay(2);  // Adjust loop frequency as needed
     }
 
     // Stop motors
