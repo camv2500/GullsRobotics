@@ -77,7 +77,7 @@ void moveForwardPID(double targetDistance, int maxSpeed) {
         // Update current distance
         currentDistance = degreesToInches(middle_left_wheels.get_position());
 
-        delay(2); 
+        delay(5); 
     }
 
     // Stop motors
