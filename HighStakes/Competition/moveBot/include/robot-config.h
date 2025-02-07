@@ -62,16 +62,6 @@ using namespace pros;
 #ifdef __cplusplus
 extern "C" {
 #endif
-extern Motor back_left_wheels;
-extern Motor back_right_wheels;
-extern Motor front_left_wheels;
-extern Motor front_right_wheels;
-extern Motor middle_left_wheels;
-extern Motor middle_right_wheels;
-extern Motor top_front_right_wheels;
-extern Motor top_front_left_wheels;
-extern Motor top_back_left_wheels;
-extern Motor top_back_right_wheels;
 
 // left side
 extern Motor middle_left_red_gear;
