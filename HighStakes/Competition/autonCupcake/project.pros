@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "moveBotC++ameron",
+    "project_name": "autonCupcake",
     "target": "v5",
     "templates": {
       "kernel": {
