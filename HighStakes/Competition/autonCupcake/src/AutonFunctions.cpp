@@ -33,7 +33,7 @@ double wheelDiameter = 2.75; // Wheel diameter in inches
 
 // Function to move the robot forward using PID control
 void moveForwardPID(double targetDistance, int maxSpeed) {
-    double currentDistance = 0;  // This will depend on how you measure distance (e.g., encoder counts)
+    double currentDistance = 0; 
     double previousError = 0;
     double integral = 0;
 
@@ -74,10 +74,10 @@ void moveForwardPID(double targetDistance, int maxSpeed) {
 
         previousError = error;
 
-        // Update current distance based on encoders (this is a placeholder)
-        currentDistance = degreesToInches(middle_left_wheels.get_position());  // Example: use encoder position to track distance
+        // Update current distance
+        currentDistance = degreesToInches(middle_left_wheels.get_position());
 
-        delay(2);  // Adjust loop frequency as needed
+        delay(2); 
     }
 
     // Stop motors
