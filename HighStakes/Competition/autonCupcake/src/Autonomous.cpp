@@ -17,8 +17,8 @@ using namespace pros;
 void competition_initialize() {}
 
 void Autonomous() {
-    // Test the moveForwardPID function with a target distance of 400 units and max speed of 127
-    moveForwardPID(400, 127);
+    // Test the moveForwardPID function with a target distance of 200 units and max speed of 127
+    moveForwardPID(200, 127);
 
     delay(3000);
     turnClockwiseTime(3000, 127);  // Turn clockwise for x milliseconds  at 100% speed
