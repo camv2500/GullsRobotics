@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "moveBot",
+    "project_name": "moveBotC++ameron",
     "target": "v5",
     "templates": {
       "kernel": {
@@ -310,7 +310,7 @@
     },
     "upload_options": {
       "icon": "alien",
-      "slot": 4
+      "slot": 3
     }
   }
 }
