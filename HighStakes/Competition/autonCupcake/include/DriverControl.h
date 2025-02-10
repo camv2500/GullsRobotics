@@ -63,6 +63,7 @@
 extern "C" {
 #endif
 void driverControl(void);
+void intakeRings(void);
 #ifdef __cplusplus
 }
 #endif

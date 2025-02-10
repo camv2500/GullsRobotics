@@ -62,6 +62,7 @@ void opcontrol() {
 	// 	delay(20);
 	// }
 
-	driverControl();
+	Task t1 (driverControl);
+	Task t2 (intakeRings);
 	
 }
