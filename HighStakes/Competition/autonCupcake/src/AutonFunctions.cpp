@@ -31,11 +31,39 @@ double wheelDiameter = 2.75; // Wheel diameter in inches
 //////                                 FUNCTIONS                               //////
 /////////////////////////////////////////////////////////////////////////////////////
 
+// Function to reset the motor encoders
+void resetEncoders() {
+    front_left_wheels.tare_position();
+    middle_left_wheels.tare_position();
+    back_left_wheels.tare_position();
+    top_front_left_wheels.tare_position();
+    top_back_left_wheels.tare_position();
+
+    front_right_wheels.tare_position();
+    middle_right_wheels.tare_position();
+    back_right_wheels.tare_position();
+    top_front_right_wheels.tare_position();
+    top_back_right_wheels.tare_position();
+}
+
+// // Function to get the average encoder value of the X-Drive
+// double getAverageEncoderValue(bool ab = false) {
+//     if (ab) {
+//       return (fabs(FrontL.get_position()) + fabs(RearL.get_position()) + fabs(FrontR.get_position()) + fabs(RearR.get_position())) / 4.0;
+//     }
+//     else {
+//       return (FrontL.get_position() + RearL.get_position() + FrontR.get_position() + RearR.get_position()) / 4.0;
+//     }
+//   }
+
 // Function to move the robot forward using PID control
 void moveForwardPID(double targetDistance, int maxSpeed) {
     double currentDistance = 0; 
     double previousError = 0;
     double integral = 0;
+    double integralMax = 100; // Maximum value for integral term
+
+    resetEncoders();
 
     // Adjust PID constants dynamically for short distances
     if (targetDistance < 10) { // For distances less than 10 inches
@@ -45,7 +73,13 @@ void moveForwardPID(double targetDistance, int maxSpeed) {
 
     while (currentDistance < targetDistance) {
         double error = targetDistance - currentDistance;
-        integral += error;
+        integral = std::max(-integralMax, std::min(integral, integralMax));
+        // integral += error;
+        if (integral > integralMax) { // Anti-windup
+            integral = integralMax;
+        } else if (integral < -integralMax) {
+            integral = -integralMax;
+        }
         double derivative = error - previousError;
 
         // Compute PID control value
@@ -76,6 +110,7 @@ void moveForwardPID(double targetDistance, int maxSpeed) {
 
         // Update current distance
         currentDistance = degreesToInches(middle_left_wheels.get_position());
+        // currentDistance = middle_left_wheels.get_position() / 360.0;
 
         delay(5); 
     }
