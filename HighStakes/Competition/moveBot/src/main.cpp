@@ -44,6 +44,7 @@ void autonomous() {
  */
 void opcontrol() {
 	
-	driverControl();
+	Task t1 (driverControl);
+	Task t2 (intakeRings);
 	
 }
