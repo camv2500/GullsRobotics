@@ -75,12 +75,17 @@ void moveForwardPID(double targetDistance, int maxSpeed) {
         maxSpeed = std::max(50, maxSpeed / 2); // Limit max speed
     }
 
-    while (true) {
+    while (fabs(currentDistance) < fabs(targetDistance - 10.0)) {
         // Update current distance
+        // if (targetDistance > 0) {
+        //     currentDistance = -degreesToInches(middle_left_wheels.get_position());
+        // } else {
+        //     currentDistance = degreesToInches(middle_right_wheels.get_position());
+        // }
         currentDistance = -degreesToInches(middle_right_wheels.get_position());
         
 
-        double error = targetDistance - currentDistance;
+        double error = fabs(targetDistance) - fabs(currentDistance);
 
         // Debug prints
         printf("Current Distance: %f inches\n", currentDistance);
@@ -107,8 +112,12 @@ void moveForwardPID(double targetDistance, int maxSpeed) {
         double leftSpeed = std::min(maxSpeed, std::max(-maxSpeed, controlSignal));
         double rightSpeed = std::min(maxSpeed, std::max(-maxSpeed, controlSignal));
 
-        leftSpeed = -leftSpeed;
-        rightSpeed = -rightSpeed;
+        if (targetDistance > 0) {
+            leftSpeed = -leftSpeed;
+            rightSpeed = -rightSpeed;
+        }
+        // leftSpeed = -leftSpeed;
+        // rightSpeed = -rightSpeed;
 
         //the error lies here
         if (fabs(error) < 3.0) {
