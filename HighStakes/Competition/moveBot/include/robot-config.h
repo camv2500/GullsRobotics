@@ -73,6 +73,8 @@ extern Motor middle_right_red_gear;
 extern Motor middle_right_green_gear;
 extern Motor back_right_green_gear;
 
+extern Motor intake;
+
 extern Controller master;
 void initialize(void);
 void competition_initialize(void);

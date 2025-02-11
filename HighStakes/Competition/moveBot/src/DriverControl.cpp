@@ -84,15 +84,18 @@ void intakeRings() {
         if (master.get_digital(DIGITAL_L1)) {
             // Move the intake motors forward
             master.print(0, 0, "Intaking Rings");
+            intake.move(127);
         }
         else if (master.get_digital(DIGITAL_L2)) {
             // Move the intake motors forward
             master.print(0, 0, "Outaking Rings");
+            intake.move(-127);
         }
         else {
             // Stop the intake motors
             // master.print(0, 0, "Stopping Intake");
             master.print(0, 0, "");
+            intake.move(0);
         }
     }
 }
