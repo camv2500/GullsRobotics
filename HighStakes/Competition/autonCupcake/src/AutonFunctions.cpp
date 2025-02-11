@@ -4,14 +4,18 @@
 #include "pros/motors.hpp"
 #include "pros/misc.hpp"
 
+// NOTE: The robot now moves and stops at the correct position.
+// HOWEVER: The while loop does not break and continues to move a very small distance
+// THE ERROR IS PROBABLY ON LINES 88 or 112
+
 /////////////////////////////////////////////////////////////////////////////////////
 //////                              GLOBAL CONSTANTS                           //////
 /////////////////////////////////////////////////////////////////////////////////////
 
 // Initialize the PID constants
-double kp = 0.4;  // Proportional constant (tuned for inches)
+double kp = 0.9;  // Proportional constant (tuned for inches)
 double ki = 0.0;  // Integral constant (set to 0 initially, typically less used for basic moves)
-double kd = 0.05; // Derivative constant (adjusted)
+double kd = 0.2; // Derivative constant (adjusted)
 
 double wheelDiameter = 2.75; // Wheel diameter in inches
 
@@ -71,10 +75,24 @@ void moveForwardPID(double targetDistance, int maxSpeed) {
         maxSpeed = std::max(50, maxSpeed / 2); // Limit max speed
     }
 
-    while (currentDistance < targetDistance) {
+    while (true) {
+        // Update current distance
+        currentDistance = -degreesToInches(middle_right_wheels.get_position());
+        
+
         double error = targetDistance - currentDistance;
-        integral = std::max(-integralMax, std::min(integral, integralMax));
-        // integral += error;
+
+        // Debug prints
+        printf("Current Distance: %f inches\n", currentDistance);
+        printf("Error: %f inches\n", error);
+        
+        //the error lies here
+        if (fabs(error) < 1.0) {
+            break;
+        }
+
+        // integral = std::max(-integralMax, std::min(integral, integralMax));
+        integral += error;
         if (integral > integralMax) { // Anti-windup
             integral = integralMax;
         } else if (integral < -integralMax) {
@@ -92,43 +110,48 @@ void moveForwardPID(double targetDistance, int maxSpeed) {
         leftSpeed = -leftSpeed;
         rightSpeed = -rightSpeed;
 
+        //the error lies here
+        if (fabs(error) < 3.0) {
+            leftSpeed *= 0.5;
+            rightSpeed *= 0.5;
+        }
+
+
         // left side 
-        front_left_wheels.move_velocity(leftSpeed);
-        middle_left_wheels.move_velocity(leftSpeed);
-        back_left_wheels.move_velocity(leftSpeed);
-        top_front_left_wheels.move_velocity(leftSpeed);
-        top_back_left_wheels.move_velocity(leftSpeed);
+        front_left_wheels.move(leftSpeed);
+        middle_left_wheels.move(leftSpeed);
+        back_left_wheels.move(leftSpeed);
+        top_front_left_wheels.move(leftSpeed);
+        top_back_left_wheels.move(leftSpeed);
 
         // right side
-        front_right_wheels.move_velocity(rightSpeed);
-        middle_right_wheels.move_velocity(rightSpeed);
-        back_right_wheels.move_velocity(rightSpeed);
-        top_front_right_wheels.move_velocity(rightSpeed);
-        top_back_right_wheels.move_velocity(rightSpeed);
+        front_right_wheels.move(rightSpeed);
+        middle_right_wheels.move(rightSpeed);
+        back_right_wheels.move(rightSpeed);
+        top_front_right_wheels.move(rightSpeed);
+        top_back_right_wheels.move(rightSpeed);
 
         previousError = error;
 
-        // Update current distance
-        currentDistance = degreesToInches(middle_left_wheels.get_position());
         // currentDistance = middle_left_wheels.get_position() / 360.0;
 
-        delay(5); 
+        delay(0.5); 
     }
 
     // Stop motors
     // left side
-    front_left_wheels.move_velocity(0);
-    middle_left_wheels.move_velocity(0);
-    back_left_wheels.move_velocity(0);
-    top_front_left_wheels.move_velocity(0);
-    top_back_left_wheels.move_velocity(0);
+    front_left_wheels.move(-10);
+    middle_left_wheels.move(-10);
+    back_left_wheels.move(-10);
+    top_front_left_wheels.move(-10);
+    top_back_left_wheels.move(-10);
 
     // right side
-    front_right_wheels.move_velocity(0);
-    middle_right_wheels.move_velocity(0);
-    back_right_wheels.move_velocity(0);
-    top_front_right_wheels.move_velocity(0);
-    top_back_right_wheels.move_velocity(0);
+    front_right_wheels.move(-10);
+    middle_right_wheels.move(-10);
+    back_right_wheels.move(-10);
+    top_front_right_wheels.move(-10);
+    top_back_right_wheels.move(-10);
 
     return;
 }
@@ -137,35 +160,35 @@ void moveForwardPID(double targetDistance, int maxSpeed) {
 void turnClockwiseTime(int turnTime, int maxSpeed) {
     // Move the robot in opposite directions to turn
     // left side
-    front_left_wheels.move_velocity(-maxSpeed);
-    middle_left_wheels.move_velocity(-maxSpeed);
-    back_left_wheels.move_velocity(-maxSpeed);
-    top_front_left_wheels.move_velocity(-maxSpeed);
-    top_back_left_wheels.move_velocity(-maxSpeed);
+    front_left_wheels.move(-maxSpeed);
+    middle_left_wheels.move(-maxSpeed);
+    back_left_wheels.move(-maxSpeed);
+    top_front_left_wheels.move(-maxSpeed);
+    top_back_left_wheels.move(-maxSpeed);
 
     // right side
-    front_right_wheels.move_velocity(maxSpeed);
-    middle_right_wheels.move_velocity(maxSpeed);
-    back_right_wheels.move_velocity(maxSpeed);
-    top_front_right_wheels.move_velocity(maxSpeed);
-    top_back_right_wheels.move_velocity(maxSpeed);
+    front_right_wheels.move(maxSpeed);
+    middle_right_wheels.move(maxSpeed);
+    back_right_wheels.move(maxSpeed);
+    top_front_right_wheels.move(maxSpeed);
+    top_back_right_wheels.move(maxSpeed);
 
     delay(turnTime);  // Run the motors for the specified time
 
     // Stop motors after the turn
     // left side
-    front_left_wheels.move_velocity(0);
-    middle_left_wheels.move_velocity(0);
-    back_left_wheels.move_velocity(0);
-    top_front_left_wheels.move_velocity(0);
-    top_back_left_wheels.move_velocity(0);
+    front_left_wheels.move(0);
+    middle_left_wheels.move(0);
+    back_left_wheels.move(0);
+    top_front_left_wheels.move(0);
+    top_back_left_wheels.move(0);
 
     // right side
-    front_right_wheels.move_velocity(0);
-    middle_right_wheels.move_velocity(0);
-    back_right_wheels.move_velocity(0);
-    top_front_right_wheels.move_velocity(0);
-    top_back_right_wheels.move_velocity(0);
+    front_right_wheels.move(0);
+    middle_right_wheels.move(0);
+    back_right_wheels.move(0);
+    top_front_right_wheels.move(0);
+    top_back_right_wheels.move(0);
 
     return;
 }
