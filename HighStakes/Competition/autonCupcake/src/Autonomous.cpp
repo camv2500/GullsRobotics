@@ -18,9 +18,10 @@ void competition_initialize() {}
 
 void Autonomous() {
     // Test the moveForwardPID function with a target distance of 200 units and max speed of 127
-    moveForwardPID(24, 127);
-
+    moveForwardPID(50, 127);
+    master.print(0, 0, "completed moveForwardPID");
     delay(3000);
     turnClockwiseTime(3000, 127);  // Turn clockwise for x milliseconds  at 100% speed
+    master.print(0, 0, "completed Turn");
 
 }
