@@ -50,15 +50,15 @@ void resetEncoders() {
     top_back_right_wheels.tare_position();
 }
 
-// // Function to get the average encoder value of the X-Drive
-// double getAverageEncoderValue(bool ab = false) {
-//     if (ab) {
-//       return (fabs(FrontL.get_position()) + fabs(RearL.get_position()) + fabs(FrontR.get_position()) + fabs(RearR.get_position())) / 4.0;
-//     }
-//     else {
-//       return (FrontL.get_position() + RearL.get_position() + FrontR.get_position() + RearR.get_position()) / 4.0;
-//     }
-//   }
+// Function to get the average encoder value
+double getAverageEncoderValue(bool ab = false) {
+    if (ab) {
+      return (fabs(front_left_wheels.get_position()) + fabs(middle_left_wheels.get_position()) + fabs(back_left_wheels.get_position()) + fabs(top_front_left_wheels.get_position()) + fabs(top_back_left_wheels.get_position()) + fabs(front_right_wheels.get_position()) + fabs(middle_right_wheels.get_position()) + fabs(back_right_wheels.get_position()) + fabs(top_front_right_wheels.get_position()) + fabs(top_back_right_wheels.get_position())) / 10.0;
+    }
+    else {
+      return (front_left_wheels.get_position() + middle_left_wheels.get_position() + back_left_wheels.get_position() + top_front_left_wheels.get_position() + top_back_left_wheels.get_position() + front_right_wheels.get_position() + middle_right_wheels.get_position() + back_right_wheels.get_position() + top_front_right_wheels.get_position() + top_back_right_wheels.get_position()) / 10.0;
+    }
+  }
 
 // Function to move the robot forward using PID control
 void moveForwardPID(double targetDistance, int maxSpeed) {
@@ -66,38 +66,76 @@ void moveForwardPID(double targetDistance, int maxSpeed) {
     double previousError = 0;
     double integral = 0;
     double integralMax = 100; // Maximum value for integral term
+    double local_kp = kp;
+    double leftSpeed;
+    double rightSpeed;
 
     resetEncoders();
 
     // Adjust PID constants dynamically for short distances
     if (targetDistance < 10) { // For distances less than 10 inches
-        kp *= 1.5; // Increase proportional gain
+        local_kp *= 1.5; // Increase proportional gain
         maxSpeed = std::max(50, maxSpeed / 2); // Limit max speed
     }
 
-    while (fabs(currentDistance) < fabs(targetDistance - 10.0)) {
+    while (fabs(currentDistance) < fabs(targetDistance) - 10.0) {
+        lcd::clear_line(0);
+        lcd::clear_line(1);
         // Update current distance
         // if (targetDistance > 0) {
         //     currentDistance = -degreesToInches(middle_left_wheels.get_position());
         // } else {
         //     currentDistance = degreesToInches(middle_right_wheels.get_position());
         // }
-        currentDistance = -degreesToInches(middle_right_wheels.get_position());
+        currentDistance = -degreesToInches((middle_left_wheels.get_position() + middle_right_wheels.get_position())/2.0);
+        // currentDistance = -degreesToInches(getAverageEncoderValue(true));
         
 
         double error = fabs(targetDistance) - fabs(currentDistance);
 
         // Debug prints
-        printf("Current Distance: %f inches\n", currentDistance);
-        printf("Error: %f inches\n", error);
+        // printf("Current Distance: %f inches\n", currentDistance);
+        // printf("Error: %f inches\n", error);
+        lcd::print(0, "Current Distance: %f inches\n", currentDistance);
+        lcd::print(1, "Error: %f inches\n", error);
         
         //the error lies here
-        if (fabs(error) < 1.0) {
+        if (fabs(error) < 3.0) {
+            leftSpeed *= 0.5;
+            rightSpeed *= 0.5;
+        }
+
+        if (fabs(error) < 1.0) { 
+            leftSpeed = 0;
+            rightSpeed = 0;
+
+            // left side
+            front_left_wheels.brake();
+            middle_left_wheels.brake();
+            back_left_wheels.brake();
+            top_front_left_wheels.brake();
+            top_back_left_wheels.brake();
+
+            // right side
+            front_right_wheels.brake();
+            middle_right_wheels.brake();
+            back_right_wheels.brake();
+            top_front_right_wheels.brake();
+            top_back_right_wheels.brake();
+        
             break;
         }
 
-        // integral = std::max(-integralMax, std::min(integral, integralMax));
-        integral += error;
+        // Only accumulate integral when error is within a reasonable range
+        if (fabs(error) < 10.0 && fabs(error) > 0.5) { // Avoid windup for large errors
+            integral += error;
+        } else {
+            integral = 0; // Reset if error is too large
+        }
+
+        // Clamp the integral term to prevent excessive accumulation
+        integral = std::max(-integralMax, std::min(integral, integralMax));
+        // integral += error;
         if (integral > integralMax) { // Anti-windup
             integral = integralMax;
         } else if (integral < -integralMax) {
@@ -106,11 +144,11 @@ void moveForwardPID(double targetDistance, int maxSpeed) {
         double derivative = error - previousError;
 
         // Compute PID control value
-        int controlSignal = kp * error + ki * integral + kd * derivative;
+        int controlSignal = local_kp * error + ki * integral + kd * derivative;
 
         // Apply control signal to motors, limiting to maxSpeed
-        double leftSpeed = std::min(maxSpeed, std::max(-maxSpeed, controlSignal));
-        double rightSpeed = std::min(maxSpeed, std::max(-maxSpeed, controlSignal));
+        leftSpeed = std::min(maxSpeed, std::max(-maxSpeed, controlSignal));
+        rightSpeed = std::min(maxSpeed, std::max(-maxSpeed, controlSignal));
 
         if (targetDistance > 0) {
             leftSpeed = -leftSpeed;
@@ -119,11 +157,32 @@ void moveForwardPID(double targetDistance, int maxSpeed) {
         // leftSpeed = -leftSpeed;
         // rightSpeed = -rightSpeed;
 
-        //the error lies here
-        if (fabs(error) < 3.0) {
-            leftSpeed *= 0.5;
-            rightSpeed *= 0.5;
-        }
+        // //the error lies here
+        // if (fabs(error) < 3.0) {
+        //     leftSpeed *= 0.5;
+        //     rightSpeed *= 0.5;
+        // }
+
+        // if (fabs(error) < 1.0) { 
+        //     leftSpeed = 0;
+        //     rightSpeed = 0;
+
+        //     // left side
+        //     front_left_wheels.brake();
+        //     middle_left_wheels.brake();
+        //     back_left_wheels.brake();
+        //     top_front_left_wheels.brake();
+        //     top_back_left_wheels.brake();
+
+        //     // right side
+        //     front_right_wheels.brake();
+        //     middle_right_wheels.brake();
+        //     back_right_wheels.brake();
+        //     top_front_right_wheels.brake();
+        //     top_back_right_wheels.brake();
+        
+        //     break;
+        // }
 
 
         // left side 
@@ -149,18 +208,176 @@ void moveForwardPID(double targetDistance, int maxSpeed) {
 
     // Stop motors
     // left side
-    front_left_wheels.move(-10);
-    middle_left_wheels.move(-10);
-    back_left_wheels.move(-10);
-    top_front_left_wheels.move(-10);
-    top_back_left_wheels.move(-10);
+    front_left_wheels.brake();
+    middle_left_wheels.brake();
+    back_left_wheels.brake();
+    top_front_left_wheels.brake();
+    top_back_left_wheels.brake();
 
     // right side
-    front_right_wheels.move(-10);
-    middle_right_wheels.move(-10);
-    back_right_wheels.move(-10);
-    top_front_right_wheels.move(-10);
-    top_back_right_wheels.move(-10);
+    front_right_wheels.brake();
+    middle_right_wheels.brake();
+    back_right_wheels.brake();
+    top_front_right_wheels.brake();
+    top_back_right_wheels.brake();
+
+    return;
+}
+
+// Function to turn the robot using PID control
+void turnPID(double targetDegrees, int maxSpeed) {
+    double currentDegrees = 0; 
+    double previousError = 0;
+    double integral = 0;
+    double integralMax = 100; // Maximum value for integral term
+    double local_kp = kp;
+    double leftSpeed;
+    double rightSpeed;
+
+    resetEncoders();
+
+    // Adjust PID constants dynamically for short distances
+    if (targetDegrees < 10) { // For distances less than 10 inches
+        local_kp *= 1.5; // Increase proportional gain
+        maxSpeed = std::max(50, maxSpeed / 2); // Limit max speed
+    }
+
+    while (fabs(currentDegrees) < fabs(targetDegrees)) {
+        lcd::clear_line(0);
+        lcd::clear_line(1);
+        // Update current degrees
+        currentDegrees = (fabs(front_left_wheels.get_position()) + fabs(front_right_wheels.get_position())) / 2.0;
+        
+
+        double error = fabs(targetDegrees) - fabs(currentDegrees);
+
+        // Debug prints
+        // printf("Current Degrees: %f inches\n", currentDegrees);
+        // printf("Error: %f degrees\n", error);
+        lcd::print(0, "Current Distance: %f inches\n", currentDegrees);
+        lcd::print(1, "Error: %f degrees\n", error);
+        
+        //the error lies here
+        // if (fabs(error) < 3.0) {
+        //     leftSpeed *= 0.5;
+        //     rightSpeed *= 0.5;
+        // }
+
+        if (fabs(error) < 1.0) { 
+            leftSpeed = 0;
+            rightSpeed = 0;
+
+            // left side
+            front_left_wheels.brake();
+            middle_left_wheels.brake();
+            back_left_wheels.brake();
+            top_front_left_wheels.brake();
+            top_back_left_wheels.brake();
+
+            // right side
+            front_right_wheels.brake();
+            middle_right_wheels.brake();
+            back_right_wheels.brake();
+            top_front_right_wheels.brake();
+            top_back_right_wheels.brake();
+        
+            break;
+        }
+
+        // Only accumulate integral when error is within a reasonable range
+        if (fabs(error) <= 20) { // Avoid windup for large errors
+            integral += error;
+        } else {
+            integral = 0; // Reset if error is too large
+        }
+
+        // Clamp the integral term to prevent excessive accumulation
+        integral = std::max(-integralMax, std::min(integral, integralMax));
+        // integral += error;
+        // if (integral > integralMax) { // Anti-windup
+        //     integral = integralMax;
+        // } else if (integral < -integralMax) {
+        //     integral = -integralMax;
+        // }
+        double derivative = error - previousError;
+
+        // Compute PID control value
+        int controlSignal = local_kp * error + ki * integral + kd * derivative;
+
+        // Apply control signal to motors, limiting to maxSpeed
+        leftSpeed = -1 * std::min(maxSpeed, std::max(-maxSpeed, controlSignal));
+        rightSpeed = std::min(maxSpeed, std::max(-maxSpeed, controlSignal));
+
+        if (targetDegrees > 0) {
+            leftSpeed = -leftSpeed;
+            rightSpeed = -rightSpeed;
+        }
+        // leftSpeed = -leftSpeed;
+        // rightSpeed = -rightSpeed;
+
+        // //the error lies here
+        // if (fabs(error) < 3.0) {
+        //     leftSpeed *= 0.5;
+        //     rightSpeed *= 0.5;
+        // }
+
+        // if (fabs(error) < 1.0) { 
+        //     leftSpeed = 0;
+        //     rightSpeed = 0;
+
+        //     // left side
+        //     front_left_wheels.brake();
+        //     middle_left_wheels.brake();
+        //     back_left_wheels.brake();
+        //     top_front_left_wheels.brake();
+        //     top_back_left_wheels.brake();
+
+        //     // right side
+        //     front_right_wheels.brake();
+        //     middle_right_wheels.brake();
+        //     back_right_wheels.brake();
+        //     top_front_right_wheels.brake();
+        //     top_back_right_wheels.brake();
+        
+        //     break;
+        // }
+
+
+        // left side 
+        front_left_wheels.move(leftSpeed);
+        middle_left_wheels.move(leftSpeed);
+        back_left_wheels.move(leftSpeed);
+        top_front_left_wheels.move(leftSpeed);
+        top_back_left_wheels.move(leftSpeed);
+
+        // right side
+        front_right_wheels.move(rightSpeed);
+        middle_right_wheels.move(rightSpeed);
+        back_right_wheels.move(rightSpeed);
+        top_front_right_wheels.move(rightSpeed);
+        top_back_right_wheels.move(rightSpeed);
+
+        previousError = error;
+
+        // currentDistance = middle_left_wheels.get_position() / 360.0;
+
+        delay(10); 
+    }
+
+    // Stop motors
+    // left side
+    front_left_wheels.brake();
+    middle_left_wheels.brake();
+    back_left_wheels.brake();
+    top_front_left_wheels.brake();
+    top_back_left_wheels.brake();
+
+    // right side
+    front_right_wheels.brake();
+    middle_right_wheels.brake();
+    back_right_wheels.brake();
+    top_front_right_wheels.brake();
+    top_back_right_wheels.brake();
 
     return;
 }
