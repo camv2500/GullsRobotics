@@ -1,7 +1,7 @@
 {
   "py/object": "pros.conductor.project.Project",
   "py/state": {
-    "project_name": "autonCupcake",
+    "project_name": "Cupcake",
     "target": "v5",
     "templates": {
       "kernel": {

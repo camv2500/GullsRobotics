@@ -27,6 +27,8 @@ void disabled() {}
  * from where it left off.
  */
 void autonomous() {
+	isAuton = true; resetPID = true; resetTurning = true; isUser = false;
+	Task t1 (autonController);
 	Autonomous();
 }
 
@@ -61,6 +63,7 @@ void opcontrol() {
 
 	// 	delay(20);
 	// }
+	isAuton = false; resetPID = true; resetTurning = true; isUser = true;
 
 	Task t1 (driverControl);
 	Task t2 (intakeRings);

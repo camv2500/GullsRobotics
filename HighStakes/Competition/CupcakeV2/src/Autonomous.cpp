@@ -16,19 +16,58 @@ using namespace pros;
  */
 void competition_initialize() {}
 
+//auton controller
+int autonController() {
+    //this will run for the entirety of the auton, being the secondary thread that runs in parallel with the main on
+    while(isAuton) {
+      //checks if the PID routine should be running using variables set in the main thread
+      if (isPID) {
+        //if the program is just now setting PID, it will run a first time setup, otherwise just keeps looping the same thing
+        if (resetPID) {
+          setPID = ConvertInchesToRevolutions(setPID, 2.75);
+          runPID(setPID, true);
+          resetPID = false;
+        }
+        else {runPID(setPID);}
+      }
+  
+      //checks if the PID Turning routine should be running using variables set in the main thread
+      if (isTurning) {
+        //if the program is just now setting PID, it will run a first time setup, otherwise just keeps looping the same thing
+        if (resetTurning) {
+          setTurning = ConvertDegreesToInches(setTurning, 9);
+          setTurning = ConvertInchesToRevolutions(setTurning, 2.75);
+          runPID(setTurning, true, true);
+          resetTurning = false;
+        }
+        else {runPID(setTurning, false, true);}
+      }
+  
+    //   if (isIntaking) {
+    //       if(ballDetector.objectDistance(mm) < 100){
+    //         intakeRollerMotor.spinFor( 180, degrees, false );
+    //         IntakeBalls(false, 0);
+    //         isIntaking = false;
+    //       }
+    //   }
+  
+     delay(5);
+    }
+    return 1;
+  }
+
 void Autonomous() {
     // Test the moveForwardPID function with a target distance of 200 units and max speed of 127
-    moveForwardPID(24, 127);
+    MoveBot(24, 65);
     delay(1000);
-    moveForwardPID(-24, 127);
+    MoveBot(-24, 65);
     master.print(0, 0, "completed moveForwardPID");
     delay(3000);
     master.print(0, 0, "");
-    // turnClockwiseTime(3000, 127);  // Turn clockwise for x milliseconds  at 100% speed
-    // turnClockwiseTime(360, 127);  // Turn clockwise for x milliseconds  at 100% speed
-    turnPID(180, 127);  // Turn counterclockwise for x milliseconds  at 100% speed
+
+    RotateBot(180, 127);  // Turn counterclockwise for x milliseconds  at 100% speed
     delay(1000);
-    turnPID(-180, 127);  // Turn clockwise for x milliseconds  at 100% speed
+    RotateBot(-180, 127);  // Turn clockwise for x milliseconds  at 100% speed
     master.print(0, 0, "completed Turn");
 
 }

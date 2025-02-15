@@ -65,14 +65,22 @@ extern "C" {
 /////////////////////////////////////////////////////////////////////////////////////
 //////                            FUNCTION DECLARATIONS                        //////
 /////////////////////////////////////////////////////////////////////////////////////
-void moveForwardPID(double targetDistance, int maxSpeed);
-void turnPID(double targetDegrees, int maxSpeed);
-void turnClockwiseTime(int turnTime, int maxSpeed);
-double degreesToInches(double);
+void ResetEncoders(void);
+void SpinMotors(double power, bool isTurning = false);
+void MoveBot(double d, double p = 65);
+void RotateBot(double d, double p = 65);
+void runPID(double pidSetDegrees, bool resetEncoders = false, bool isTurning = false);
+// Convertions
+double ConvertDegreesToInches(double setDegrees, double turnDiameter = 12.17);
+double ConvertInchesToRevolutions(double requiredInches, double circum = 3.86);
+double ConvertRadiansToDegrees(double radian);
+double CalculateWaitTimeMove(double n);
+double CalculateWaitTimeRotate(double n);
+double controlCurve(double controllerPos);
 // PID Constants (extern to be defined in AutonFunctions.cpp)
-extern double kp;  // Proportional constant
-extern double ki;  // Integral constant
-extern double kd;  // Derivative constant
+extern bool isAuton, isPID, isTurning, isUser, isIntaking; 
+extern bool resetPID, resetTurning;
+extern double setPID, setTurning, setPIDLeft, setPIDRight;
 #ifdef __cplusplus
 }
 #endif

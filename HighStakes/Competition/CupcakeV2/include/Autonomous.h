@@ -63,6 +63,7 @@ using namespace pros;
 extern "C" {
 #endif
 void Autonomous(void);
+int autonController(void);
 void competition_initialize(void);
 #ifdef __cplusplus
 }
