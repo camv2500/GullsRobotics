@@ -13,6 +13,7 @@
 /////////////////////////////////////////////////////////////////////////////////////
 
 //variables for pid
+// double kP = 0.029, kI = 0.0, kD = 0.009;
 double kP = 0.029, kI = 0.0, kD = 0.009;
 double error = 0, prevError = 0, integral = 0, derivative = 0;
 double power = 0, sensorValue = 0, lSensor = 0, rSensor = 0;
@@ -39,53 +40,53 @@ double movePower = 127, turnPower = 127;
 
 //reset all the encoders
 void ResetEncoders() {
-    front_left_wheels.tare_position();
-    middle_left_wheels.tare_position();
-    back_left_wheels.tare_position();
-    top_front_left_wheels.tare_position();
-    top_back_left_wheels.tare_position();
+  front_left_wheels.tare_position();
+  middle_left_wheels.tare_position();
+  back_left_wheels.tare_position();
+  top_front_left_wheels.tare_position();
+  top_back_left_wheels.tare_position();
 
-    front_right_wheels.tare_position();
-    middle_right_wheels.tare_position();
-    back_right_wheels.tare_position();
-    top_front_right_wheels.tare_position();
-    top_back_right_wheels.tare_position();
+  front_right_wheels.tare_position();
+  middle_right_wheels.tare_position();
+  back_right_wheels.tare_position();
+  top_front_right_wheels.tare_position();
+  top_back_right_wheels.tare_position();
+}
+
+//spin the motors for pid
+void SpinMotors(double power, bool isTurning) {
+  power = -power;
+  if(isTurning) {
+    // left side 
+    front_left_wheels.move(-power);
+    middle_left_wheels.move(-power);
+    back_left_wheels.move(-power);
+    top_front_left_wheels.move(-power);
+    top_back_left_wheels.move(-power);
+
+    // right side
+    front_right_wheels.move(power);
+    middle_right_wheels.move(power);
+    back_right_wheels.move(power);
+    top_front_right_wheels.move(power);
+    top_back_right_wheels.move(power);
   }
-  
-  //spin the motors for pid
-  void SpinMotors(double power, bool isTurning) {
-    power = -power;
-    if(isTurning) {
-      // left side 
-      front_left_wheels.move(-power);
-      middle_left_wheels.move(-power);
-      back_left_wheels.move(-power);
-      top_front_left_wheels.move(-power);
-      top_back_left_wheels.move(-power);
+  else {
+    // left side 
+    front_left_wheels.move(power);
+    middle_left_wheels.move(power);
+    back_left_wheels.move(power);
+    top_front_left_wheels.move(power);
+    top_back_left_wheels.move(power);
 
-      // right side
-      front_right_wheels.move(power);
-      middle_right_wheels.move(power);
-      back_right_wheels.move(power);
-      top_front_right_wheels.move(power);
-      top_back_right_wheels.move(power);
-    }
-    else {
-      // left side 
-      front_left_wheels.move(power);
-      middle_left_wheels.move(power);
-      back_left_wheels.move(power);
-      top_front_left_wheels.move(power);
-      top_back_left_wheels.move(power);
-
-      // right side
-      front_right_wheels.move(power);
-      middle_right_wheels.move(power);
-      back_right_wheels.move(power);
-      top_front_right_wheels.move(power);
-      top_back_right_wheels.move(power);
-    }
+    // right side
+    front_right_wheels.move(power);
+    middle_right_wheels.move(power);
+    back_right_wheels.move(power);
+    top_front_right_wheels.move(power);
+    top_back_right_wheels.move(power);
   }
+}
 
 //moves the bot straight, d is the distance in inches, this program runs on the main thread
 void MoveBot(double d, double p) {
