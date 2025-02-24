@@ -14,7 +14,9 @@ using namespace pros;
 #define TOP_MIDDLE_RIGHT_PORT 5 // done
 #define BOTTOM_MIDDLE_RIGHT_PORT 6 // done
 #define BACK_RIGHT_PORT 7 // done
-#define INTAKE_PORT 8 // done
+#define INTAKE_PORT 9 // done
+
+#define CLAMP_PORT 'A' // done
 
 #define RED MOTOR_GEARSET_36
 #define GREEN MOTOR_GEARSET_18
@@ -33,6 +35,8 @@ Motor middle_right_green_gear(BOTTOM_MIDDLE_RIGHT_PORT, BLUE, true); // done
 Motor back_right_green_gear(BACK_RIGHT_PORT, BLUE, true); // done
 
 Motor intake(INTAKE_PORT, BLUE, false); // done
+
+ADIDigitalOut clamp (CLAMP_PORT);
 
 // Motor_Group left (back_left_wheels, middle_left_wheels, front_left_wheels, top_front_left_wheels, top_back_left_wheels)
 

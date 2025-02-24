@@ -109,5 +109,35 @@ void intakeRings() {
 //     }
 // }
 
-
-
+void clampRings() {
+    bool clampState = false;  // Track the clamp state manually
+    // bool lastButtonState = false;  // Track the last state of the button
+    while (true) {
+        // Check if button is pressed and wasn't pressed before (edge detection)
+        if (master.get_digital(DIGITAL_Y)) {
+            clampState = !clampState;  // Toggle the clamp state
+            clamp.set_value(clampState);  
+        }
+        // Display the new state
+        if (clampState) {
+            master.print(0, 0, "Clamping Rings");
+        } else {
+            master.print(0, 0, "Unclamping Rings");
+        }
+        delay(20);
+        // if (master.get_digital(DIGITAL_Y)) {
+        //     if (clamp.get_value()) {
+        //         // Move the intake motors forward
+        //         master.print(0, 0, "Unclamping Rings");
+        //         clamp.set_value(false);
+        //     } else {
+        //         // Move the intake motors forward
+        //         master.print(0, 0, "Clamping Rings");
+        //         clamp.set_value(true);
+        //     }
+            // // Move the intake motors forward
+            // master.print(0, 0, "Clamping Rings");
+            // clamp.set_value(true);
+        // }
+    }
+}

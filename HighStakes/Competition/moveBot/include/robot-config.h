@@ -75,6 +75,8 @@ extern Motor back_right_green_gear;
 
 extern Motor intake;
 
+extern ADIDigitalOut clamp;
+
 extern Controller master;
 void initialize(void);
 void competition_initialize(void);

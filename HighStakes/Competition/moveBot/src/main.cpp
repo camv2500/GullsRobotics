@@ -46,5 +46,6 @@ void opcontrol() {
 	
 	Task t1 (driverControl);
 	Task t2 (intakeRings);
+	Task t3 (clampRings);
 	
 }
