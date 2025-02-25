@@ -252,7 +252,7 @@ void turnPID(double targetDegrees, int maxSpeed) {
     inertial_sensor.tare_rotation();
     delay(200); // Wait for sensor to stabilize
 
-    // // Adjust PID constants dynamically for short distances
+    // Adjust PID constants dynamically for short distances 
     if (fabs(targetDegrees) < 45) { // For distances less than 10 inches
         // local_kp *= 1.5; // Increase proportional gain
         local_kp *= 2.0; // Increase proportional gain

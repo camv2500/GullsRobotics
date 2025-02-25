@@ -23,13 +23,17 @@ void Autonomous() {
     // moveForwardPID(-24, 127);
     // master.print(0, 0, "completed moveForwardPID");
     // delay(3000);
-    master.print(0, 0, "");
+    master.print(0, 0, ""); 
     // turnClockwiseTime(3000, 127);  // Turn clockwise for x milliseconds  at 100% speed
     // turnClockwiseTime(360, 127);  // Turn clockwise for x milliseconds  at 100% speed
     turnPID(30, 127);  // Turn counterclockwise for x milliseconds  at 100% speed
     delay(1000);
     turnPID(-30, 127);  // Turn clockwise for x milliseconds  at 100% speed
     delay(1000);
+    // turnPID(45, 127);  // Turn counterclockwise for x milliseconds  at 100% speed
+    // delay(1000);
+    // turnPID(-45, 127);  // Turn clockwise for x milliseconds  at 100% speed
+    // delay(1000);
     turnPID(90, 127);  // Turn counterclockwise for x milliseconds  at 100% speed
     delay(1000);
     turnPID(-90, 127);  // Turn clockwise for x milliseconds  at 100% speed
