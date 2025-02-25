@@ -14,6 +14,8 @@ using namespace pros;
 #define TOP_FRONT_LEFT_PORT 2
 #define TOP_BACK_RIGHT_PORT 16
 
+#define INERTIAL_SENSOR_PORT 3
+
 #define RED MOTOR_GEARSET_36
 #define GREEN MOTOR_GEARSET_18
 #define BLUE MOTOR_GEARSET_6
@@ -30,6 +32,8 @@ Motor middle_right_wheels (MIDDLE_RIGHT_PORT, BLUE, true); //
 Motor back_right_wheels (BACK_RIGHT_PORT, BLUE, false); // 
 Motor top_front_right_wheels (TOP_FRONT_RIGHT_PORT, BLUE, false); // 
 Motor top_back_right_wheels (TOP_BACK_RIGHT_PORT, BLUE, false); // 
+
+Imu inertial_sensor(INERTIAL_SENSOR_PORT); // Inertial Sensor
 
 // Motor_Group left (back_left_wheels, middle_left_wheels, front_left_wheels, top_front_left_wheels, top_back_left_wheels)
 
@@ -62,5 +66,9 @@ void initialize() {
 	lcd::set_text(1, "Hello PROS User!");
 
 	lcd::register_btn1_cb(on_center_button);
+	inertial_sensor.reset();
+	delay(100);
+	inertial_sensor.tare_rotation(); // Set initial rotation to 0
+	delay(200);
 }
 

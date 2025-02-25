@@ -72,6 +72,7 @@ extern Motor top_front_right_wheels;
 extern Motor top_front_left_wheels;
 extern Motor top_back_left_wheels;
 extern Motor top_back_right_wheels;
+extern Imu inertial_sensor;
 extern Controller master;
 void initialize(void);
 void competition_initialize(void);

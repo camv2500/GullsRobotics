@@ -77,7 +77,7 @@ void moveForwardPID(double targetDistance, int maxSpeed) {
     resetEncoders();
 
     // Adjust PID constants dynamically for short distances
-    if (targetDistance < 10) { // For distances less than 10 inches
+    if (fabs(targetDistance) < 10) { // For distances less than 10 inches
         local_kp *= 1.5; // Increase proportional gain
         maxSpeed = std::max(50, maxSpeed / 2); // Limit max speed
     }
@@ -234,9 +234,9 @@ void moveForwardPID(double targetDistance, int maxSpeed) {
 
 // Function to turn the robot using PID control
 void turnPID(double targetDegrees, int maxSpeed) {
-    double kp = 1.0;  // Proportional constant (tuned for inches)
+    double kp = 0.6;  // Proportional constant (tuned for inches)
     double ki = 0.002;  // Integral constant (set to 0 initially, typically less used for basic moves)
-    double kd = 0.1; // Derivative constant (adjusted)
+    double kd = 0.15; // Derivative constant (adjusted)
     double currentDegrees = 0; 
     double previousError = 0;
     double integral = 0;
@@ -245,23 +245,54 @@ void turnPID(double targetDegrees, int maxSpeed) {
     double leftSpeed;
     double rightSpeed;
 
-    resetEncoders();
+    targetDegrees = -targetDegrees; // Invert target degrees for correct direction
 
-    // Adjust PID constants dynamically for short distances
-    if (targetDegrees < 10) { // For distances less than 10 inches
-        local_kp *= 1.5; // Increase proportional gain
+    // resetEncoders();
+    // Reset inertial sensor heading
+    inertial_sensor.tare_rotation();
+    delay(200); // Wait for sensor to stabilize
+
+    // // Adjust PID constants dynamically for short distances
+    if (fabs(targetDegrees) < 45) { // For distances less than 10 inches
+        // local_kp *= 1.5; // Increase proportional gain
+        local_kp *= 2.0; // Increase proportional gain
         maxSpeed = std::max(50, maxSpeed / 2); // Limit max speed
     }
+    else if (fabs(targetDegrees) > 135) {
+        local_kp /= 1.25; // Increase proportional gain
+        maxSpeed = std::max(50, maxSpeed / 2); // Limit max speed
+    }
+    // else if (fabs(targetDegrees) < 180) {
+    //     local_kp *= 1.2; // Increase proportional gain
+    //     maxSpeed = std::max(50, maxSpeed / 2); // Limit max speed
+    // }
+    // else if (fabs(targetDegrees) < 180) {
+    //     local_kp *= 1.2; // Increase proportional gain
+    //     maxSpeed = std::max(50, maxSpeed / 2); // Limit max speed
+    // }
 
-    while (fabs(currentDegrees) < fabs(targetDegrees) * 2) {
+    // if (targetDegrees > 0) {
+    //     kp *= 1.2;  
+    // } // Increase proportional gain for positive turns
+    // else {
+    //     kp *= 0.8;  // Decrease proportional gain for negative turns
+    // }
+
+    // while (fabs(currentDegrees) < fabs(targetDegrees) / 1) {
+    // while (currentDegrees < targetDegrees / 1) {
+    // while (fabs(currentDegrees - targetDegrees) > 1.0) {
+    while (true) {
         lcd::clear_line(0);
         lcd::clear_line(1);
         // master.clear();
         // Update current degrees
-        currentDegrees = (fabs(front_left_wheels.get_position()) + fabs(front_right_wheels.get_position())) / 2.0;
-        
+        // currentDegrees = (fabs(front_left_wheels.get_position()) + fabs(front_right_wheels.get_position())) / 2.0;
+        currentDegrees = inertial_sensor.get_rotation();
+        if (!std::isfinite(currentDegrees)) currentDegrees = 0;
+        // currentDegrees = -currentDegrees;
 
-        double error = fabs(targetDegrees) - fabs(currentDegrees);
+        // double error = fabs(targetDegrees) - fabs(currentDegrees);
+        double error = targetDegrees - currentDegrees;
 
         // Debug prints
         // printf("Current Degrees: %f inches\n", currentDegrees);
@@ -271,11 +302,10 @@ void turnPID(double targetDegrees, int maxSpeed) {
         master.print(0, 0, "Current: %f degrees\n", currentDegrees);
         master.print(1, 0, "Error: %f degrees\n", error);
         
-        //the error lies here
-        // if (fabs(error) < 3.0) {
-        //     leftSpeed *= 0.5;
-        //     rightSpeed *= 0.5;
-        // }
+        if (fabs(error) < 5.0) {
+            leftSpeed *= 0.7;
+            rightSpeed *= 0.7;
+        }
 
         if (fabs(error) < 1.0) { 
             leftSpeed = 0;
@@ -306,7 +336,8 @@ void turnPID(double targetDegrees, int maxSpeed) {
         }
 
         // Clamp the integral term to prevent excessive accumulation
-        integral = std::max(-integralMax, std::min(integral, integralMax));
+        // integral = std::max(-integralMax, std::min(integral, integralMax));
+        integral = std::clamp(integral, -integralMax, integralMax);
         // integral += error;
         // if (integral > integralMax) { // Anti-windup
         //     integral = integralMax;
@@ -318,14 +349,26 @@ void turnPID(double targetDegrees, int maxSpeed) {
         // Compute PID control value
         int controlSignal = local_kp * error + ki * integral + kd * derivative;
 
-        // Apply control signal to motors, limiting to maxSpeed
-        leftSpeed = -1 * std::min(maxSpeed, std::max(-maxSpeed, controlSignal));
-        rightSpeed = std::min(maxSpeed, std::max(-maxSpeed, controlSignal));
-
-        if (targetDegrees > 0) {
-            leftSpeed = -leftSpeed;
-            rightSpeed = -rightSpeed;
+        if (fabs(controlSignal) < 10) {
+            if (controlSignal > 0) {
+                controlSignal = 10;
+            }
+            else {
+                controlSignal = -10;
+            }
         }
+
+        // Apply control signal to motors, limiting to maxSpeed
+        // leftSpeed = -1 * std::min(maxSpeed, std::max(-maxSpeed, controlSignal));
+        // rightSpeed = std::min(maxSpeed, std::max(-maxSpeed, controlSignal));
+        leftSpeed = -std::clamp(controlSignal, -maxSpeed, maxSpeed);
+        rightSpeed = std::clamp(controlSignal, -maxSpeed, maxSpeed);
+
+        // if (targetDegrees > 0) {
+        //     leftSpeed = -leftSpeed;
+        //     rightSpeed = -rightSpeed;
+        // }
+
         // leftSpeed = -leftSpeed;
         // rightSpeed = -rightSpeed;
 
@@ -395,6 +438,86 @@ void turnPID(double targetDegrees, int maxSpeed) {
 
     return;
 }
+
+// void turnPID(double targetDegrees, int maxSpeed) {
+//     double kp = 0.5;
+//     double ki = 0.000;
+//     double kd = 0.1;
+    
+//     double currentDegrees = 0;
+//     double previousError = 0;
+//     double integral = 0;
+//     double integralMax = 100;
+//     double leftSpeed, rightSpeed;
+
+//     // Reset inertial sensor and wait for stability
+//     inertial_sensor.tare_rotation();
+//     pros::delay(200);  // Give sensor time to reset
+
+//     while (true) {
+//         currentDegrees = inertial_sensor.get_rotation();
+//         if (!std::isfinite(currentDegrees)) currentDegrees = 0;
+
+//         double error = targetDegrees - currentDegrees;
+
+//         // Debugging
+//         lcd::print(0, "Rotation: %f", currentDegrees);
+//         lcd::print(1, "Error: %f", error);
+
+//         // Stop if close enough
+//         if (fabs(error) < 3.0) {  // Increased threshold
+//             break;
+//         }
+
+//         // Prevent integral windup
+//         if (fabs(error) <= 20) {
+//             integral += error;
+//         } else {
+//             integral = 0;
+//         }
+//         integral = std::clamp(integral, -integralMax, integralMax);
+
+//         double derivative = error - previousError;
+//         int controlSignal = kp * error + ki * integral + kd * derivative;
+
+//         // Ensure motors move
+//         if (fabs(controlSignal) < 10) {
+//             controlSignal = (controlSignal > 0) ? 10 : -10;
+//         }
+
+//         leftSpeed = -std::clamp(controlSignal, -maxSpeed, maxSpeed);
+//         rightSpeed = std::clamp(controlSignal, -maxSpeed, maxSpeed);
+
+//         // Move motors
+//         front_left_wheels.move(leftSpeed);
+//         middle_left_wheels.move(leftSpeed);
+//         back_left_wheels.move(leftSpeed);
+//         top_front_left_wheels.move(leftSpeed);
+//         top_back_left_wheels.move(leftSpeed);
+
+//         front_right_wheels.move(rightSpeed);
+//         middle_right_wheels.move(rightSpeed);
+//         back_right_wheels.move(rightSpeed);
+//         top_front_right_wheels.move(rightSpeed);
+//         top_back_right_wheels.move(rightSpeed);
+
+//         previousError = error;
+//         pros::delay(10);
+//     }
+
+//     // Stop motors
+//     front_left_wheels.brake();
+//     middle_left_wheels.brake();
+//     back_left_wheels.brake();
+//     top_front_left_wheels.brake();
+//     top_back_left_wheels.brake();
+
+//     front_right_wheels.brake();
+//     middle_right_wheels.brake();
+//     back_right_wheels.brake();
+//     top_front_right_wheels.brake();
+//     top_back_right_wheels.brake();
+// }
 
 // Function to turn the robot clockwise for a fixed amount of time
 void turnClockwiseTime(int turnTime, int maxSpeed) {
