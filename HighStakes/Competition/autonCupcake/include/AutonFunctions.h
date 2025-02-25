@@ -65,7 +65,7 @@ extern "C" {
 /////////////////////////////////////////////////////////////////////////////////////
 //////                            FUNCTION DECLARATIONS                        //////
 /////////////////////////////////////////////////////////////////////////////////////
-void moveForwardPID(double targetDistance, int maxSpeed);
+void lateralPID(double targetDistance, int maxSpeed);
 void turnPID(double targetDegrees, int maxSpeed);
 void turnClockwiseTime(int turnTime, int maxSpeed);
 double degreesToInches(double);

@@ -60,12 +60,11 @@ double getAverageEncoderValue(bool ab = false) {
     }
   }
 
-// Function to move the robot forward using PID control
-void moveForwardPID(double targetDistance, int maxSpeed) {
-    // targetDistance = targetDistance / 1.25;
+// Function to move the robot laterally using PID control
+void lateralPID(double targetDistance, int maxSpeed) {
     double kp = 1.0;  // Proportional constant (tuned for inches) 1.0
-    double ki = 0.01;  // Integral constant (set to 0 initially, typically less used for basic moves) 0.002
-    double kd = 0.1; // Derivative constant (adjusted) 0.1
+    double ki = 0.002;  // Integral constant (set to 0 initially, typically less used for basic moves) 0.002
+    double kd = 0.15; // Derivative constant (adjusted) 0.1
     double currentDistance = 0; 
     double previousError = 0;
     double integral = 0;
@@ -74,7 +73,12 @@ void moveForwardPID(double targetDistance, int maxSpeed) {
     double leftSpeed;
     double rightSpeed;
 
+    targetDistance = -targetDistance; // Invert target distance for correct direction
+
     resetEncoders();
+
+    inertial_sensor.tare_rotation();
+    delay(200);
 
     // Adjust PID constants dynamically for short distances
     if (fabs(targetDistance) < 10) { // For distances less than 10 inches
@@ -82,7 +86,9 @@ void moveForwardPID(double targetDistance, int maxSpeed) {
         maxSpeed = std::max(50, maxSpeed / 2); // Limit max speed
     }
 
-    while (fabs(currentDistance) < fabs(targetDistance) / 1.5) {
+    while (fabs(currentDistance) < fabs(targetDistance) / 1.55) {
+    // while (fabs(currentDistance) < fabs(targetDistance)) {
+    // while (true) {
         lcd::clear_line(0);
         lcd::clear_line(1);
         // Update current distance
@@ -91,13 +97,14 @@ void moveForwardPID(double targetDistance, int maxSpeed) {
         // } else {
         //     currentDistance = degreesToInches(middle_right_wheels.get_position());
         // }
-        currentDistance = -degreesToInches((middle_left_wheels.get_position() + middle_right_wheels.get_position())/2.0);
+        currentDistance = degreesToInches((middle_left_wheels.get_position() + middle_right_wheels.get_position())/2.0);
         // currentDistance = ((wheelDiameter * 3.1415926535897) / 360.0) * (middle_left_wheels.get_position() + middle_right_wheels.get_position()) / 2.0;
         // currentDistance = -currentDistance;
         // currentDistance = -degreesToInches(getAverageEncoderValue(true));
         
 
-        double error = fabs(targetDistance) - fabs(currentDistance);
+        // double error = fabs(targetDistance) - fabs(currentDistance);
+        double error = targetDistance - currentDistance;
 
         // Debug prints
         // printf("Current Distance: %f inches\n", currentDistance);
@@ -105,7 +112,10 @@ void moveForwardPID(double targetDistance, int maxSpeed) {
         lcd::print(0, "Current Distance: %f inches\n", currentDistance);
         lcd::print(1, "Error: %f inches\n", error);
         master.print(0, 0, "Dist: %f inches\n", currentDistance);
-        master.print(1, 0, "Error: %f in\n", error);
+        // master.print(1, 0, "Error: %f in\n", error);
+        // master.print(2, 0, "Left: %f Right: %f", middle_left_wheels.get_position(), middle_right_wheels.get_position());
+        master.print(1, 0, "Left: %f", middle_left_wheels.get_position());
+        master.print(2, 0, "Right: %f", middle_right_wheels.get_position());
         
         //the error lies here
         if (fabs(error) < 3.0) {
@@ -135,14 +145,16 @@ void moveForwardPID(double targetDistance, int maxSpeed) {
         }
 
         // Only accumulate integral when error is within a reasonable range
-        if (fabs(error) < 10.0 && fabs(error) > 0.5) { // Avoid windup for large errors
+        // if (fabs(error) < 10.0 && fabs(error) > 0.5) { // Avoid windup for large errors
+        if (fabs(error) <= 20) { // Avoid windup for large errors
             integral += error;
         } else {
             integral = 0; // Reset if error is too large
         }
 
         // Clamp the integral term to prevent excessive accumulation
-        integral = std::max(-integralMax, std::min(integral, integralMax));
+        // integral = std::max(-integralMax, std::min(integral, integralMax));
+        integral = std::clamp(integral, -integralMax, integralMax);
         // integral += error;
         if (integral > integralMax) { // Anti-windup
             integral = integralMax;
@@ -155,13 +167,20 @@ void moveForwardPID(double targetDistance, int maxSpeed) {
         int controlSignal = local_kp * error + ki * integral + kd * derivative;
 
         // Apply control signal to motors, limiting to maxSpeed
-        leftSpeed = std::min(maxSpeed, std::max(-maxSpeed, controlSignal));
-        rightSpeed = std::min(maxSpeed, std::max(-maxSpeed, controlSignal));
+        double headingError = inertial_sensor.get_rotation();
+        double correction = headingError * 0.5;  // Adjust correction factor
 
-        if (targetDistance > 0) {
-            leftSpeed = -leftSpeed;
-            rightSpeed = -rightSpeed;
-        }
+        int leftControl = controlSignal + correction;
+        int rightControl = controlSignal - correction;
+
+        leftSpeed = std::min(maxSpeed, std::max(-maxSpeed, leftControl));
+        rightSpeed = std::min(maxSpeed, std::max(-maxSpeed, rightControl));
+
+        // if (targetDistance > 0) {
+        //     leftSpeed = -leftSpeed;
+        //     rightSpeed = -rightSpeed;
+        // }
+
         // leftSpeed = -leftSpeed;
         // rightSpeed = -rightSpeed;
 
@@ -253,7 +272,7 @@ void turnPID(double targetDegrees, int maxSpeed) {
     delay(200); // Wait for sensor to stabilize
 
     // Adjust PID constants dynamically for short distances 
-    if (fabs(targetDegrees) < 45) { // For distances less than 10 inches
+    if (fabs(targetDegrees) <= 45) { // For distances less than 10 inches
         // local_kp *= 1.5; // Increase proportional gain
         local_kp *= 2.0; // Increase proportional gain
         maxSpeed = std::max(50, maxSpeed / 2); // Limit max speed
@@ -561,5 +580,5 @@ double degreesToInches(double degrees) {
     double pi = 3.1415926535897;
     double wheelCircumference = wheelDiameter * pi;
 
-    return (degrees / 360) * wheelCircumference;
+    return (degrees / 360.0) * wheelCircumference;
 }

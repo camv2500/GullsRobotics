@@ -17,12 +17,12 @@ using namespace pros;
 void competition_initialize() {}
 
 void Autonomous() {
-    // Test the moveForwardPID function with a target distance of 200 units and max speed of 127
-    // moveForwardPID(24, 127);
-    // delay(1000);
-    // moveForwardPID(-24, 127);
-    // master.print(0, 0, "completed moveForwardPID");
-    // delay(3000);
+    // Test the lateralPID function with a target distance of 200 units and max speed of 127
+    lateralPID(24, 127);
+    delay(1000);
+    lateralPID(-24, 127);
+    master.print(0, 0, "completed lateralPID");
+    delay(3000);
     master.print(0, 0, ""); 
     // turnClockwiseTime(3000, 127);  // Turn clockwise for x milliseconds  at 100% speed
     // turnClockwiseTime(360, 127);  // Turn clockwise for x milliseconds  at 100% speed
@@ -30,10 +30,10 @@ void Autonomous() {
     delay(1000);
     turnPID(-30, 127);  // Turn clockwise for x milliseconds  at 100% speed
     delay(1000);
-    // turnPID(45, 127);  // Turn counterclockwise for x milliseconds  at 100% speed
-    // delay(1000);
-    // turnPID(-45, 127);  // Turn clockwise for x milliseconds  at 100% speed
-    // delay(1000);
+    turnPID(45, 127);  // Turn counterclockwise for x milliseconds  at 100% speed
+    delay(1000);
+    turnPID(-45, 127);  // Turn clockwise for x milliseconds  at 100% speed
+    delay(1000);
     turnPID(90, 127);  // Turn counterclockwise for x milliseconds  at 100% speed
     delay(1000);
     turnPID(-90, 127);  // Turn clockwise for x milliseconds  at 100% speed
@@ -46,5 +46,21 @@ void Autonomous() {
     delay(1000);
     turnPID(-180, 127);  // Turn clockwise for x milliseconds  at 100% speed
     master.print(0, 0, "completed Turn");
+
+    // lateralPID(96, 127);
+    // delay(100);
+    // turnPID(90, 127);
+    // delay(100);
+    // lateralPID(72, 127);
+    // delay(100);
+    // turnPID(90, 127);
+    // delay(100);
+    // lateralPID(96, 127);
+    // delay(100);
+    // turnPID(90, 127);
+    // delay(100);
+    // lateralPID(72, 127);
+    // delay(100);
+    // turnPID(90, 127);
 
 }
