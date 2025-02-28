@@ -17,7 +17,8 @@
 // double ki = 0.0;  // Integral constant (set to 0 initially, typically less used for basic moves)
 // double kd = 0.2; // Derivative constant (adjusted)
 
-double wheelDiameter = 2.75; // Wheel diameter in inches
+// double wheelDiameter = 3.25; // Wheel diameter in inches
+double wheelDiameter = 1.5; // Wheel diameter in inches
 
 /////////////////////////////////////////////////////////////////////////////////////
 //////                               GLOBAL VARIABLES                          //////
@@ -56,9 +57,9 @@ double getAverageEncoderValue(bool ab = false) {
 
 // Function to move the robot laterally using PID control
 void lateralPID(double targetDistance, int maxSpeed) {
-    double kp = 1.0;  // Proportional constant (tuned for inches) 1.0
-    double ki = 0.002;  // Integral constant (set to 0 initially, typically less used for basic moves) 0.002
-    double kd = 0.15; // Derivative constant (adjusted) 0.1
+    double kp = 1.5;  // Proportional constant (tuned for inches) 1.0
+    double ki = 0.000;  // Integral constant (set to 0 initially, typically less used for basic moves) 0.002
+    double kd = 0.0; // Derivative constant (adjusted) 0.1
     double currentDistance = 0; 
     double previousError = 0;
     double integral = 0;
@@ -75,12 +76,18 @@ void lateralPID(double targetDistance, int maxSpeed) {
     delay(200);
 
     // Adjust PID constants dynamically for short distances
-    if (fabs(targetDistance) < 10) { // For distances less than 10 inches
-        local_kp *= 1.5; // Increase proportional gain
+    if (fabs(targetDistance) <= 12) { // For distances less than 10 inches
+        // local_kp *= 1.5; // Increase proportional gain
+        local_kp *= 2.5; // Increase proportional gain
         maxSpeed = std::max(50, maxSpeed / 2); // Limit max speed
     }
+    // else if (fabs(targetDistance) >= 36) {
+    //     local_kp /= 1.25; // Increase proportional gain
+    //     maxSpeed = std::max(50, maxSpeed / 2); // Limit max speed
+    // }
 
     while (fabs(currentDistance) < fabs(targetDistance) / 1.55) { // Adjust the condition to account for wheel diameter
+    // while (fabs(currentDistance) < fabs(targetDistance)) { // Adjust the condition to account for wheel diameter
         lcd::clear_line(0);
         lcd::clear_line(1);
        
@@ -89,19 +96,19 @@ void lateralPID(double targetDistance, int maxSpeed) {
         double error = targetDistance - currentDistance;
 
         // Debug prints
-        lcd::print(0, "Current Distance: %f inches\n", currentDistance);
-        lcd::print(1, "Error: %f inches\n", error);
-        master.print(0, 0, "Dist: %f inches\n", currentDistance);
-        // master.print(1, 0, "Error: %f in\n", error);
-        // master.print(2, 0, "Left: %f Right: %f", middle_left_wheels.get_position(), middle_right_wheels.get_position());
-        master.print(1, 0, "Left: %f", front_left_wheels.get_position());
-        master.print(2, 0, "Right: %f", back_right_wheels.get_position());
+        // lcd::print(0, "Current Distance: %f inches\n", currentDistance);
+        // lcd::print(1, "Error: %f inches\n", error);
+        // master.print(0, 0, "Dist: %f inches\n", currentDistance);
+        // // master.print(1, 0, "Error: %f in\n", error);
+        // // master.print(2, 0, "Left: %f Right: %f", middle_left_wheels.get_position(), middle_right_wheels.get_position());
+        // master.print(1, 0, "Left: %f", front_left_wheels.get_position());
+        // master.print(2, 0, "Right: %f", back_right_wheels.get_position());
         
         //the error lies here
-        if (fabs(error) < 3.0) {
-            leftSpeed *= 0.5;
-            rightSpeed *= 0.5;
-        }
+        // if (fabs(error) < 3.0) {
+        //     leftSpeed *= 0.5;
+        //     rightSpeed *= 0.5;
+        // }
 
         if (fabs(error) < 1.0) { 
             leftSpeed = 0;
@@ -142,8 +149,8 @@ void lateralPID(double targetDistance, int maxSpeed) {
         double headingError = inertial_sensor.get_rotation();
         double correction = headingError * 0.5;  // Adjust correction factor
 
-        int leftControl = controlSignal + correction;
-        int rightControl = controlSignal - correction;
+        int leftControl = controlSignal - correction;
+        int rightControl = controlSignal + correction;
 
         leftSpeed = std::min(maxSpeed, std::max(-maxSpeed, leftControl));
         rightSpeed = std::min(maxSpeed, std::max(-maxSpeed, rightControl));
@@ -175,8 +182,8 @@ void lateralPID(double targetDistance, int maxSpeed) {
 
 // Function to turn the robot using PID control
 void turnPID(double targetDegrees, int maxSpeed) {
-    double kp = 0.6;  // Proportional constant (tuned for inches)
-    double ki = 0.002;  // Integral constant (set to 0 initially, typically less used for basic moves)
+    double kp = 1.0;  // Proportional constant (tuned for inches)
+    double ki = 0.000;  // Integral constant (set to 0 initially, typically less used for basic moves)
     double kd = 0.15; // Derivative constant (adjusted)
     double currentDegrees = 0; 
     double previousError = 0;
@@ -195,11 +202,11 @@ void turnPID(double targetDegrees, int maxSpeed) {
 
     // Adjust PID constants dynamically for short distances 
     if (fabs(targetDegrees) <= 45) { // For distances less than 10 inches
-        // local_kp *= 1.5; // Increase proportional gain
-        local_kp *= 2.0; // Increase proportional gain
+        local_kp *= 1.5; // Increase proportional gain
+        // local_kp *= 2.0; // Increase proportional gain
         maxSpeed = std::max(50, maxSpeed / 2); // Limit max speed
     }
-    else if (fabs(targetDegrees) > 135) {
+    else if (fabs(targetDegrees) >= 135) {
         local_kp /= 1.25; // Increase proportional gain
         maxSpeed = std::max(50, maxSpeed / 2); // Limit max speed
     }
@@ -215,10 +222,10 @@ void turnPID(double targetDegrees, int maxSpeed) {
         double error = targetDegrees - currentDegrees;
 
         // Debug prints
-        lcd::print(0, "Current rotation: %f degrees\n", currentDegrees);
-        lcd::print(1, "Error: %f degrees\n", error);
-        master.print(0, 0, "Current: %f degrees\n", currentDegrees);
-        master.print(1, 0, "Error: %f degrees\n", error);
+        // lcd::print(0, "Current rotation: %f degrees\n", currentDegrees);
+        // lcd::print(1, "Error: %f degrees\n", error);
+        // master.print(0, 0, "Current: %f degrees\n", currentDegrees);
+        // master.print(1, 0, "Error: %f degrees\n", error);
         
         if (fabs(error) < 5.0) {
             leftSpeed *= 0.7;
@@ -265,8 +272,8 @@ void turnPID(double targetDegrees, int maxSpeed) {
         }
 
         // Apply control signal to motors, limiting to maxSpeed
-        leftSpeed = -std::clamp(controlSignal, -maxSpeed, maxSpeed);
-        rightSpeed = std::clamp(controlSignal, -maxSpeed, maxSpeed);
+        leftSpeed = std::clamp(controlSignal, -maxSpeed, maxSpeed);
+        rightSpeed = -std::clamp(controlSignal, -maxSpeed, maxSpeed);
 
         // left side 
         front_left_wheels.move(leftSpeed);
@@ -338,18 +345,31 @@ void intakeAuton(bool condition) {
 }
 
 void flip(double targetDegrees, int power) {
+    targetDegrees = -targetDegrees * 100; // Invert target degrees for correct direction
+    // rotation.set_position(0);
+    // master.print(0, 0, "%f", rotation.get_position());
+
+    int timeout = 3000;  // Timeout (3 seconds)
+    int elapsed_time = 0;
+
     if (targetDegrees > 0) {
-        while (rotation.get_position() < targetDegrees) {
+        while (rotation.get_position() < targetDegrees && elapsed_time < timeout) {
             // Move the intake motors forward
-            flipper.move(power);
+            master.print(0, 0, "%f", rotation.get_position());
+            flipper.move(-power);
+            delay(10);
+            elapsed_time += 10;
         }
         // Stop the intake motors
         flipper.brake();
     }
     else {
-        while (rotation.get_position() > targetDegrees) {
+        while (rotation.get_position() > targetDegrees && elapsed_time < timeout) {
             // Move the intake motors forward
-            flipper.move(-power);
+            master.print(0, 0, "%f", rotation.get_position());
+            flipper.move(power);
+            delay(10);
+            elapsed_time += 10;
         }
         // Stop the intake motors
         flipper.brake();
