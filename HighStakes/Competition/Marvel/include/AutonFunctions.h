@@ -11,6 +11,9 @@ void lateralPID(double targetDistance, int maxSpeed);
 void turnPID(double targetDegrees, int maxSpeed);
 void turnClockwiseTime(int turnTime, int maxSpeed);
 double degreesToInches(double);
+void intakeAuton(bool condition);
+void flip(double targetDegrees, int power);
+void clampAuton(bool condition);
 // PID Constants (extern to be defined in AutonFunctions.cpp)
 extern double kp;  // Proportional constant
 extern double ki;  // Integral constant

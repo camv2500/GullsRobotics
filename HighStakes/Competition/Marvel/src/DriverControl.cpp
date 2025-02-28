@@ -33,7 +33,7 @@ void driverControl() {
     while (true) {
         // Read joystick values
         int leftY = -1*master.get_analog(ANALOG_LEFT_Y);
-        int rightX = -1*master.get_analog(ANALOG_RIGHT_X);
+        int rightX = master.get_analog(ANALOG_RIGHT_X);
         
         // Optional: Apply a deadband
         if (abs(leftY) < 10) leftY = 0;  // Adjust deadband threshold as needed
@@ -113,15 +113,20 @@ void clampRings() {
     while (true) {
         // Check if button is pressed and wasn't pressed before (edge detection)
         if (master.get_digital(DIGITAL_Y)) {
-            clampState = !clampState;  // Toggle the clamp state
-            clamp.set_value(clampState);  
+            // clampState = !clampState;  // Toggle the clamp state
+            clamp.set_value(true); 
+            master.print(0, 0, "Clamping Rings"); 
         }
-        // Display the new state
-        if (clampState) {
-            master.print(0, 0, "Clamping Rings");
-        } else {
+        else if (master.get_digital(DIGITAL_X)) {
+            clamp.set_value(false);
             master.print(0, 0, "Unclamping Rings");
         }
+        // Display the new state
+        // if (clampState) {
+        //     master.print(0, 0, "Clamping Rings");
+        // } else {
+        //     master.print(0, 0, "Unclamping Rings");
+        // }
         delay(20);
         // if (master.get_digital(DIGITAL_Y)) {
         //     if (clamp.get_value()) {
@@ -137,5 +142,26 @@ void clampRings() {
             // master.print(0, 0, "Clamping Rings");
             // clamp.set_value(true);
         // }
+    }
+}
+
+void flipRings() {
+    while (true) {
+        if (master.get_digital(DIGITAL_R1)) {
+            // Move the intake motors forward
+            master.print(0, 0, "Flipping Rings");
+            flipper.move(127);
+        }
+        else if (master.get_digital(DIGITAL_R2)) {
+            // Move the intake motors forward
+            master.print(0, 0, "Unflipping Rings");
+            flipper.move(-127);
+        }
+        else {
+            // Stop the intake motors
+            // master.print(0, 0, "Stopping Intake");
+            master.print(0, 0, "");
+            flipper.move(0);
+        }
     }
 }

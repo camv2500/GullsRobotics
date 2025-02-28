@@ -94,8 +94,8 @@ void lateralPID(double targetDistance, int maxSpeed) {
         master.print(0, 0, "Dist: %f inches\n", currentDistance);
         // master.print(1, 0, "Error: %f in\n", error);
         // master.print(2, 0, "Left: %f Right: %f", middle_left_wheels.get_position(), middle_right_wheels.get_position());
-        master.print(1, 0, "Left: %f", middle_left_wheels.get_position());
-        master.print(2, 0, "Right: %f", middle_right_wheels.get_position());
+        master.print(1, 0, "Left: %f", front_left_wheels.get_position());
+        master.print(2, 0, "Right: %f", back_right_wheels.get_position());
         
         //the error lies here
         if (fabs(error) < 3.0) {
@@ -324,4 +324,46 @@ double degreesToInches(double degrees) {
     double wheelCircumference = wheelDiameter * pi;
 
     return (degrees / 360.0) * wheelCircumference;
+}
+
+void intakeAuton(bool condition) {
+    if (condition) {
+        // Move the intake motors forward
+        intake.move(127);
+    }
+    else {
+        // Stop the intake motors
+        intake.move(0);
+    }
+}
+
+void flip(double targetDegrees, int power) {
+    if (targetDegrees > 0) {
+        while (rotation.get_position() < targetDegrees) {
+            // Move the intake motors forward
+            flipper.move(power);
+        }
+        // Stop the intake motors
+        flipper.brake();
+    }
+    else {
+        while (rotation.get_position() > targetDegrees) {
+            // Move the intake motors forward
+            flipper.move(-power);
+        }
+        // Stop the intake motors
+        flipper.brake();
+    }
+}
+
+void clampAuton(bool condition) {
+    // Check if button is pressed and wasn't pressed before (edge detection)
+    if (condition) {
+        clamp.set_value(true); 
+    }
+    else {
+        clamp.set_value(false);
+    }
+
+    delay(20);
 }

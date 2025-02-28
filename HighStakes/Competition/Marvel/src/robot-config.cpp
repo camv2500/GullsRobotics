@@ -12,8 +12,8 @@ using namespace pros;
 #define BACK_LEFT_PORT 6 // done 
 #define FRONT_RIGHT_PORT 4 // done
 #define BACK_RIGHT_PORT 1 // done
-#define FLIPPER_PORT 9 // done
-#define INTAKE_PORT 7 // done
+#define FLIPPER_PORT 7 // done
+#define INTAKE_PORT 9 // done
 #define INERTIAL_SENSOR_PORT 10 // done
 #define ROTATION_PORT 3 // done
 
@@ -28,16 +28,16 @@ Imu inertial_sensor(INERTIAL_SENSOR_PORT); // Inertial Sensor
 // Motors and Sensors
 
 // left side
-Motor front_left_wheels(FRONT_LEFT_PORT, BLUE, false); // done
-Motor back_left_wheels(BACK_LEFT_PORT, BLUE, false);
+Motor front_left_wheels(FRONT_LEFT_PORT, BLUE, true); // done
+Motor back_left_wheels(BACK_LEFT_PORT, BLUE, true);
 
 // right side
-Motor front_right_wheels(FRONT_RIGHT_PORT, BLUE, true); // done
-Motor back_right_wheels(BACK_RIGHT_PORT, BLUE, true); // done
+Motor front_right_wheels(FRONT_RIGHT_PORT, BLUE, false); // done
+Motor back_right_wheels(BACK_RIGHT_PORT, BLUE, false); // done
 
 Motor intake(INTAKE_PORT, BLUE, false); // done
 
-Motor flipper(FLIPPER_PORT, BLUE, false); // done
+Motor flipper(FLIPPER_PORT, RED, false); // done
 
 Rotation rotation(ROTATION_PORT); // done
 
