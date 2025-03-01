@@ -81,18 +81,28 @@ void Autonomous() {
     // Test the turnClockwisePID function with a target angle of 90 degrees and max speed of 100
     // turnPID(90, 127);  // Turn clockwise for x milliseconds  at 100% speed
 
-    intakeAuton(true);
-    delay(100);
-    lateralPID(-BLOCK, 127);
-    delay(1000);
-    intakeAuton(false);
-    delay(100);
-    lateralPID(THREE_BLOCKS, 127);
+    // intakeAuton(true);
+    // delay(100);
+    // lateralPID(-BLOCK, 127);
+    // delay(1000);
+    // intakeAuton(false);
+    // delay(100);
+    // lateralPID(THREE_BLOCKS, 127);
+    // delay(100);
+    // turnPID(-90, 127);
+    // delay(100);
+    // lateralPID(BLOCK_AND_HALF, 127);
+    // delay(100);
+    // flip(180, 127);
+    // delay(100);
+    // flip(-180, 127);
+    // delay(100);
+
+    lateralPID(20, 127);
     delay(100);
     turnPID(-90, 127);
     delay(100);
-    lateralPID(BLOCK_AND_HALF, 127);
-    delay(100);
+    lateralPID(10, 127);
     flip(180, 127);
     delay(100);
     flip(-180, 127);
