@@ -223,7 +223,7 @@ void turnPID(double targetDegrees, int maxSpeed, int timeout) {
     }
 
     if (clampState) {
-        local_kp *= 1.105;
+        local_kp *= 1.5;
     }
     
     while (elapsed_time < timeout) { // Adjust the condition to account for wheel diameter
