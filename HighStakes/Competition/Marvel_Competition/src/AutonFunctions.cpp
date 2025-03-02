@@ -80,7 +80,7 @@ void lateralPID(double targetDistance, int maxSpeed, int timeout) {
     delay(200);
 
     // Adjust PID constants dynamically for short distances
-    if (fabs(targetDistance) <= 18) { // For distances less than 10 inches
+    if (fabs(targetDistance) <= 20) { // For distances less than 10 inches
         // local_kp *= 1.5; // Increase proportional gain
         local_kp *= 2.5; // Increase proportional gain
         maxSpeed = std::max(50, maxSpeed / 2); // Limit max speed
@@ -191,7 +191,7 @@ void lateralPID(double targetDistance, int maxSpeed, int timeout) {
 
 // Function to turn the robot using PID control
 void turnPID(double targetDegrees, int maxSpeed, int timeout) {
-    double kp = 1.0;  // Proportional constant (tuned for inches)
+    double kp = 1.5;  // Proportional constant (tuned for inches)
     double ki = 0.000;  // Integral constant (set to 0 initially, typically less used for basic moves)
     double kd = 0.15; // Derivative constant (adjusted)
     double currentDegrees = 0; 

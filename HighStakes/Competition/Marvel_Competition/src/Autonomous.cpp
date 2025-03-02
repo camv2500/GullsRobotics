@@ -98,11 +98,15 @@ void Autonomous() {
     // flip(-180, 127);
     // delay(100);
 
-    lateralPID(20, 127);
+    clampAuton(false);
     delay(100);
-    turnPID(-90, 127);
+    lateralPID(15, 127);
     delay(100);
-    lateralPID(10, 127);
+    turnPID(-90, 127, 3); // Stops here
+    delay(100);
+    // lateralPID(10, 127);
+    // delay(100);
+    master.print(0, 0, "Turned");
     flip(180, 127);
     delay(100);
     flip(-180, 127);
